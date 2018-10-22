@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Abstractions.TestingHelpers;
 using BH.Adapter.Filing;
 using BH.oM.Base;
 using BH.oM.DataManipulation.Queries;
+using BH.oM.Filing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Filing_Test
@@ -15,17 +17,22 @@ namespace Filing_Test
         [TestInitialize]
         public void SetUp()
         {
-            adapter = new FilingAdapter();
+            var fs = new MockFileSystem( new Dictionary<string, MockFileData>()
+            {
+                { @"C:\test\test.txt", new MockFileData("Some text") },
+                { @"C:\test\something else.txt", new MockFileData("Some other text") }
+
+            });
+            adapter = new FakeFilingAdapter(fs, @"C:\test");
         }
 
         [TestMethod]
         public void TestReturnObjects()
         {
-            IEnumerable<object> objs = adapter.Pull(new FilterQuery() { Type = typeof(BHoMObject) });
-            foreach (var obj in objs)
-            {
-                Assert.IsInstanceOfType(obj, typeof(BHoMObject));
-            }
+            List<object> objs = new List<object>(
+                adapter.Pull(new FilterQuery() { Type = typeof(Directory) }));
+            CollectionAssert.AllItemsAreInstancesOfType(objs, typeof(File));
+            Assert.AreEqual(1, objs.Count);
         }
     }
 }
