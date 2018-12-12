@@ -42,7 +42,7 @@
       <HintPath>..\packages\BH.oM.1.0.0\lib\net45\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="BHoM_Adapter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\BH.Adapter.1.0.0\lib\net452\BHoM_Adapter.dll</HintPath>
+      <HintPath>..\packages\BH.Adapter.1.0.0.1\lib\net452\BHoM_Adapter.dll</HintPath>
     </Reference>
     <Reference Include="DataManipulation_Engine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\BH.Engine.DataManipulation.1.0.0.8\lib\net452\DataManipulation_Engine.dll</HintPath>
@@ -82,7 +82,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FakeFilingAdapter.cs" />
     <Compile Include="ToBHoMTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadTest.cs" />
