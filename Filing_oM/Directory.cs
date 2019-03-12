@@ -8,7 +8,7 @@ namespace BH.oM.Filing
 {
     public class Directory : File
     {
-        public IEnumerable<File> Contents { get; set; }
-            = new List<File>();
+        public IEnumerable<Directory> SubDirectories { get; set; }
+        public IEnumerable<File> Files { get; set; }
     }
 }

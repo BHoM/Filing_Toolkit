@@ -31,10 +31,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BHoM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\BHoM\Build\BHoM.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
     </Reference>
     <Reference Include="BHoM_Adapter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\BHoM_Adapter\Build\BHoM_Adapter.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM_Adapter\Build\BHoM_Adapter.dll</HintPath>
+    </Reference>
+    <Reference Include="BHoM_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\BHoM_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="DataManipulation_oM">
+      <HintPath>..\..\BHoM\Build\DataManipulation_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Reflection_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\Reflection_Engine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
