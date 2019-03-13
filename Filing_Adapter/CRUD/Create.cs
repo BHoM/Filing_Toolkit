@@ -8,9 +8,15 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
+        /***************************************************/
+        /**** Private Methods                          *****/
+        /***************************************************/
+
         protected override bool Create<T>(IEnumerable<T> objects, bool replaceAll = false)
         {
             throw new NotImplementedException();
         }
+
+        /***************************************************/
     }
 }

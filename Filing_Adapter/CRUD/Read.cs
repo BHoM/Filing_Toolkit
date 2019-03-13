@@ -13,6 +13,10 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
+        /***************************************************/
+        /**** Private Methods                          *****/
+        /***************************************************/
+
         protected override IEnumerable<IBHoMObject> Read(Type type, IList ids)
         {
             if (type == typeof(Directory))
@@ -24,6 +28,8 @@ namespace BH.Adapter.Filing
             }
             return new List<IBHoMObject>();
         }
+
+        /***************************************************/
 
         private List<Directory> GetDirectories(DirectoryInfoBase directory, int depth = -1)
         {
@@ -42,6 +48,8 @@ namespace BH.Adapter.Filing
             return directories;
         }
 
+        /***************************************************/
+
         private List<File> GetFiles(DirectoryInfoBase directory, int depth = -1)
         {
 
@@ -56,5 +64,7 @@ namespace BH.Adapter.Filing
             }
             return files;
         }
+
+        /***************************************************/
     }
 }

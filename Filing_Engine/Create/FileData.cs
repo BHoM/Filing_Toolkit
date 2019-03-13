@@ -12,6 +12,10 @@ namespace BH.Engine.Filing
 {
     public static partial class Create
     {
+        /*******************************************/
+        /**** Methods                           ****/
+        /*******************************************/
+
         public static MockFileData FileData(string data = "",
             DateTime? created = null,
             DateTime? modified = null,
@@ -29,5 +33,7 @@ namespace BH.Engine.Filing
             if(access != null) fileData.AccessControl = access;
             return fileData;
         }
+        
+        /*******************************************/
     }
 }

@@ -10,19 +10,29 @@ namespace BH.Engine.Filing
 {
     public static partial class Create
     {
+        /*******************************************/
+        /**** Methods                           ****/
+        /*******************************************/
+
         public static IFileSystem FileSystem()
         {
             return new FileSystem();
         }
 
+        /*******************************************/
+
         public static IFileSystem FileSystem(List<string> paths)
         {
             return new MockFileSystem(paths.ToDictionary(p => p, p => new MockFileData("")));
         }
+        
+        /*******************************************/
 
         public static IFileSystem FileSystem(Dictionary<string, MockFileData> data)
         {
             return new MockFileSystem(data);
         }
+
+        /*******************************************/
     }
 }

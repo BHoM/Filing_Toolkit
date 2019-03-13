@@ -34,6 +34,8 @@ namespace BH.Adapter.Filing
         }
 
         /***************************************************/
+        /**** Methods                                  *****/
+        /***************************************************/
         
         public override IEnumerable<object> Pull(IQuery query, Dictionary<string, object> config = null)
         {
@@ -62,5 +64,7 @@ namespace BH.Adapter.Filing
 
             throw new System.ArgumentException($"{query.GetType().ToText()} is not supported", "query");
         }
+
+        /***************************************************/
     }
 }

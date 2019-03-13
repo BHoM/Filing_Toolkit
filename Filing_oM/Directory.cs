@@ -8,7 +8,16 @@ namespace BH.oM.Filing
 {
     public class Directory : File
     {
+        /***************************************************/
+        /**** Properties                                ****/
+        /***************************************************/
+
         public IEnumerable<Directory> SubDirectories { get; set; }
+
+        /***************************************************/
+
         public IEnumerable<File> Files { get; set; }
+
+        /***************************************************/
     }
 }
