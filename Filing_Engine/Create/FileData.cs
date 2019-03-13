@@ -13,17 +13,17 @@ namespace BH.Engine.Filing
     public static partial class Create
     {
         public static MockFileData FileData(string data = "",
-            DateTime created = new DateTime(),
-            DateTime modified = new DateTime(),
-            DateTime accessed = new DateTime(),
+            DateTime? created = null,
+            DateTime? modified = null,
+            DateTime? accessed = null,
             FileSecurity access = null,
             FileAttributes attributes = FileAttributes.Normal)
         {
             var fileData = new MockFileData(data)
             {
-                CreationTime = created,
-                LastWriteTime = modified,
-                LastAccessTime = accessed,
+                CreationTime = created.HasValue ? created.Value : DateTime.Now,
+                LastWriteTime = modified.HasValue ?  modified.Value : DateTime.Now,
+                LastAccessTime = accessed.HasValue ? accessed.Value : DateTime.Now,
                 Attributes = attributes
             };
             if(access != null) fileData.AccessControl = access;
