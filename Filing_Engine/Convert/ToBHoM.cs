@@ -16,28 +16,30 @@ namespace BH.Engine.Filing
         /**** Methods                           ****/
         /*******************************************/
 
-        public static File ToBHoM(this FileSystemInfoBase file)
+        public static IFile ToBHoM(this FileSystemInfoBase file)
         {
-            File bhomObj = GetObject(file as dynamic);
+            IFile bhomObj = GetObject(file as dynamic);
             bhomObj.Name = file.Name;
             bhomObj.Path = file.FullName;
             if (file.Exists)
             {
                 bhomObj.Created = file.CreationTimeUtc;
+                bhomObj.Modified = file.LastWriteTimeUtc;
+                bhomObj.Accessed = file.LastAccessTimeUtc;
             }
             return bhomObj;
         }
 
         /*******************************************/
 
-        public static File ToBHoM(this System.IO.FileInfo file)
+        public static IFile ToBHoM(this System.IO.FileInfo file)
         {
             return ((FileInfoBase)file).ToBHoM();
         }
         
         /*******************************************/
 
-        public static File ToBHoM(this System.IO.DirectoryInfo dir)
+        public static IFile ToBHoM(this System.IO.DirectoryInfo dir)
         {
             return ((DirectoryInfoBase)dir).ToBHoM();
         }
@@ -53,7 +55,7 @@ namespace BH.Engine.Filing
 
         /*******************************************/
 
-        private static File GetObject(DirectoryInfoBase dir)
+        private static Directory GetObject(DirectoryInfoBase dir)
         {
             return new Directory();
         }

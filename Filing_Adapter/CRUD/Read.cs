@@ -50,17 +50,39 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private List<File> GetFiles(DirectoryInfoBase directory, int depth = -1)
+        private List<File> GetFiles(DirectoryInfoBase directory, int depth = -1, bool readFiles = false)
         {
 
             List<File> files = new List<File>();
             if (depth == 0) return files;
 
-            files.AddRange(directory.GetFiles().Select(f => f.ToBHoM()));
+            files.AddRange(
+                directory.GetFiles().Select(f =>
+                {
+                    File bhomFile = f.ToBHoM() as File;
+                    if (readFiles)
+                    {
+                        try
+                        {
+                            using (var stream = f.OpenRead())
+                            {
+                                byte[] buff = new byte[stream.Length];
+                                int read = stream.Read(buff, 0, (int)stream.Length);
+                                bhomFile.Contents = buff;
+                            }
+                        }
+                        catch
+                        {
+                            Engine.Reflection.Compute.RecordWarning("Unable to read file: " + bhomFile.Path);
+                        }
+                    }
+                    return bhomFile;
+                })
+            );
 
             foreach (var dir in directory.GetDirectories())
             {
-                files.AddRange(GetFiles(dir, depth - 1));
+                files.AddRange(GetFiles(dir, depth - 1, readFiles));
             }
             return files;
         }

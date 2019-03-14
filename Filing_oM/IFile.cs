@@ -7,29 +7,25 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Filing
 {
-    public class File : BHoMObject, IFile
+    public interface IFile : IBHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        public string Path { get; set; }
+        string Path { get; set; }
 
         /***************************************************/
 
-        public DateTime Created { get; set; }
+        DateTime Created { get; set; }
 
         /***************************************************/
             
-        public DateTime Modified { get; set; }
+        DateTime Modified { get; set; }
 
         /***************************************************/
 
-        public DateTime Accessed { get; set; }
-
-        /***************************************************/
-
-        public byte[] Contents { get; set; }
+        DateTime Accessed { get; set; }
 
         /***************************************************/
     }

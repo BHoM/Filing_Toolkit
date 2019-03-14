@@ -44,13 +44,20 @@ namespace BH.Adapter.Filing
                 return new List<object>();
 
             int depth = -1;
+            bool readFiles = false;
             if(config != null)
             {
                 object _depth;
-                config.TryGetValue("MaxDepth", out _depth);
-                if(_depth != null && (_depth is int || _depth is double || _depth is float))
+
+                if(config.TryGetValue("MaxDepth", out _depth) && _depth != null &&
+                    (_depth is int || _depth is double || _depth is float))
                 {
                     depth = (int)_depth;
+                }
+                object _readFiles;
+                if (config.TryGetValue("ReadFiles", out _readFiles))
+                {
+                    readFiles = (bool)_readFiles;
                 }
             }
 
@@ -59,7 +66,7 @@ namespace BH.Adapter.Filing
                 return GetDirectories(FileSystem.DirectoryInfo.FromDirectoryName(Path), depth);
             } else if(filter.Type == typeof(oM.Filing.File))
             {
-                return GetFiles(FileSystem.DirectoryInfo.FromDirectoryName(Path), depth);
+                return GetFiles(FileSystem.DirectoryInfo.FromDirectoryName(Path), depth, readFiles);
             }
 
             throw new System.ArgumentException($"{query.GetType().ToText()} is not supported", "query");
