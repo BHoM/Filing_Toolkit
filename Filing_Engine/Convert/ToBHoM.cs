@@ -20,7 +20,18 @@ namespace BH.Engine.Filing
         {
             IFile bhomObj = GetObject(file as dynamic);
             bhomObj.Name = file.Name;
-            bhomObj.Path = file.FullName;
+            Directory lastdir = null;
+
+            var parts = file.FullName.Split(file.FileSystem.Path.PathSeparator).ToList();
+            parts.RemoveAt(parts.Count - 1);
+            foreach(string dir in parts)
+            {
+                var newdir = new Directory { Name = dir, ParentDirectory = lastdir };
+                lastdir = newdir;
+            }
+
+            bhomObj.ParentDirectory = lastdir;
+
             if (file.Exists)
             {
                 bhomObj.Created = file.CreationTimeUtc;

@@ -9,20 +9,17 @@ using System.Threading.Tasks;
 namespace BH.oM.Filing
 {
     public class Directory : BHoMObject, IFile
+
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        public IEnumerable<Directory> SubDirectories { get; set; }
+        public List<Directory> SubDirectories { get; set; }
 
         /***************************************************/
 
-        public IEnumerable<File> Files { get; set; }
-
-        /***************************************************/
-
-        public string Path { get; set; }
+        public List<File> Files { get; set; }
 
         /***************************************************/
 
@@ -39,6 +36,10 @@ namespace BH.oM.Filing
         /***************************************************/
 
         public Human Owner { get; set; }
+
+        /***************************************************/
+
+        public Directory ParentDirectory { get; set; }
 
         /***************************************************/
     }

@@ -57,9 +57,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Convert\ToBHoM.cs" />
+    <Compile Include="Create\Directory.cs" />
+    <Compile Include="Create\File.cs" />
     <Compile Include="Create\FileData.cs" />
     <Compile Include="Create\FileSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Path.cs" />
     <Compile Include="Query\Encoding.cs" />
     <Compile Include="Query\Contents.cs" />
   </ItemGroup>

@@ -73,5 +73,16 @@ namespace BH.Adapter.Filing
         }
 
         /***************************************************/
+
+        public override bool PullTo(BHoMAdapter to, oM.DataManipulation.Queries.IQuery query, Dictionary<string, object> config = null)
+        {
+            // Force pulling contents when pulling to another adapter
+            if (config == null) config = new Dictionary<string, object>();
+            config["ReadFiles"] = true;
+
+            return base.PullTo(to, query, config);
+        }
+
+        /***************************************************/
     }
 }
