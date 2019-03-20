@@ -1,4 +1,5 @@
 ﻿using BH.oM.Base;
+using BH.oM.Humans;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,10 @@ namespace BH.oM.Filing
         /***************************************************/
 
         public DateTime Accessed { get; set; }
+
+        /***************************************************/
+
+        public Human Owner { get; set; }
 
         /***************************************************/
     }
