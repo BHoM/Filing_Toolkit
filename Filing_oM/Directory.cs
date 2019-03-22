@@ -15,14 +15,6 @@ namespace BH.oM.Filing
         /**** Properties                                ****/
         /***************************************************/
 
-        public List<Directory> SubDirectories { get; set; }
-
-        /***************************************************/
-
-        public List<File> Files { get; set; }
-
-        /***************************************************/
-
         public DateTime Created { get; set; }
 
         /***************************************************/

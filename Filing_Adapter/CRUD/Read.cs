@@ -39,11 +39,9 @@ namespace BH.Adapter.Filing
             {
                 Directory d = dir.ToBHoM() as Directory;
                 d.ParentDirectory = parent;
-                d.SubDirectories = GetDirectories(dir, depth - 1, d);
-                d.Files = GetFiles(dir, depth - 1, false, d);
 
                 directories.Add(d);
-                directories.AddRange(d.SubDirectories);
+                directories.AddRange(GetDirectories(dir, depth - 1, d));
 
             }
             return directories;
@@ -86,14 +84,7 @@ namespace BH.Adapter.Filing
             {
                 Directory d = dir.ToBHoM() as Directory;
                 d.ParentDirectory = parent;
-                if (parent != null)
-                {
-                    if (parent.SubDirectories == null)
-                        parent.SubDirectories = new List<Directory>();
-                    parent.SubDirectories.Add(d);
-                }
-                d.Files = GetFiles(dir, depth - 1, readFiles, d);
-                files.AddRange(d.Files);
+                files.AddRange(GetFiles(dir, depth - 1, false, d));
             }
             return files;
         }
