@@ -1,4 +1,5 @@
 ﻿using BH.oM.Base;
+using BH.oM.Humans;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,6 @@ namespace BH.oM.Filing
         /**** Properties                                ****/
         /***************************************************/
 
-        string Path { get; set; }
-
-        /***************************************************/
-
         DateTime Created { get; set; }
 
         /***************************************************/
@@ -26,6 +23,14 @@ namespace BH.oM.Filing
         /***************************************************/
 
         DateTime Accessed { get; set; }
+
+        /***************************************************/
+
+        Human Owner { get; set; }
+
+        /***************************************************/
+
+        Directory ParentDirectory { get; set; }
 
         /***************************************************/
     }

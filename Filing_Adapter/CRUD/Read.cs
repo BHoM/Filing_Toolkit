@@ -31,18 +31,17 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private List<Directory> GetDirectories(DirectoryInfoBase directory, int depth = -1)
+        private List<Directory> GetDirectories(DirectoryInfoBase directory, int depth = -1, Directory parent = null)
         {
             List<Directory> directories = new List<Directory>();
             if (depth == 0) return directories;
             foreach (var dir in directory.GetDirectories())
             {
                 Directory d = dir.ToBHoM() as Directory;
-                d.SubDirectories = GetDirectories(dir, depth - 1);
-                d.Files = GetFiles(dir, depth - 1);
+                d.ParentDirectory = parent;
 
                 directories.Add(d);
-                directories.AddRange(d.SubDirectories);
+                directories.AddRange(GetDirectories(dir, depth - 1, d));
 
             }
             return directories;
@@ -50,7 +49,7 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private List<File> GetFiles(DirectoryInfoBase directory, int depth = -1, bool readFiles = false)
+        private List<File> GetFiles(DirectoryInfoBase directory, int depth = -1, bool readFiles = false, Directory parent = null)
         {
 
             List<File> files = new List<File>();
@@ -60,6 +59,7 @@ namespace BH.Adapter.Filing
                 directory.GetFiles().Select(f =>
                 {
                     File bhomFile = f.ToBHoM() as File;
+                    bhomFile.ParentDirectory = parent;
                     if (readFiles)
                     {
                         try
@@ -73,7 +73,7 @@ namespace BH.Adapter.Filing
                         }
                         catch
                         {
-                            Engine.Reflection.Compute.RecordWarning("Unable to read file: " + bhomFile.Path);
+                            Engine.Reflection.Compute.RecordWarning("Unable to read file: " + bhomFile.Path());
                         }
                     }
                     return bhomFile;
@@ -82,7 +82,9 @@ namespace BH.Adapter.Filing
 
             foreach (var dir in directory.GetDirectories())
             {
-                files.AddRange(GetFiles(dir, depth - 1, readFiles));
+                Directory d = dir.ToBHoM() as Directory;
+                d.ParentDirectory = parent;
+                files.AddRange(GetFiles(dir, depth - 1, false, d));
             }
             return files;
         }
