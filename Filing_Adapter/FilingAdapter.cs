@@ -1,7 +1,7 @@
 ﻿using BH.Adapter;
 using BH.Engine.Reflection;
 using BH.oM.Base;
-using BH.oM.DataManipulation.Queries;
+using BH.oM.Data.Requests;
 using System.Collections.Generic;
 using System.IO.Abstractions;
 
@@ -37,9 +37,9 @@ namespace BH.Adapter.Filing
         /**** Methods                                  *****/
         /***************************************************/
         
-        public override IEnumerable<object> Pull(IQuery query, Dictionary<string, object> config = null)
+        public override IEnumerable<object> Pull(IRequest query, Dictionary<string, object> config = null)
         {
-            FilterQuery filter = query as FilterQuery;
+            FilterRequest filter = query as FilterRequest;
             if (filter == null)
                 return new List<object>();
 
@@ -74,7 +74,7 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        public override bool PullTo(BHoMAdapter to, oM.DataManipulation.Queries.IQuery query, Dictionary<string, object> config = null)
+        public override bool PullTo(BHoMAdapter to, IRequest query, Dictionary<string, object> config = null)
         {
             // Force pulling contents when pulling to another adapter
             if (config == null) config = new Dictionary<string, object>();
