@@ -12,7 +12,6 @@ namespace Filing_Test
     public class ToBHoMTest
     {
         private MockFileSystem fs;
-        private IFileInfoFactory factory;
 
         [TestInitialize]
         public void SetUp()
