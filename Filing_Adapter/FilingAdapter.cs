@@ -74,13 +74,13 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        public override bool PullTo(BHoMAdapter to, IRequest query, Dictionary<string, object> config = null)
+        public override bool Move(BHoMAdapter to, IRequest query, Dictionary<string, object> pullConfig = null, Dictionary<string, object> pushConfig = null)
         {
             // Force pulling contents when pulling to another adapter
-            if (config == null) config = new Dictionary<string, object>();
-            config["ReadFiles"] = true;
+            if (pullConfig == null) pullConfig = new Dictionary<string, object>();
+            pullConfig["ReadFiles"] = true;
 
-            return base.PullTo(to, query, config);
+            return base.Move(to, query, pullConfig, pushConfig);
         }
 
         /***************************************************/
