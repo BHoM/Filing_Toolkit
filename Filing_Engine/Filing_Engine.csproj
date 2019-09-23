@@ -33,12 +33,15 @@
     <Reference Include="BHoM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Reflection_Engine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_oM">
       <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -76,6 +79,7 @@
     <ProjectReference Include="..\Filing_oM\Filing_oM.csproj">
       <Project>{d344dcf0-788d-4e0a-8596-70199a080619}</Project>
       <Name>Filing_oM</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
