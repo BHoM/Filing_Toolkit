@@ -12,7 +12,7 @@ namespace BH.Adapter.Filing
         /**** Private Methods                          *****/
         /***************************************************/
 
-        protected override bool Create<T>(IEnumerable<T> objects, bool replaceAll = false)
+        protected override bool Create<T>(IEnumerable<T> objects)
         {
             throw new NotImplementedException();
         }
