@@ -1,4 +1,5 @@
 ﻿using BH.Engine.Filing;
+using BH.Engine.Reflection;
 using BH.oM.Base;
 using BH.oM.Filing;
 using System;
@@ -26,7 +27,7 @@ namespace BH.Adapter.Filing
             {
                 return GetFiles(FileSystem.DirectoryInfo.FromDirectoryName(Path));
             }
-            return new List<IBHoMObject>();
+            throw new ArgumentException($"{type.ToText()} is not supported", "type");
         }
 
         /***************************************************/
