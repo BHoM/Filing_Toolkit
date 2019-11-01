@@ -1,6 +1,7 @@
 ﻿using BH.Engine.Filing;
 using BH.Engine.Reflection;
 using BH.oM.Base;
+using BH.oM.Data.Requests;
 using BH.oM.Filing;
 using System;
 using System.Collections;
@@ -28,6 +29,43 @@ namespace BH.Adapter.Filing
                 return GetFiles(FileSystem.DirectoryInfo.FromDirectoryName(Path));
             }
             throw new ArgumentException($"{type.ToText()} is not supported", "type");
+        }
+
+        protected override IEnumerable<IBHoMObject> Read(IRequest request)
+        {
+            throw new System.ArgumentException($"{request.GetType().ToText()} is not supported", "request");
+        }
+
+        protected IEnumerable<IBHoMObject> Read(FilterRequest filterRequest, Dictionary<string,object> config)
+        {
+            int depth = -1;
+            bool readFiles = false;
+            if (config != null)
+            {
+                object _depth;
+
+                if (config.TryGetValue("MaxDepth", out _depth) && _depth != null &&
+                    (_depth is int || _depth is double || _depth is float))
+                {
+                    depth = (int)_depth;
+                }
+                object _readFiles;
+                if (config.TryGetValue("ReadFiles", out _readFiles))
+                {
+                    readFiles = (bool)_readFiles;
+                }
+            }
+
+            if (filterRequest.Type == typeof(oM.Filing.Directory))
+            {
+                return GetDirectories(FileSystem.DirectoryInfo.FromDirectoryName(Path), depth);
+            }
+            else if (filterRequest.Type == typeof(oM.Filing.File))
+            {
+                return GetFiles(FileSystem.DirectoryInfo.FromDirectoryName(Path), depth, readFiles);
+            }
+
+            return new List<IBHoMObject>();
         }
 
         /***************************************************/
