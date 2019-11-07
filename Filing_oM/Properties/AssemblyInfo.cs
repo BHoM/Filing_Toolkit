@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BuroHappold")]
 [assembly: AssemblyProduct("Filing_oM")]
-[assembly: AssemblyCopyright("Copyright © BuroHappold 2018")]
+[assembly: AssemblyCopyright("Copyright © https://github.com/BHoM")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
