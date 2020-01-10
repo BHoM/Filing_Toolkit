@@ -30,6 +30,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Adapter_Engine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM_Adapter\Build\Adapter_Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Adapter_oM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM_Adapter\Build\Adapter_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="BHoM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
@@ -66,8 +76,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdapterActions\Move.cs" />
-    <Compile Include="AdapterActions\Pull.cs" />
-    <Compile Include="CRUD\Create.cs" />
     <Compile Include="CRUD\Read.cs" />
     <Compile Include="FilingAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
