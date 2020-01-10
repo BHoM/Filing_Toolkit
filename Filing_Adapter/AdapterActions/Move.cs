@@ -1,5 +1,7 @@
 ﻿using BH.Engine.Reflection;
+using BH.oM.Adapter;
 using BH.oM.Data.Requests;
+using BH.oM.Filing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,14 +16,11 @@ namespace BH.Adapter.Filing
         /***************************************************/
         /**** Methods                                  *****/
         /***************************************************/
-        
-        public override bool Move(BHoMAdapter to, IRequest query, Dictionary<string, object> pullConfig = null, Dictionary<string, object> pushConfig = null)
-        {
-            // Force pulling contents when pulling to another adapter
-            if (pullConfig == null) pullConfig = new Dictionary<string, object>();
-            pullConfig["ReadFiles"] = true;
 
-            return base.Move(to, query, pullConfig, pushConfig);
+        public override bool Move(BHoMAdapter to, IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig pullConfig = null, PushType pushType = PushType.AdapterDefault, ActionConfig pushConfig = null)
+        {
+            if (pullConfig == null) pullConfig = new FilingConfig { ReadFiles = true };
+            return base.Move(to, request, pullType, pullConfig, pushType, pushConfig);
         }
 
         /***************************************************/

@@ -1,5 +1,6 @@
 ﻿using BH.Engine.Filing;
 using BH.Engine.Reflection;
+using BH.oM.Adapter;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using BH.oM.Filing;
@@ -19,7 +20,11 @@ namespace BH.Adapter.Filing
         /**** Private Methods                          *****/
         /***************************************************/
 
-        protected override IEnumerable<IBHoMObject> Read(Type type, IList ids)
+        protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
+        {
+            return Read(type, ids, actionConfig as dynamic);
+        }
+        protected IEnumerable<IBHoMObject> Read(Type type, IList ids, ActionConfig actionConfig = null)
         {
             if (type == typeof(Directory))
             {
@@ -31,36 +36,21 @@ namespace BH.Adapter.Filing
             throw new ArgumentException($"{type.ToText()} is not supported", "type");
         }
 
-        protected override IEnumerable<IBHoMObject> Read(IRequest request)
-        {
-            throw new System.ArgumentException($"{request.GetType().ToText()} is not supported", "request");
-        }
-
-        protected IEnumerable<IBHoMObject> Read(FilterRequest filterRequest, Dictionary<string,object> config)
+        protected IEnumerable<IBHoMObject> Read(Type type, IList ids, FilingConfig actionConfig = null)
         {
             int depth = -1;
             bool readFiles = false;
-            if (config != null)
+            if (actionConfig != null)
             {
-                object _depth;
-
-                if (config.TryGetValue("MaxDepth", out _depth) && _depth != null &&
-                    (_depth is int || _depth is double || _depth is float))
-                {
-                    depth = (int)_depth;
-                }
-                object _readFiles;
-                if (config.TryGetValue("ReadFiles", out _readFiles))
-                {
-                    readFiles = (bool)_readFiles;
-                }
+                depth = actionConfig.MaxDepth;
+                readFiles = actionConfig.ReadFiles;
             }
 
-            if (filterRequest.Type == typeof(oM.Filing.Directory))
+            if (type == typeof(oM.Filing.Directory))
             {
                 return GetDirectories(FileSystem.DirectoryInfo.FromDirectoryName(Path), depth);
             }
-            else if (filterRequest.Type == typeof(oM.Filing.File))
+            else if (type == typeof(oM.Filing.File))
             {
                 return GetFiles(FileSystem.DirectoryInfo.FromDirectoryName(Path), depth, readFiles);
             }
