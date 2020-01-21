@@ -17,7 +17,7 @@ namespace BH.Adapter.Filing
         /**** Methods                                  *****/
         /***************************************************/
 
-        public override bool Move(BHoMAdapter to, IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig pullConfig = null, PushType pushType = PushType.AdapterDefault, ActionConfig pushConfig = null)
+        public override bool Move(IBHoMAdapter to, IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig pullConfig = null, PushType pushType = PushType.AdapterDefault, ActionConfig pushConfig = null)
         {
             if (pullConfig == null) pullConfig = new FilingConfig { ReadFiles = true };
             return base.Move(to, request, pullType, pullConfig, pushType, pushConfig);
