@@ -9,7 +9,7 @@ namespace BH.oM.Filing
 {
     public class FilingConfig : ActionConfig
     {
-        public int MaxDepth { get; set; }
+        public int MaxDepth { get; set; } = -1;
         public bool ReadFiles { get; set; }
     }
 }
