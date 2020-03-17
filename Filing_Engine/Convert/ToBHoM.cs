@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Filing;
+using BH.oM.Reflection.Attributes;
+using System.ComponentModel;
 
 namespace BH.Engine.Filing
 {
@@ -16,7 +18,10 @@ namespace BH.Engine.Filing
         /**** Methods                           ****/
         /*******************************************/
 
-        public static IFile ToBHoM(this FileSystemInfoBase file)
+        [Description("Convert a System FileInfo object to a BHoM file.")]
+        [Input("file", "The FileInfo object.")]
+        [Output("A BHoM File.")]
+        public static IFile ToFile(this FileSystemInfoBase file)
         {
             IFile bhomObj = GetObject(file as dynamic);
             bhomObj.Name = file.Name;
@@ -43,16 +48,22 @@ namespace BH.Engine.Filing
 
         /*******************************************/
 
-        public static IFile ToBHoM(this System.IO.FileInfo file)
+        [Description("Convert a System FileInfo object to a BHoM file.")]
+        [Input("file", "The FileInfo object.")]
+        [Output("A BHoM File.")]
+        public static IFile ToFile(this System.IO.FileInfo file)
         {
-            return ((FileInfoBase)file).ToBHoM();
+            return ((FileInfoBase)file).ToFile();
         }
-        
+
         /*******************************************/
 
-        public static IFile ToBHoM(this System.IO.DirectoryInfo dir)
+        [Description("Convert a System DirectoryInfo object to a BHoM directory.")]
+        [Input("dir", "The DirectoryInfo object.")]
+        [Output("A BHoM directory.")]
+        public static IFile ToFile(this System.IO.DirectoryInfo dir)
         {
-            return ((DirectoryInfoBase)dir).ToBHoM();
+            return ((DirectoryInfoBase)dir).ToFile();
         }
 
         /*******************************************/

@@ -1,6 +1,8 @@
 ﻿using BH.oM.Filing;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,8 +15,13 @@ namespace BH.Engine.Filing
         /**** Methods                                   ****/
         /***************************************************/
 
+        [Description("Move a file or directory to a new parent directory.")]
+        [Input("file", "The file (or directory) to move.")]
+        [Input("to", "The new parent Directory.")]
+        [Output("The moved file object.")]
         public static IFile Move(this IFile file, Directory to)
         {
+            file = file.GetShallowClone() as IFile;
             file.ParentDirectory = to;
             return file;
         }

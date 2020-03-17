@@ -66,7 +66,7 @@ namespace BH.Adapter.Filing
             if (depth == 0) return directories;
             foreach (var dir in directory.GetDirectories())
             {
-                Directory d = dir.ToBHoM() as Directory;
+                Directory d = dir.ToFile() as Directory;
                 d.ParentDirectory = parent;
 
                 directories.Add(d);
@@ -87,7 +87,7 @@ namespace BH.Adapter.Filing
             files.AddRange(
                 directory.GetFiles().Select(f =>
                 {
-                    File bhomFile = f.ToBHoM() as File;
+                    File bhomFile = f.ToFile() as File;
                     bhomFile.ParentDirectory = parent;
                     if (readFiles)
                     {
@@ -111,7 +111,7 @@ namespace BH.Adapter.Filing
 
             foreach (var dir in directory.GetDirectories())
             {
-                Directory d = dir.ToBHoM() as Directory;
+                Directory d = dir.ToFile() as Directory;
                 d.ParentDirectory = parent;
                 files.AddRange(GetFiles(dir, depth - 1, false, d));
             }
