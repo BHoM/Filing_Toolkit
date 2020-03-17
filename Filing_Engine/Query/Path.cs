@@ -1,6 +1,8 @@
 ﻿using BH.oM.Filing;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,33 +15,17 @@ namespace BH.Engine.Filing
         /*** Methods                                     ***/
         /***************************************************/
 
-        public static string Path(this IFile file, string seperator = "/")
+        [Description("Get the path of the file.")]
+        [Input("file", "The file to get the path of.")]
+        [Input("separator", "The path separator to use.")]
+        [Output("The path of the file separated by the supplied separator.")]
+        public static string Path(this IFile file, string separator = "/")
         {
             if (!IsAcyclic(file)) throw new ArgumentException("Circular directory hierarchy");
             if (file.ParentDirectory == null) return file.Name;
-            return file.ParentDirectory.Path(seperator) + seperator + file.Name;
+            return file.ParentDirectory.Path(separator) + separator + file.Name;
         }
         
-
-        /***************************************************/
-
-        public static bool IsAcyclic(this IFile file)
-        {
-            return IsAcyclic(file as dynamic, new HashSet<Directory>());
-        }
-
-        /***************************************************/
-
-        private static bool IsAcyclic(IFile file, HashSet<Directory> encountered)
-        {
-            if (file.ParentDirectory == null) return true;
-
-            if (encountered.Contains(file.ParentDirectory)) return false;
-
-            encountered.Add(file.ParentDirectory);
-
-            return IsAcyclic(file.ParentDirectory, encountered);
-        }
 
         /***************************************************/
     }

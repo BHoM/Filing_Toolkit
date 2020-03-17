@@ -17,19 +17,11 @@ namespace BH.oM.Filing
 
         public DateTime Created { get; set; }
 
-        /***************************************************/
-
         public DateTime Modified { get; set; }
-
-        /***************************************************/
 
         public DateTime Accessed { get; set; }
 
-        /***************************************************/
-
         public Human Owner { get; set; }
-
-        /***************************************************/
 
         public Directory ParentDirectory { get; set; }
 
