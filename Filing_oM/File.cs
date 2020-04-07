@@ -1,4 +1,4 @@
-﻿using BH.oM.Base;
+using BH.oM.Base;
 using BH.oM.Humans;
 using System;
 using System.Collections.Generic;
@@ -14,17 +14,17 @@ namespace BH.oM.Filing
         /**** Properties                                ****/
         /***************************************************/
 
-        public DateTime Created { get; set; }
+        public virtual DateTime Created { get; set; }
                    
-        public DateTime Modified { get; set; }
+        public virtual DateTime Modified { get; set; }
 
-        public DateTime Accessed { get; set; }
+        public virtual DateTime Accessed { get; set; }
 
-        public byte[] Contents { get; set; }
+        public virtual byte[] Contents { get; set; }
 
-        public Human Owner { get; set; }
+        public virtual Human Owner { get; set; }
 
-        public Directory ParentDirectory { get; set; }
+        public virtual Directory ParentDirectory { get; set; }
 
         /***************************************************/
     }
