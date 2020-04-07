@@ -1,4 +1,4 @@
-﻿using BH.oM.Base;
+using BH.oM.Base;
 using BH.oM.Humans;
 using System;
 using System.Collections.Generic;

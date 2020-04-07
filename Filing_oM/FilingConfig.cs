@@ -1,4 +1,4 @@
-﻿using BH.oM.Adapter;
+using BH.oM.Adapter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace BH.oM.Filing
         /**** Properties                                ****/
         /***************************************************/
 
-        public int MaxDepth { get; set; } = -1;
+        public virtual int MaxDepth { get; set; } = -1;
 
-        public bool ReadFiles { get; set; }
+        public virtual bool ReadFiles { get; set; }
 
         /***************************************************/
     }
