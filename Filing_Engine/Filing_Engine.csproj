@@ -64,7 +64,6 @@
     <Compile Include="Create\File.cs" />
     <Compile Include="Create\FileData.cs" />
     <Compile Include="Create\FileSystem.cs" />
-    <Compile Include="Modify\Contents.cs" />
     <Compile Include="Modify\Move.cs" />
     <Compile Include="Modify\Rename.cs" />
     <Compile Include="Objects\EqualityComparers\PathComparer.cs" />
