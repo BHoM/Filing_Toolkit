@@ -38,5 +38,22 @@ namespace BH.Engine.Filing
         }
 
         /***************************************************/
+
+
+        private static Encoding FromEnum(Encodings encodingEnumValue)
+        {
+            switch (encodingEnumValue)
+            {
+                case Encodings.Default: return System.Text.Encoding.UTF8;
+                case Encodings.ASCII: return System.Text.Encoding.ASCII;
+                case Encodings.BigEndianUnicode: return System.Text.Encoding.BigEndianUnicode;
+                case Encodings.Unicode: return System.Text.Encoding.Unicode;
+                case Encodings.UTF32: return System.Text.Encoding.UTF32;
+                case Encodings.UTF7: return System.Text.Encoding.UTF7;
+                case Encodings.UTF8: return System.Text.Encoding.UTF8;
+
+                default: return System.Text.Encoding.UTF8;
+            }
+        }
     }
 }
