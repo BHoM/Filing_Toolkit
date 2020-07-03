@@ -15,7 +15,7 @@ namespace BH.oM.Filing
 
         public virtual int MaxDepth { get; set; } = -1;
 
-        public virtual bool ReadFiles { get; set; }
+        public virtual bool ReadFiles { get; set; } = false;
 
         /***************************************************/
     }
