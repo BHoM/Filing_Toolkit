@@ -19,17 +19,22 @@ namespace BH.Engine.Filing
         [Input("file", "The file to get the contents of.")]
         [Input("encoding", "The encoding to use to decode the data. If null (default) discovery will be attempted; defaults to UTF-8 if it can't be discovered.")]
         [Output("The contents of the file.")]
-        public static string ContentsAsString(this File file, Encodings encoding = null)
+        public static string ContentsAsString(this File file, Encodings encoding = Encodings.FromFile)
         {
             byte[] contents = file.ContentsAsByteArray();
 
-            if (encoding == null && (encoding = file.Encoding()) == null)
+            System.Text.Encoding sysEncoding = null;
+            if (encoding == Encodings.FromFile)
             {
-                Reflection.Compute.RecordNote($"Could not determine encoding for file {file.Name}, assuming UTF-8");
-                encoding = System.Text.Encoding.UTF8;
+                sysEncoding = file.Encoding();
+                if (sysEncoding == null)
+                {
+                    Reflection.Compute.RecordNote($"Could not determine encoding for file {file.Name}, assuming UTF-8.");
+                    sysEncoding = System.Text.Encoding.UTF8;
+                }
             }
-
-            System.Text.Encoding sysEncoding = FromEnum(encoding);
+            else
+                sysEncoding = FromEnum(encoding);
 
             return sysEncoding.GetString(contents);
         }
@@ -55,7 +60,7 @@ namespace BH.Engine.Filing
             {
                 Engine.Reflection.Compute.RecordError("Unable to read file: " + bhomFile.FullName);
             }
-            
+
             return contents;
         }
 

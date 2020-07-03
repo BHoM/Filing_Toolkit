@@ -8,7 +8,7 @@ namespace BH.oM.Filing
 {
     public enum Encodings
     {
-        Default,
+        FromFile,
         ASCII,
         Unicode,
         UTF7,
