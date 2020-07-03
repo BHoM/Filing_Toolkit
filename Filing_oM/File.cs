@@ -25,14 +25,13 @@ namespace BH.oM.Filing
         [Description("The extension of the file.")]
         public virtual string Extension { get; set; }
 
-
         [Description("Gets a value indicating whether a file exists.")]
         public virtual bool Exists { get; set; } = false;
         [Description("Gets or sets a value that determines if the current file is read only.")]
-        public bool IsReadOnly { get; set; } = false;
+        public virtual bool IsReadOnly { get; set; } = false;
 
         [Description("Gets the size, in bytes, of the current file.")]
-        public long Length { get; set; } = 0;
+        public virtual long Length { get; set; } = 0;
 
         
         [Description("Attributes indicating if ReadOnly, Hidden, System File, etc.")]
@@ -48,6 +47,9 @@ namespace BH.oM.Filing
         [Description("User owning the file, if any, or the user who created the object File.")]
         public virtual Human Owner { get; set; }
 
+
+        /***************************************************/
+        /**** Explicit cast                             ****/
         /***************************************************/
 
         public static explicit operator File(System.IO.FileInfo fileInfo)

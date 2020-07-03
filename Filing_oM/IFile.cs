@@ -18,7 +18,6 @@ namespace BH.oM.Filing
       
         string FullName { get; set; }
         string Name { get; set; }
-        string Extension { get; set; }
 
         bool Exists { get; set; }
 

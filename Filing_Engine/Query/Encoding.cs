@@ -20,7 +20,7 @@ namespace BH.Engine.Filing
         [Output("The encoding of the file if it can be discovered, null if unknown.")]
         public static Encoding Encoding(this File file)
         {
-            byte[] contents = file.Contents;
+            byte[] contents = file.ContentsAsByteArray();
             if (contents == null) return null;
             foreach (EncodingInfo candidate in System.Text.Encoding.GetEncodings())
             {
@@ -44,7 +44,7 @@ namespace BH.Engine.Filing
         {
             switch (encodingEnumValue)
             {
-                case Encodings.Default: return System.Text.Encoding.UTF8;
+                case Encodings.FromFile: return null;
                 case Encodings.ASCII: return System.Text.Encoding.ASCII;
                 case Encodings.BigEndianUnicode: return System.Text.Encoding.BigEndianUnicode;
                 case Encodings.Unicode: return System.Text.Encoding.Unicode;
