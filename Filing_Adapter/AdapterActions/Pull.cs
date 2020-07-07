@@ -11,6 +11,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.Engine.Base;
 
 namespace BH.Adapter.Filing
 {
@@ -27,74 +28,68 @@ namespace BH.Adapter.Filing
             // //- Read config
             FilingConfig filingConfig = (actionConfig as FilingConfig) ?? new FilingConfig();
 
-            IFileDirRequest fileOrDirRequest = request as IFileDirRequest;
-            if (fileOrDirRequest != null)
-                outputObjs.AddRange(GetFiles(fileOrDirRequest));
+            IFileDirRequest fdr = request as IFileDirRequest;
+            if (fdr != null)
+                outputObjs.AddRange(GetFiles(fdr));
 
-
-
-            return outputObjs;         
+            return outputObjs;
         }
 
         /***************************************************/
 
-        private List<oM.Filing.Directory> GetFiles(IFileDirRequest dirReq)
+        private List<oM.Filing.IFile> GetFiles(IFileDirRequest request, int retrievedFiles = 0, int retrievedDirs = 0)
         {
-            DirectoryInfo directory = new FileInfo(dirReq.Directory.FullPath()).Directory;
+            List<oM.Filing.IFile> output = new List<oM.Filing.IFile>();
 
-            List<oM.Filing.Directory> directories = new List<oM.Filing.Directory>();
-            if (dirReq.MaxNesting == 0) return directories;
+            // Convert to most generic type of request.
+            FileAndDirRequest fdr = BH.Engine.Filing.Create.FileDirRequest(request as dynamic);
 
-            foreach (DirectoryInfo dir in directory.GetDirectories())
+            // Recursion stop condition.
+            if (request.MaxNesting == 0)
+                return output;
+
+            // Look in directory and, if requested, recursively in subdirectories.
+            DirectoryInfo dirInfo = new FileInfo(fdr.Directory.FullPath()).Directory;
+            foreach (DirectoryInfo dir in dirInfo.GetDirectories())
             {
                 oM.Filing.Directory d = (oM.Filing.Directory)dir;
                 d.ParentDirectory = (oM.Filing.Directory)dir.Parent;
 
-                directories.Add(d);
-
-                if (dirReq.MaxItems != -1 && directories.Count > dirReq.MaxItems)
-                    return directories.Take(dirReq.MaxItems).ToList();
-
-                if (dirReq.IncludeSubdirectories == true)
-                {
-                    DirectoryRequest dr = new DirectoryRequest()
+                if (fdr.RetrieveDirectories)
+                    if (fdr.MaxDirectories == -1 || retrievedDirs < fdr.MaxDirectories)
                     {
-                        Directory = dir.FullName,
-                        MaxNesting = dirReq.MaxNesting - 1,
-                        MaxItems = dirReq.MaxItems - directories.Count,
-                        IncludeSubdirectories = true
-                    };
+                        output.Add(d);
+                        retrievedDirs += 1;
+                    }
 
-                    directories.AddRange(GetFiles(dr));
+                if (fdr.RetrieveFiles)
+                    foreach (var f in dir.GetFiles())
+                    {
+                        if (fdr.MaxFiles == -1 || retrievedFiles < fdr.MaxFiles)
+                        {
+                            output.Add((oM.Filing.File)f);
+                            retrievedFiles += 1;
+                        }
+                        else
+                            break;
+                    }
+
+                // Recurse if requested, and if the limits are not exceeded.
+                if (fdr.IncludeSubdirectories == true && retrievedFiles < fdr.MaxFiles && retrievedDirs < fdr.MaxDirectories)
+                {
+                    FileAndDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
+                    fdrRecurse.MaxNesting -= 1;
+
+                    output.AddRange(GetFiles(fdrRecurse));
                 }
             }
 
-            return directories;
+            return output;
         }
 
         /***************************************************/
 
-        private List<oM.Filing.File> GetFiles(DirectoryInfo directory, int maxDepth = -1, bool readFiles = false, oM.Filing.Directory parent = null)
-        {
-
-            List<oM.Filing.File> files = new List<oM.Filing.File>();
-            if (maxDepth == 0) return files;
-
-            files.AddRange(
-                directory.GetFiles().Select(f =>
-                {
-                    return (oM.Filing.File)f;
-                })
-            );
-
-            foreach (var dir in directory.GetDirectories())
-            {
-                oM.Filing.Directory d = (oM.Filing.Directory)dir;
-                d.ParentDirectory = parent;
-                files.AddRange(GetFiles(dir, maxDepth - 1, false, d));
-            }
-            return files;
-        }
+     
 
     }
 }

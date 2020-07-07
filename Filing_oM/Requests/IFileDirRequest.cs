@@ -21,15 +21,14 @@ namespace BH.oM.Filing
         [Description("Files or directories included in this Directory will be pulled. You can also specify a string path.")]
         Directory Directory { get; set; }
 
-        [Description("Sets the maximum number of files and/or directories to retrieve." +
-          "\n-1 corresponds to no limit.")]
-        int MaxItems { get; set; }
-
         [Description("If enabled, look also in subdirectories.")]
         bool IncludeSubdirectories { get; set; }
 
         [Description("If IncludeSubdirectories is true, this sets the maximum subdirectiory nesting level to look in." +
             "\nDefaults to -1 which corresponds to infinite.")]
         int MaxNesting { get; set; }
+
+        [Description("These files or directories will be excluded from the results. You can also specify string Full Paths.")]
+        List<IFile> Exclusions { get; set; }
     }
 }

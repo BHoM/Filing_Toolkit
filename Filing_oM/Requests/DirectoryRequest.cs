@@ -23,7 +23,7 @@ namespace BH.oM.Filing
 
         [Description("Sets the maximum number of Directories to retrieve." +
             "\nDefaults to -1 which corresponds to no limit.")]
-        public virtual int MaxItems { get; set; } = -1;
+        public virtual int MaxDirectories { get; set; } = -1;
 
         [Description("If enabled, look also in subdirectories.")]
         public virtual bool IncludeSubdirectories { get; set; } = false;
@@ -33,6 +33,6 @@ namespace BH.oM.Filing
         public virtual int MaxNesting { get; set; } = -1;
 
         [Description("These directories will be excluded from the results. You can also specify string Full Paths.")]
-        public virtual List<Directory> Exclusions { get; set; }
+        public virtual List<IFile> Exclusions { get; set; }
     }
 }

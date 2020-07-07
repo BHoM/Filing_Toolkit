@@ -35,6 +35,14 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="BHoM_Engine, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM_Adapter\Build\BHoM_Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Data_oM, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Reflection_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_Engine.dll</HintPath>
       <Private>False</Private>
@@ -60,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Convert\ToFiling.cs" />
+    <Compile Include="Create\FileDirRequest.cs" />
     <Compile Include="Create\FileData.cs" />
     <Compile Include="Create\FileSystem.cs" />
     <Compile Include="Modify\Move.cs" />

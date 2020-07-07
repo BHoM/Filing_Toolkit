@@ -57,7 +57,7 @@ namespace BH.oM.Filing
 
         public static explicit operator Directory(DirectoryInfo directoryInfo)
         {
-            return new Directory()
+            return directoryInfo != null ? new Directory()
             {
                 ParentDirectory = (Directory)directoryInfo.Parent,
 
@@ -72,7 +72,7 @@ namespace BH.oM.Filing
                 LastAccessTimeUtc = directoryInfo.LastAccessTimeUtc,
                 LastWriteTime = directoryInfo.LastWriteTime,
                 LastWriteTimeUtc = directoryInfo.LastWriteTimeUtc,
-            };
+            } : null;
         }
 
         /***************************************************/
@@ -81,7 +81,10 @@ namespace BH.oM.Filing
 
         public static implicit operator Directory(string directoryFullPath)
         {
-            return (Directory)new DirectoryInfo(directoryFullPath);
+            if (!String.IsNullOrWhiteSpace(directoryFullPath))
+                return (Directory)new DirectoryInfo(directoryFullPath);
+            else
+                return null;
         }
 
     }
