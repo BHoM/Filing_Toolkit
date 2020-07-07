@@ -56,7 +56,7 @@ namespace BH.oM.Filing
 
         public static explicit operator File(System.IO.FileInfo fi)
         {
-            return new File()
+            return fi != null ? new File()
             {
                 ParentDirectory = (Directory)fi.Directory,
 
@@ -77,7 +77,7 @@ namespace BH.oM.Filing
                 LastAccessTimeUtc = fi.LastAccessTimeUtc,
                 LastWriteTime = fi.LastWriteTime,
                 LastWriteTimeUtc = fi.LastWriteTimeUtc,
-            };
+            } : null;
         }
 
         /***************************************************/
@@ -86,7 +86,10 @@ namespace BH.oM.Filing
 
         public static implicit operator File(string fileFullPath)
         {
-            return (File)new FileInfo(fileFullPath);
+            if (!String.IsNullOrWhiteSpace(fileFullPath))
+                return (File)new FileInfo(fileFullPath);
+            else
+                return null;
         }
     }
 }
