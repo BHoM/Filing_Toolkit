@@ -10,13 +10,16 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Filing
 {
-    public interface IFile : IObject
+    public interface IFile : IBHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
       
-        string FullName { get; set; }
+        [Description("Parent Directory of the File or Directory.")]
+        Directory ParentDirectory { get; set; }
+
+        [Description("Name of the file (WITHOUT Extension) or of the Directory.")]
         string Name { get; set; }
 
         bool Exists { get; set; }

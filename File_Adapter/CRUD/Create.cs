@@ -54,7 +54,7 @@ namespace BH.Adapter.FileAdapter
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private bool CreateBson(IEnumerable<IBHoMObject> objects, bool clearFile = false)
+        private bool CreateBson(IEnumerable<object> objects, bool clearFile = false)
         {
             try
             {
