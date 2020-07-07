@@ -38,22 +38,22 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private List<oM.Filing.IFile> GetFiles(IFileDirRequest dirReq)
+        private List<oM.Filing.Directory> GetFiles(IFileDirRequest dirReq)
         {
             DirectoryInfo directory = new FileInfo(dirReq.Directory.FullPath()).Directory;
 
-            List<oM.Filing.IFile> files = new List<oM.Filing.IFile>();
-            if (dirReq.MaxNesting == 0) return files;
+            List<oM.Filing.Directory> directories = new List<oM.Filing.Directory>();
+            if (dirReq.MaxNesting == 0) return directories;
 
             foreach (DirectoryInfo dir in directory.GetDirectories())
             {
                 oM.Filing.Directory d = (oM.Filing.Directory)dir;
                 d.ParentDirectory = (oM.Filing.Directory)dir.Parent;
 
-                files.Add(d);
+                directories.Add(d);
 
-                if (dirReq.MaxItems != -1 && files.Count > dirReq.MaxItems)
-                    return files.Take(dirReq.MaxItems).ToList();
+                if (dirReq.MaxItems != -1 && directories.Count > dirReq.MaxItems)
+                    return directories.Take(dirReq.MaxItems).ToList();
 
                 if (dirReq.IncludeSubdirectories == true)
                 {
@@ -61,15 +61,15 @@ namespace BH.Adapter.Filing
                     {
                         Directory = dir.FullName,
                         MaxNesting = dirReq.MaxNesting - 1,
-                        MaxItems = dirReq.MaxItems - files.Count,
+                        MaxItems = dirReq.MaxItems - directories.Count,
                         IncludeSubdirectories = true
                     };
 
-                    files.AddRange(GetFiles(dr));
+                    directories.AddRange(GetFiles(dr));
                 }
             }
 
-            return files;
+            return directories;
         }
 
         /***************************************************/

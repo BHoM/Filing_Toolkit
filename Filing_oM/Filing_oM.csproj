@@ -40,6 +40,11 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Data_oM, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Humans_oM">
       <HintPath>..\..\BHoM\Build\Humans_oM.dll</HintPath>
       <Private>False</Private>
@@ -57,6 +62,11 @@
   <ItemGroup>
     <Compile Include="Directory.cs" />
     <Compile Include="enums\Encodings.cs" />
+    <Compile Include="Requests\DirectoryRequest.cs" />
+    <Compile Include="Requests\ContentRequest.cs" />
+    <Compile Include="Requests\FileAndDirRequest.cs" />
+    <Compile Include="Requests\IFileDirRequest.cs" />
+    <Compile Include="Requests\FileRequest.cs" />
     <Compile Include="FilingConfig.cs" />
     <Compile Include="FileFormat.cs" />
     <Compile Include="IFile.cs" />
