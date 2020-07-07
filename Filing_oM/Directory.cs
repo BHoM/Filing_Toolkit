@@ -10,21 +10,22 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Filing
 {
-    public class Directory : IObject, IFile
+    public class Directory : BHoMObject, IFile
 
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("Gets the full path of the directory or file.")]
-        public virtual string FullName { get; set; }
+        [Description("Full path of parent Directory of the File.")]
+        public virtual Directory ParentDirectory { get; set; }
 
-        [Description("The name of the directory.")]
-        public virtual string Name { get; set; }
+        [Description("Name of the directory.")]
+        public override string Name { get; set; }
 
         [Description("Gets a value indicating whether the directory exists.")]
         public virtual bool Exists { get; set; } = false;
+
         [Description("Gets or sets a value that determines if the current file is read only.")]
         public virtual bool IsReadOnly { get; set; } = false;
 
@@ -46,32 +47,19 @@ namespace BH.oM.Filing
         public virtual Human Owner { get; set; }
 
 
-        [Description(@"The parent directory, or null if the path is null or if the file path denotes a root (such as '\', 'C:', or * '\\server\share').")]
-        public DirectoryInfo Parent { get; }
-       
-     
-        //
-        // Summary:
-        //     Gets the root portion of the directory.
-        //
-        // Returns:
-        //     An object that represents the root of the directory.
-        //
-        // Exceptions:
-        //   T:System.Security.SecurityException:
-        //     The caller does not have the required permission.
-        public DirectoryInfo Root { get; }
+        [Description(@"Root folder, such as '\', 'C:', or * '\\server\share'.")]
+        public Directory Root { get; }
 
 
         /***************************************************/
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator Directory(System.IO.DirectoryInfo directoryInfo)
+        public static explicit operator Directory(DirectoryInfo directoryInfo)
         {
             return new Directory()
             {
-                FullName = directoryInfo.FullName,
+                ParentDirectory = (Directory)directoryInfo.Parent,
 
                 Name = directoryInfo.Name,
 
@@ -85,6 +73,15 @@ namespace BH.oM.Filing
                 LastWriteTime = directoryInfo.LastWriteTime,
                 LastWriteTimeUtc = directoryInfo.LastWriteTimeUtc,
             };
+        }
+
+        /***************************************************/
+        /**** Implicit cast                             ****/
+        /***************************************************/
+
+        public static implicit operator Directory(string directoryFullPath)
+        {
+            return (Directory)new DirectoryInfo(directoryFullPath);
         }
 
     }

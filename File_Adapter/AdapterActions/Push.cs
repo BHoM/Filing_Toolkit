@@ -58,7 +58,7 @@ namespace BH.Adapter.FileAdapter
             if (!ProcessExtension(ref m_FilePath))
                 return null;
 
-            CreateFolderAndFileIfNotExisting()
+            CreateFolderAndFileIfNotExisting(m_FilePath);
 
             bool clearFile = m_AdapterSettings.ProcessInMemory || pushType == PushType.DeleteThenCreate;
 

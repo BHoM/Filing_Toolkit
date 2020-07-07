@@ -11,12 +11,12 @@ namespace BH.Engine.Filing
     {
         public bool Equals(IFile x, IFile y)
         {
-            return x.Path() == y.Path();
+            return x.FullPath() == y.FullPath();
         }
 
         public int GetHashCode(IFile obj)
         {
-            return obj.Path().GetHashCode();
+            return obj.FullPath().GetHashCode();
         }
     }
 }

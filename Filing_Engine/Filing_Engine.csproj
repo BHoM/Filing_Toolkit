@@ -59,8 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Create\Directory.cs" />
-    <Compile Include="Create\File.cs" />
+    <Compile Include="Convert\ToFiling.cs" />
     <Compile Include="Create\FileData.cs" />
     <Compile Include="Create\FileSystem.cs" />
     <Compile Include="Modify\Move.cs" />
@@ -82,9 +81,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Convert\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

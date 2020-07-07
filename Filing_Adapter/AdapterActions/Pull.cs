@@ -6,6 +6,7 @@ using BH.oM.Filing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
@@ -21,61 +22,76 @@ namespace BH.Adapter.Filing
 
         public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
         {
+            List<object> outputObjs = new List<object>();
+
             // //- Read config
             FilingConfig filingConfig = (actionConfig as FilingConfig) ?? new FilingConfig();
 
-            Type type = null;
-            FilterRequest filterReq = request as FilterRequest;
-            if (filterReq != null)
-                type = filterReq.Type;
+            IFileDirRequest fileOrDirRequest = request as IFileDirRequest;
+            if (fileOrDirRequest != null)
+                outputObjs.AddRange(GetFiles(fileOrDirRequest));
 
-            if (type == typeof(oM.Filing.Directory))
-                return GetDirectories(FileSystem.DirectoryInfo.FromDirectoryName(Path), filingConfig.MaxDepth);
-            else if (type == typeof(oM.Filing.File))
-                return GetFiles(FileSystem.DirectoryInfo.FromDirectoryName(Path), filingConfig.MaxDepth, filingConfig.ReadFiles);
 
-            return new List<object>();
+
+            return outputObjs;         
         }
 
         /***************************************************/
 
-        private List<Directory> GetDirectories(DirectoryInfoBase directory, int depth = -1, Directory parent = null)
+        private List<oM.Filing.IFile> GetFiles(IFileDirRequest dirReq)
         {
-            List<Directory> directories = new List<Directory>();
-            if (depth == 0) return directories;
-            foreach (var dir in directory.GetDirectories())
+            DirectoryInfo directory = new FileInfo(dirReq.Directory.FullPath()).Directory;
+
+            List<oM.Filing.IFile> files = new List<oM.Filing.IFile>();
+            if (dirReq.MaxNesting == 0) return files;
+
+            foreach (DirectoryInfo dir in directory.GetDirectories())
             {
-                Directory d = dir.ToFile() as Directory;
-                d.ParentDirectory = parent;
+                oM.Filing.Directory d = (oM.Filing.Directory)dir;
+                d.ParentDirectory = (oM.Filing.Directory)dir.Parent;
 
-                directories.Add(d);
-                directories.AddRange(GetDirectories(dir, depth - 1, d));
+                files.Add(d);
 
+                if (dirReq.MaxItems != -1 && files.Count > dirReq.MaxItems)
+                    return files.Take(dirReq.MaxItems).ToList();
+
+                if (dirReq.IncludeSubdirectories == true)
+                {
+                    DirectoryRequest dr = new DirectoryRequest()
+                    {
+                        Directory = dir.FullName,
+                        MaxNesting = dirReq.MaxNesting - 1,
+                        MaxItems = dirReq.MaxItems - files.Count,
+                        IncludeSubdirectories = true
+                    };
+
+                    files.AddRange(GetFiles(dr));
+                }
             }
-            return directories;
+
+            return files;
         }
 
         /***************************************************/
 
-        private List<File> GetFiles(DirectoryInfoBase directory, int depth = -1, bool readFiles = false, Directory parent = null)
+        private List<oM.Filing.File> GetFiles(DirectoryInfo directory, int maxDepth = -1, bool readFiles = false, oM.Filing.Directory parent = null)
         {
 
-            List<File> files = new List<File>();
-            if (depth == 0) return files;
+            List<oM.Filing.File> files = new List<oM.Filing.File>();
+            if (maxDepth == 0) return files;
 
             files.AddRange(
                 directory.GetFiles().Select(f =>
                 {
-                    
-                    return bhomFile;
+                    return (oM.Filing.File)f;
                 })
             );
 
             foreach (var dir in directory.GetDirectories())
             {
-                Directory d = dir.ToFile() as Directory;
+                oM.Filing.Directory d = (oM.Filing.Directory)dir;
                 d.ParentDirectory = parent;
-                files.AddRange(GetFiles(dir, depth - 1, false, d));
+                files.AddRange(GetFiles(dir, maxDepth - 1, false, d));
             }
             return files;
         }

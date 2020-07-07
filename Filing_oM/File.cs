@@ -11,29 +11,31 @@ using System.ComponentModel;
 
 namespace BH.oM.Filing
 {
-    public class File : IObject, IFile
+    public class File : BHoMObject, IFile
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("Gets the full path of the directory or file.")]
-        public virtual string FullName { get; set; }
+        [Description("Full path of parent Directory of the File.")]
+        public virtual Directory ParentDirectory { get; set; }
 
-        [Description("The name of the file.")]
-        public virtual string Name { get; set; }
-        [Description("The extension of the file.")]
+        [Description("Name of the file, WITHOUT Extension.")]
+        public override string Name { get; set; }
+
+        [Description("Extension of the File.")]
         public virtual string Extension { get; set; }
 
         [Description("Gets a value indicating whether a file exists.")]
         public virtual bool Exists { get; set; } = false;
+
         [Description("Gets or sets a value that determines if the current file is read only.")]
         public virtual bool IsReadOnly { get; set; } = false;
 
         [Description("Gets the size, in bytes, of the current file.")]
         public virtual long Length { get; set; } = 0;
 
-        
+
         [Description("Attributes indicating if ReadOnly, Hidden, System File, etc.")]
         public virtual FileAttributes Attributes { get; set; }
 
@@ -52,28 +54,39 @@ namespace BH.oM.Filing
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator File(System.IO.FileInfo fileInfo)
+        public static explicit operator File(System.IO.FileInfo fi)
         {
             return new File()
             {
-                FullName = fileInfo.FullName,
+                ParentDirectory = (Directory)fi.Directory,
 
-                Name = fileInfo.Name,
-                Extension = fileInfo.Extension,
+                Name = Path.GetFileNameWithoutExtension(fi.Name),
 
-                Exists = fileInfo.Exists,
-                IsReadOnly = fileInfo.IsReadOnly,
+                Extension = Path.GetExtension(fi.Name).Replace(".", ""),
 
-                Length = fileInfo.Length,
+                Exists = fi.Exists,
 
-                Attributes = fileInfo.Attributes,
-                CreationTime = fileInfo.CreationTime,
-                CreationTimeUtc = fileInfo.CreationTimeUtc,
-                LastAccessTime = fileInfo.LastAccessTime,
-                LastAccessTimeUtc = fileInfo.LastAccessTimeUtc,
-                LastWriteTime = fileInfo.LastWriteTime,
-                LastWriteTimeUtc = fileInfo.LastWriteTimeUtc,
+                IsReadOnly = fi.IsReadOnly,
+
+                Length = fi.Length,
+
+                Attributes = fi.Attributes,
+                CreationTime = fi.CreationTime,
+                CreationTimeUtc = fi.CreationTimeUtc,
+                LastAccessTime = fi.LastAccessTime,
+                LastAccessTimeUtc = fi.LastAccessTimeUtc,
+                LastWriteTime = fi.LastWriteTime,
+                LastWriteTimeUtc = fi.LastWriteTimeUtc,
             };
+        }
+
+        /***************************************************/
+        /**** Implicit cast                             ****/
+        /***************************************************/
+
+        public static implicit operator File(string fileFullPath)
+        {
+            return (File)new FileInfo(fileFullPath);
         }
     }
 }

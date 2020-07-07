@@ -49,7 +49,7 @@ namespace BH.Engine.Filing
 
             try
             {
-                using (var stream = System.IO.File.OpenRead(bhomFile.FullName))
+                using (var stream = System.IO.File.OpenRead(bhomFile.FullPath()))
                 {
                     byte[] buff = new byte[stream.Length];
                     int read = stream.Read(buff, 0, (int)stream.Length);
@@ -58,7 +58,7 @@ namespace BH.Engine.Filing
             }
             catch
             {
-                Engine.Reflection.Compute.RecordError("Unable to read file: " + bhomFile.FullName);
+                Engine.Reflection.Compute.RecordError("Unable to read file: " + bhomFile.FullPath());
             }
 
             return contents;
