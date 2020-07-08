@@ -58,14 +58,13 @@ namespace BH.Adapter.FileAdapter
             if (!ProcessExtension(ref m_FilePath))
                 return null;
 
-            CreateFolderAndFileIfNotExisting(m_FilePath);
+            CreateFileAndFolder(pushType);
 
-            bool clearFile = m_AdapterSettings.ProcessInMemory || pushType == PushType.DeleteThenCreate;
+            if (objectsToPush.Count() != objects.Count())
+                Engine.Reflection.Compute.RecordWarning("The file adapter can currently only be used with BHoMObjects." + Environment.NewLine +
+                    "If you want to push non-BHoMobject, specify a push config with the option `WrapNonBHoMObject` set to true.");
 
-            if (m_isJSON)
-                CreateJson(objects, clearFile);
-            else
-                CreateBson(objects, clearFile);
+            bool success = this.FullCRUD(objectsToPush, pushType, tag, actionConfig);
 
             return success ? objectsToPush.Cast<object>().ToList() : new List<IObject>().Cast<object>().ToList();
         }

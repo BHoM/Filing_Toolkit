@@ -19,11 +19,11 @@ namespace BH.Engine.Filing
         [Input("file", "The file (or directory) to rename.")]
         [Input("name", "The new name.")]
         [Output("The moved file object.")]
-        public static IFile Rename(this IFile file, string name)
+        public static IFileSystemInfo  Rename(this IFileSystemInfo  fileOrDir, string name)
         {
-            file = file.GetShallowClone() as IFile;
-            file.Name = name;
-            return file;
+            fileOrDir = BH.Engine.Base.Query.ShallowClone(fileOrDir);
+            fileOrDir.Name = name;
+            return fileOrDir;
         }
 
         /***************************************************/

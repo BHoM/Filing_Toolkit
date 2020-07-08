@@ -11,17 +11,17 @@ using System.ComponentModel;
 
 namespace BH.oM.Filing
 {
-    public class File : BHoMObject, IFile
+    public class FileInfo : IFileSystemInfo 
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
         [Description("Full path of parent Directory of the File.")]
-        public virtual Directory ParentDirectory { get; set; }
+        public virtual DirectoryInfo ParentDirectory { get; set; }
 
         [Description("Name of the file, WITHOUT Extension.")]
-        public override string Name { get; set; }
+        public virtual string Name { get; set; }
 
         [Description("Extension of the File.")]
         public virtual string Extension { get; set; }
@@ -54,11 +54,11 @@ namespace BH.oM.Filing
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator File(System.IO.FileInfo fi)
+        public static explicit operator FileInfo(System.IO.FileInfo fi)
         {
-            return fi != null ? new File()
+            return fi != null ? new FileInfo()
             {
-                ParentDirectory = (Directory)fi.Directory,
+                ParentDirectory = (DirectoryInfo)fi.Directory,
 
                 Name = Path.GetFileNameWithoutExtension(fi.Name),
 
@@ -84,10 +84,10 @@ namespace BH.oM.Filing
         /**** Implicit cast                             ****/
         /***************************************************/
 
-        public static implicit operator File(string fileFullPath)
+        public static implicit operator FileInfo(string fileFullPath)
         {
             if (!String.IsNullOrWhiteSpace(fileFullPath))
-                return (File)new FileInfo(fileFullPath);
+                return (FileInfo)new System.IO.FileInfo(fileFullPath);
             else
                 return null;
         }

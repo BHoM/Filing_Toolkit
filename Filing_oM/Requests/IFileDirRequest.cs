@@ -19,7 +19,7 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Files or directories included in this Directory will be pulled. You can also specify a string path.")]
-        Directory Directory { get; set; }
+        DirectoryInfo Directory { get; set; }
 
         [Description("If enabled, look also in subdirectories.")]
         bool IncludeSubdirectories { get; set; }
@@ -29,6 +29,6 @@ namespace BH.oM.Filing
         int MaxNesting { get; set; }
 
         [Description("These files or directories will be excluded from the results. You can also specify string Full Paths.")]
-        List<IFile> Exclusions { get; set; }
+        List<IFileSystemInfo > Exclusions { get; set; }
     }
 }

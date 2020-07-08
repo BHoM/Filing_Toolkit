@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Filing
 {
-    public class PathComparer : IEqualityComparer<IFile>
+    public class PathComparer : IEqualityComparer<IFileSystemInfo >
     {
-        public bool Equals(IFile x, IFile y)
+        public bool Equals(IFileSystemInfo  x, IFileSystemInfo  y)
         {
             return x.FullPath() == y.FullPath();
         }
 
-        public int GetHashCode(IFile obj)
+        public int GetHashCode(IFileSystemInfo  obj)
         {
             return obj.FullPath().GetHashCode();
         }

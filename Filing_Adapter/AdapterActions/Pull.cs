@@ -28,46 +28,64 @@ namespace BH.Adapter.Filing
             // //- Read config
             FilingConfig filingConfig = (actionConfig as FilingConfig) ?? new FilingConfig();
 
+            List<oM.Filing.IFileSystemInfo > output = new List<oM.Filing.IFileSystemInfo >();
             IFileDirRequest fdr = request as IFileDirRequest;
             if (fdr != null)
-                outputObjs.AddRange(GetFiles(fdr));
+                GetFiles(ref output, fdr);
 
-            return outputObjs;
+            return output;
         }
 
         /***************************************************/
 
-        private List<oM.Filing.IFile> GetFiles(IFileDirRequest request, int retrievedFiles = 0, int retrievedDirs = 0)
+        private void GetFiles(ref List<oM.Filing.IFileSystemInfo > output, IFileDirRequest request, int retrievedFiles = 0, int retrievedDirs = 0)
         {
-            List<oM.Filing.IFile> output = new List<oM.Filing.IFile>();
-
             // Convert to most generic type of request.
-            FileAndDirRequest fdr = BH.Engine.Filing.Create.FileDirRequest(request as dynamic);
+            FileAndDirRequest fdr = null;
+            if (request is FileAndDirRequest)
+                fdr = (FileAndDirRequest)request;
+            else
+                fdr = BH.Engine.Filing.Create.FileDirRequest(request as dynamic);
 
             // Recursion stop condition.
             if (request.MaxNesting == 0)
-                return output;
+                return;
 
             // Look in directory and, if requested, recursively in subdirectories.
-            DirectoryInfo dirInfo = new FileInfo(fdr.Directory.FullPath()).Directory;
-            foreach (DirectoryInfo dir in dirInfo.GetDirectories())
+            System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.Directory.FullPath());
+            System.IO.DirectoryInfo[] dirArray = currentDir.GetDirectories();
+            foreach (System.IO.DirectoryInfo dir in dirArray)
             {
-                oM.Filing.Directory d = (oM.Filing.Directory)dir;
-                d.ParentDirectory = (oM.Filing.Directory)dir.Parent;
+                oM.Filing.DirectoryInfo bhomDir = (oM.Filing.DirectoryInfo)dir;
+                bhomDir.ParentDirectory = (oM.Filing.DirectoryInfo)dir.Parent;
 
                 if (fdr.RetrieveDirectories)
-                    if (fdr.MaxDirectories == -1 || retrievedDirs < fdr.MaxDirectories)
+                    if (!MaxItemsReached(fdr.MaxDirectories, retrievedDirs))
                     {
-                        output.Add(d);
+                        output.Add(bhomDir);
                         retrievedDirs += 1;
                     }
 
                 if (fdr.RetrieveFiles)
+                {
+                    System.IO.FileInfo[] files;
+
+                    try
+                    {
+                        files = dir.GetFiles("*.*");
+                    }
+                    // This is thrown if one of the files requires permissions greater than the application provides.
+                    catch (UnauthorizedAccessException e)
+                    {
+                        // Write out the message and continue.
+                        BH.Engine.Reflection.Compute.RecordNote(e.Message);
+                    }
+                }
                     foreach (var f in dir.GetFiles())
                     {
-                        if (fdr.MaxFiles == -1 || retrievedFiles < fdr.MaxFiles)
+                        if (!MaxItemsReached(fdr.MaxFiles, retrievedFiles))
                         {
-                            output.Add((oM.Filing.File)f);
+                            output.Add((oM.Filing.FileInfo)f);
                             retrievedFiles += 1;
                         }
                         else
@@ -75,21 +93,31 @@ namespace BH.Adapter.Filing
                     }
 
                 // Recurse if requested, and if the limits are not exceeded.
-                if (fdr.IncludeSubdirectories == true && retrievedFiles < fdr.MaxFiles && retrievedDirs < fdr.MaxDirectories)
+                if (fdr.IncludeSubdirectories == true && MaxItemsReached(fdr.MaxFiles, retrievedFiles, fdr.MaxDirectories, retrievedDirs))
                 {
                     FileAndDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
+                    fdrRecurse.Directory = bhomDir;
                     fdrRecurse.MaxNesting -= 1;
 
-                    output.AddRange(GetFiles(fdrRecurse));
+                    GetFiles(ref output, fdrRecurse);
                 }
             }
-
-            return output;
         }
 
         /***************************************************/
 
-     
+        private bool MaxItemsReached(int maxItems, int retrievedItemsCount)
+        {
+            return maxItems != -1 && retrievedItemsCount >= maxItems;
+        }
+
+        private bool MaxItemsReached(int maxFiles, int retrievedFilesCount, int maxDirs, int retrivedDirsCount)
+        {
+            return !MaxItemsReached(maxFiles, retrievedFilesCount) && !MaxItemsReached(maxDirs, retrivedDirsCount);
+        }
+
+
+
 
     }
 }

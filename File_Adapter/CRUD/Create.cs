@@ -54,7 +54,7 @@ namespace BH.Adapter.FileAdapter
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private bool CreateBson(IEnumerable<object> objects, bool clearFile = false)
+        private bool CreateBson(IEnumerable<IBHoMObject> objects, bool clearFile = false)
         {
             try
             {
@@ -75,10 +75,8 @@ namespace BH.Adapter.FileAdapter
 
         /***************************************************/
 
-        private bool CreateJson(IEnumerable<object> objects, bool clearFile = false)
+        private bool CreateJson(IEnumerable<IBHoMObject> objects, bool clearFile = false)
         {
-            CreateFolder(pushType);
-
             try
             {
                 if (clearFile)

@@ -19,9 +19,9 @@ namespace BH.Engine.Filing
         [Input("file", "The file (or directory) to move.")]
         [Input("to", "The new parent Directory.")]
         [Output("The moved file object.")]
-        public static IFile Move(this IFile file, Directory to)
+        public static IFileSystemInfo  ChangeDirectory(this IFileSystemInfo  file, DirectoryInfo to)
         {
-            file = file.GetShallowClone() as IFile;
+            file = BH.Engine.Base.Query.ShallowClone(file);
             file.ParentDirectory = to;
             return file;
         }
