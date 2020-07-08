@@ -21,7 +21,16 @@ namespace BH.oM.Filing
         [Description("You can also specify Full Paths as string. The content from these Files will be pulled.")]
         public virtual List<FileInfo> Files { get; set; }
 
-        [Description("Maximum number of BHoM objects to be retrieved from the files." +
+        [Description("Only objects of a Type specified in this list will be returned.")]
+        public virtual List<Type> Types { get; set; } = new List<Type>();
+
+        [Description("Only BHoMObjects whose CustomData contains these key/value pairs will be returned.")]
+        public virtual List<string> CustomDataKeys { get; set; } = new List<string>();
+
+        [Description("Only BHoMObjects that own a Fragment of one of these Types will be returned.")]
+        public virtual List<Type> FragmentTypes { get; set; } = new List<Type>();
+
+        [Description("Maximum number of objects to be retrieved from each file." +
             "Defaults to -1 which corresponds to no limit.")]
         public virtual int MaxObjects { get; set; } = -1;
     }

@@ -30,10 +30,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Adapter_Engine">
+      <HintPath>..\..\BHoM_Adapter\Build\Adapter_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Adapter_oM">
+      <HintPath>..\..\BHoM_Adapter\Build\Adapter_oM.dll</HintPath>
+    </Reference>
     <Reference Include="BHoM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="BHoM_Adapter, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM_Adapter\Build\BHoM_Adapter.dll</HintPath>
     </Reference>
     <Reference Include="BHoM_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM_Engine.dll</HintPath>
@@ -89,23 +99,6 @@
     <Compile Include="CRUD\Create.cs" />
     <Compile Include="FileAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Adapter_Engine\Adapter_Engine.csproj">
-      <Project>{78eacce7-71df-4003-bf38-71f80d3f6308}</Project>
-      <Name>Adapter_Engine</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Adapter_oM\Adapter_oM.csproj">
-      <Project>{03CD2C55-F3A7-4C47-B2E8-64909964329D}</Project>
-      <Name>Adapter_oM</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\BHoM_Adapter\BHoM_Adapter.csproj">
-      <Project>{c99a5ddf-78b1-4224-81ac-c5b90d03e423}</Project>
-      <Name>BHoM_Adapter</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Convert\" />

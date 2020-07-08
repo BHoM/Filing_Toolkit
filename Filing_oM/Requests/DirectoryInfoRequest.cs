@@ -12,27 +12,27 @@ using BH.oM.Data.Requests;
 
 namespace BH.oM.Filing
 {
-    public class FileRequest : IRequest, IFileDirRequest
+    public class DirectoryInfoRequest : IRequest, IFileDirRequest
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("Files from this Directory will be pulled. You can also specify a string path.")]
+        [Description("Directories included in Directory will be pulled. You can also specify a string path.")]
         public virtual DirectoryInfo Directory { get; set; } = "";
 
-        [Description("Sets the maximum number of Files to retrieve." +
+        [Description("Sets the maximum number of Directories to retrieve." +
             "\nDefaults to -1 which corresponds to no limit.")]
-        public virtual int MaxFiles { get; set; } = -1;
+        public virtual int MaxDirectories { get; set; } = -1;
 
-        [Description("If true it also considers subdirectories.")]
+        [Description("If enabled, look also in subdirectories.")]
         public virtual bool IncludeSubdirectories { get; set; } = false;
 
         [Description("If IncludeSubdirectories is true, this sets the maximum subdirectiory nesting level to look in." +
             "\nDefaults to -1 which corresponds to no limit.")]
         public virtual int MaxNesting { get; set; } = -1;
 
-        [Description("These files will be excluded from the results. You can also specify string Full Paths.")]
+        [Description("These directories will be excluded from the results. You can also specify string Full Paths.")]
         public virtual List<IFileSystemInfo > Exclusions { get; set; }
     }
 }

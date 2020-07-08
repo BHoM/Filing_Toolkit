@@ -12,7 +12,7 @@ using BH.oM.Data.Requests;
 
 namespace BH.oM.Filing
 {
-    public class FileAndDirRequest : IRequest, IFileDirRequest
+    public class FileDirInfoRequest : IRequest, IFileDirRequest
     {
         /***************************************************/
         /**** Properties                                ****/
