@@ -11,7 +11,7 @@ using System.ComponentModel;
 
 namespace BH.oM.Filing
 {
-    public class FileInfo : IFileSystemInfo 
+    public class File : IFileSystemInfo 
     {
         /***************************************************/
         /**** Properties                                ****/
@@ -22,9 +22,6 @@ namespace BH.oM.Filing
 
         [Description("Name of the file, INCLUDING Extension.")]
         public virtual string Name { get; set; }
-
-        [Description("Extension of the File.")]
-        public virtual string Extension { get; set; }
 
         [Description("Gets a value indicating whether a file exists.")]
         public virtual bool Exists { get; set; } = false;
@@ -51,22 +48,20 @@ namespace BH.oM.Filing
         public virtual Human Owner { get; set; }
 
         [Description("The content of the file.")]
-        public virtual object Content { get; set; }
+        public virtual List<object> Content { get; set; }
 
 
         /***************************************************/
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator FileInfo(System.IO.FileInfo fi)
+        public static explicit operator File(System.IO.FileInfo fi)
         {
-            return fi != null ? new FileInfo()
+            return fi != null ? new File()
             {
                 ParentDirectory = (DirectoryInfo)fi.Directory,
 
-                Name = Path.GetFileNameWithoutExtension(fi.Name),
-
-                Extension = Path.GetExtension(fi.Name).Replace(".", ""),
+                Name = fi.Name,
 
                 Exists = fi.Exists,
 
@@ -88,10 +83,10 @@ namespace BH.oM.Filing
         /**** Implicit cast                             ****/
         /***************************************************/
 
-        public static implicit operator FileInfo(string fileFullPath)
+        public static implicit operator File(string fileFullPath)
         {
             if (!String.IsNullOrWhiteSpace(fileFullPath))
-                return (FileInfo)new System.IO.FileInfo(fileFullPath);
+                return (File)new System.IO.FileInfo(fileFullPath);
             else
                 return null;
         }

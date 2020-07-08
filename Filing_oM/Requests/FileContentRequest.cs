@@ -19,7 +19,7 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("You can also specify Full Paths as string. The content from these Files will be pulled.")]
-        public virtual List<FileInfo> Files { get; set; }
+        public virtual List<File> Files { get; set; }
 
         [Description("Only objects of a Type specified in this list will be returned.")]
         public virtual List<Type> Types { get; set; } = new List<Type>();
