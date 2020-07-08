@@ -58,9 +58,15 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="MongoDB.Bson, Version=2.7.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Reflection_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_Engine.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Serialiser_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\Serialiser_Engine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -76,6 +82,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdapterActions\Pull.cs" />
+    <Compile Include="CRUD\Create.cs" />
+    <Compile Include="CRUD\Delete.cs" />
+    <Compile Include="CRUD\Read\ReadFileSystemInfo.cs" />
+    <Compile Include="CRUD\Read\ReadFileContent.cs" />
     <Compile Include="FilingAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -93,6 +103,10 @@
       <Name>Filing_oM</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CRUD\Create\" />
+    <Folder Include="CRUD\Delete\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

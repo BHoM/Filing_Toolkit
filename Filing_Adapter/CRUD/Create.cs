@@ -38,7 +38,7 @@ namespace BH.Adapter.Filing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        protected bool Create<T>(IEnumerable<FileInfo> files, ActionConfig actionConfig = null)
+        protected bool Create<T>(IEnumerable<BH.oM.Filing.FileInfo> files, ActionConfig actionConfig = null)
         {
             bool clearFile = m_AdapterSettings.ProcessInMemory;
 

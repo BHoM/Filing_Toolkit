@@ -53,10 +53,10 @@ namespace BH.Adapter.FileAdapter
         }
 
 
-        private IEnumerable<object> ReadJson()
+        private IEnumerable<BHoMObject> ReadJson()
         {
             string[] json = File.ReadAllLines(m_FilePath);
-            var converted = json.Select(x => Engine.Serialiser.Convert.FromJson(x)).Where(x => x != null);
+            var converted = json.Select(x => Engine.Serialiser.Convert.FromJson(x) as BHoMObject).Where(x => x != null);
             if (converted.Count() < json.Count())
                 BH.Engine.Reflection.Compute.RecordWarning("Could not convert some object to BHoMObject.");
             return converted;

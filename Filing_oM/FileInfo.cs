@@ -23,6 +23,9 @@ namespace BH.oM.Filing
         [Description("Name of the file, INCLUDING Extension.")]
         public virtual string Name { get; set; }
 
+        [Description("Extension of the File.")]
+        public virtual string Extension { get; set; }
+
         [Description("Gets a value indicating whether a file exists.")]
         public virtual bool Exists { get; set; } = false;
 
