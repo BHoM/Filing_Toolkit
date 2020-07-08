@@ -70,7 +70,7 @@ namespace BH.Adapter.Filing
 
         private IEnumerable<object> ReadJson(string fileFullPath)
         {
-            string[] json = File.ReadAllLines(fileFullPath);
+            string[] json = System.IO.File.ReadAllLines(fileFullPath);
             var converted = json.Select(x => Engine.Serialiser.Convert.FromJson(x)).Where(x => x != null);
             if (converted.Count() < json.Count())
                 BH.Engine.Reflection.Compute.RecordWarning("Could not convert some object to BHoMObject.");
@@ -80,7 +80,7 @@ namespace BH.Adapter.Filing
 
         private IEnumerable<object> ReadBson(string filePath)
         {
-            FileStream mongoReadStream = File.OpenRead(filePath);
+            FileStream mongoReadStream = System.IO.File.OpenRead(filePath);
             var reader = new BsonBinaryReader(mongoReadStream);
             List<BsonDocument> readBson = BsonSerializer.Deserialize(reader, typeof(object)) as List<BsonDocument>;
             return readBson.Select(x => BsonSerializer.Deserialize(x, typeof(object)));

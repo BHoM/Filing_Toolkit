@@ -90,7 +90,7 @@ namespace BH.Adapter.Filing
                 {
                     if (!MaxItemsReached(fdr.MaxFiles, retrievedFiles))
                     {
-                        output.Add((oM.Filing.FileInfo)f);
+                        output.Add((oM.Filing.File)f);
                         retrievedFiles += 1;
                     }
                     else

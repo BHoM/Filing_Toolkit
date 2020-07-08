@@ -9,7 +9,10 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
-        
-
+        public FilingAdapter()
+        {
+            // By default, if they exist already, the files to be created are wiped out and then re-created.
+            this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.DeleteThenCreate;
+        }
     }
 }

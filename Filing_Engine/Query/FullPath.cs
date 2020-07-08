@@ -29,19 +29,9 @@ namespace BH.Engine.Filing
         [Description("Get the full path of the file, including extension.")]
         [Input("file", "The file to get the path of.")]
         [Output("The full path of the file separated by the supplied delimiter.")]
-        private static string FullPath(this BH.oM.Filing.FileInfo file)
+        private static string FullPath(this BH.oM.Filing.File file)
         {
-            string fileNameWithExtension = "";
-
-            if (file.Extension.StartsWith("."))
-                fileNameWithExtension = file.Name + file.Extension;
-            else
-                fileNameWithExtension = file.Name + "." + file.Extension;
-
-            if (file.ParentDirectory == null)
-                return fileNameWithExtension;
-
-            return Path.Combine(file.ParentDirectory.FullPath(), fileNameWithExtension);
+            return Path.Combine(file.ParentDirectory.FullPath(), file.Name);
         }
 
         [Description("Get the full path of the directory.")]
