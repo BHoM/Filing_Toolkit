@@ -1,39 +1,45 @@
-﻿using BH.Engine.Filing;
-using BH.Engine.Reflection;
+/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using BH.Engine.Filing;
 using BH.oM.Adapter;
-using BH.oM.Data.Requests;
+using BH.oM.Base;
 using BH.oM.Filing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Abstractions;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BH.Engine.Base;
 
 namespace BH.Adapter.Filing
 {
-    public partial class FilingAdapter
+    public partial class FilingAdapter : BHoMAdapter
     {
-        /***************************************************/
-        /**** Methods                                  *****/
-        /***************************************************/
-
-        public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
-        {
-            return Read(request as dynamic);
-        }
-
-        /***************************************************/
-
         private List<oM.Filing.IFileSystemInfo> Read(IFileDirRequest request)
         {
             // Convert to most generic type of FileInfo request.
-            FileAndDirRequest fdr = null;
-            if (request is FileAndDirRequest)
-                fdr = (FileAndDirRequest)request;
+            FileDirInfoRequest fdr = null;
+            if (request is FileDirInfoRequest)
+                fdr = (FileDirInfoRequest)request;
             else
                 fdr = BH.Engine.Filing.Create.FileDirRequest(request as dynamic);
 
@@ -44,7 +50,7 @@ namespace BH.Adapter.Filing
             return output;
         }
 
-        private void WalkDirectories(List<oM.Filing.IFileSystemInfo> output, FileAndDirRequest fdr, int retrievedFiles = 0, int retrievedDirs = 0)
+        private void WalkDirectories(List<oM.Filing.IFileSystemInfo> output, FileDirInfoRequest fdr, int retrievedFiles = 0, int retrievedDirs = 0)
         {
             // Recursion stop condition.
             if (fdr.MaxNesting == 0)
@@ -94,7 +100,7 @@ namespace BH.Adapter.Filing
                 // Recurse if requested, and if the limits are not exceeded.
                 if (fdr.IncludeSubdirectories == true && MaxItemsReached(fdr.MaxFiles, retrievedFiles, fdr.MaxDirectories, retrievedDirs))
                 {
-                    FileAndDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
+                    FileDirInfoRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
                     fdrRecurse.Directory = bhomDir;
                     fdrRecurse.MaxNesting -= 1;
 
@@ -114,9 +120,6 @@ namespace BH.Adapter.Filing
         {
             return !MaxItemsReached(maxFiles, retrievedFilesCount) && !MaxItemsReached(maxDirs, retrivedDirsCount);
         }
-
-
-
-
     }
 }
+

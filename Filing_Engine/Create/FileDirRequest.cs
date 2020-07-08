@@ -18,9 +18,9 @@ namespace BH.Engine.Filing
         /**** Methods                           ****/
         /*******************************************/
 
-        public static FileAndDirRequest FileDirRequest(FileRequest fr)
+        public static FileDirInfoRequest FileDirRequest(FileInfoRequest fr)
         {
-            return new FileAndDirRequest()
+            return new FileDirInfoRequest()
             {
                 Directory = fr.Directory,
                 RetrieveDirectories = false,
@@ -31,9 +31,9 @@ namespace BH.Engine.Filing
             };
         }
 
-        public static FileAndDirRequest FileDirRequest(DirectoryRequest dr)
+        public static FileDirInfoRequest FileDirRequest(DirectoryInfoRequest dr)
         {
-            return new FileAndDirRequest()
+            return new FileDirInfoRequest()
             {
                 Directory = dr.Directory,
                 RetrieveFiles = false,
@@ -45,9 +45,9 @@ namespace BH.Engine.Filing
         }
 
         [Description("Combines the two requests.")]
-        public static FileAndDirRequest FileDirRequest(FileRequest fr, DirectoryRequest dr)
+        public static FileDirInfoRequest FileDirRequest(FileInfoRequest fr, DirectoryInfoRequest dr)
         {
-            return new FileAndDirRequest()
+            return new FileDirInfoRequest()
             {
                 // Take the shortest of the paths (closer to root)
                 Directory = fr.Directory.FullPath().Length < dr.Directory.FullPath().Length ? fr.Directory : dr.Directory, 

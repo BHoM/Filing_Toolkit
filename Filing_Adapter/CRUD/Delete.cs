@@ -22,53 +22,35 @@
 
 using BH.oM.Adapter;
 using BH.oM.Base;
-using MongoDB.Bson;
-using MongoDB.Bson.IO;
-using MongoDB.Bson.Serialization;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
-namespace BH.Adapter.FileAdapter
+namespace BH.Adapter.Filing
 {
-    public partial class FileAdapter
+    public partial class FilingAdapter : BHoMAdapter
     {
-        protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
+        protected override int IDelete(Type type, IEnumerable<object> ids, ActionConfig actionConfig = null)
         {
             IEnumerable<BHoMObject> everything = m_isJSON ? ReadJson() : ReadBson();
+            int initialCount = everything.Count();
 
-            if (type != null)
-                everything = everything.Where(x => type.IsAssignableFrom(x.GetType()));
+            HashSet<Guid> toDelete = new HashSet<Guid>(ids.Cast<Guid>());
 
-            if (ids != null)
+            everything = everything.Where(x => (type == null || !type.IsAssignableFrom(x.GetType())) && (toDelete.Contains((Guid)x.CustomData[AdapterIdName])));
+
+            bool ok = true;
+            if (m_isJSON)
+                ok = CreateJson(everything, true);
+            else
+                ok = CreateBson(everything, true);
+
+            if (!ok)
             {
-                HashSet<Guid> toDelete = new HashSet<Guid>(ids.Cast<Guid>());
-                everything = everything.Where(x => !toDelete.Contains((Guid)x.CustomData[AdapterIdName]));
+                throw new FieldAccessException();
             }
-                
 
-            return everything;
-        }
-
-
-        private IEnumerable<object> ReadJson()
-        {
-            string[] json = File.ReadAllLines(m_FilePath);
-            var converted = json.Select(x => Engine.Serialiser.Convert.FromJson(x)).Where(x => x != null);
-            if (converted.Count() < json.Count())
-                BH.Engine.Reflection.Compute.RecordWarning("Could not convert some object to BHoMObject.");
-            return converted;
-        }
-
-
-        private IEnumerable<BHoMObject> ReadBson()
-        {
-            FileStream mongoReadStream = File.OpenRead(m_FilePath);
-            var reader = new BsonBinaryReader(mongoReadStream);
-            List<BsonDocument> readBson = BsonSerializer.Deserialize(reader, typeof(object)) as List<BsonDocument>;
-            return readBson.Select(x => BsonSerializer.Deserialize(x, typeof(object)) as BHoMObject);
+            return initialCount - everything.Count();
         }
     }
 }

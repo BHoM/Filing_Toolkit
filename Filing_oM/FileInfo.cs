@@ -20,11 +20,8 @@ namespace BH.oM.Filing
         [Description("Full path of parent Directory of the File.")]
         public virtual DirectoryInfo ParentDirectory { get; set; }
 
-        [Description("Name of the file, WITHOUT Extension.")]
+        [Description("Name of the file, INCLUDING Extension.")]
         public virtual string Name { get; set; }
-
-        [Description("Extension of the File.")]
-        public virtual string Extension { get; set; }
 
         [Description("Gets a value indicating whether a file exists.")]
         public virtual bool Exists { get; set; } = false;
@@ -46,8 +43,12 @@ namespace BH.oM.Filing
         public virtual DateTime LastWriteTime { get; set; }
         public virtual DateTime LastWriteTimeUtc { get; set; }
 
+
         [Description("User owning the file, if any, or the user who created the object File.")]
         public virtual Human Owner { get; set; }
+
+        [Description("The content of the file.")]
+        public virtual object Content { get; set; }
 
 
         /***************************************************/
