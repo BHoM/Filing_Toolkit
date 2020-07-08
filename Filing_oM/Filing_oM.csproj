@@ -63,7 +63,7 @@
     <Compile Include="Directory.cs" />
     <Compile Include="enums\Encodings.cs" />
     <Compile Include="Requests\DirectoryRequest.cs" />
-    <Compile Include="Requests\ContentRequest.cs" />
+    <Compile Include="Requests\FileContentRequest.cs" />
     <Compile Include="Requests\FileAndDirRequest.cs" />
     <Compile Include="Requests\IFileDirRequest.cs" />
     <Compile Include="Requests\FileRequest.cs" />

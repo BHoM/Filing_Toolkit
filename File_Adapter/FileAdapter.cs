@@ -86,9 +86,9 @@ namespace BH.Adapter.FileAdapter
             return true;
         }
 
-        private void CreateFolderAndFileIfNotExisting(string filePathWithExtension, PushType pushType = PushType.AdapterDefault)
+        private void CreateFileAndFolder(PushType pushType)
         {
-            string directoryPath = Path.GetDirectoryName(filePathWithExtension);
+            string directoryPath = Path.GetDirectoryName(m_FilePath);
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
 
@@ -99,7 +99,6 @@ namespace BH.Adapter.FileAdapter
                 stream.Close();
             }
         }
-
 
         /***************************************************/
         /**** Private Fields                            ****/

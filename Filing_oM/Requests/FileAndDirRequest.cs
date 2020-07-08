@@ -19,7 +19,7 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Files from this Directory will be pulled. You can also specify a string path.")]
-        public virtual Directory Directory { get; set; } = "";
+        public virtual DirectoryInfo Directory { get; set; } = "";
 
         [Description("Whether to retrieve Files.")]
         public virtual bool RetrieveFiles { get; set; } = true;
@@ -43,6 +43,6 @@ namespace BH.oM.Filing
         public virtual int MaxNesting { get; set; } = -1;
 
         [Description("These files or directories will be excluded from the results. You can also specify string Full Paths.")]
-        public virtual List<IFile> Exclusions { get; set; }
+        public virtual List<IFileSystemInfo > Exclusions { get; set; }
     }
 }

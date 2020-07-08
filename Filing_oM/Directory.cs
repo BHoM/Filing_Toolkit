@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Filing
 {
-    public class Directory : BHoMObject, IFile
+    public class DirectoryInfo : IFileSystemInfo 
 
     {
         /***************************************************/
@@ -18,10 +18,10 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Full path of parent Directory of the File.")]
-        public virtual Directory ParentDirectory { get; set; }
+        public virtual DirectoryInfo ParentDirectory { get; set; }
 
         [Description("Name of the directory.")]
-        public override string Name { get; set; }
+        public virtual string Name { get; set; }
 
         [Description("Gets a value indicating whether the directory exists.")]
         public virtual bool Exists { get; set; } = false;
@@ -48,18 +48,18 @@ namespace BH.oM.Filing
 
 
         [Description(@"Root folder, such as '\', 'C:', or * '\\server\share'.")]
-        public Directory Root { get; }
+        public DirectoryInfo Root { get; }
 
 
         /***************************************************/
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator Directory(DirectoryInfo directoryInfo)
+        public static explicit operator DirectoryInfo(System.IO.DirectoryInfo directoryInfo)
         {
-            return directoryInfo != null ? new Directory()
+            return directoryInfo != null ? new DirectoryInfo()
             {
-                ParentDirectory = (Directory)directoryInfo.Parent,
+                ParentDirectory = (DirectoryInfo)directoryInfo.Parent,
 
                 Name = directoryInfo.Name,
 
@@ -79,10 +79,10 @@ namespace BH.oM.Filing
         /**** Implicit cast                             ****/
         /***************************************************/
 
-        public static implicit operator Directory(string directoryFullPath)
+        public static implicit operator DirectoryInfo(string directoryFullPath)
         {
             if (!String.IsNullOrWhiteSpace(directoryFullPath))
-                return (Directory)new DirectoryInfo(directoryFullPath);
+                return (DirectoryInfo)new System.IO.DirectoryInfo(directoryFullPath);
             else
                 return null;
         }

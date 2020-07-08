@@ -12,16 +12,16 @@ using BH.oM.Data.Requests;
 
 namespace BH.oM.Filing
 {
-    public class ContentRequest : IRequest
+    public class FileContentRequest : IRequest
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("You can also specify Full Paths as string. The content from this Files will be pulled.")]
-        public virtual List<File> Files { get; set; }
+        [Description("You can also specify Full Paths as string. The content from these Files will be pulled.")]
+        public virtual List<FileInfo> Files { get; set; }
 
-        [Description("Maximum number of objects to be retrieved." +
+        [Description("Maximum number of BHoM objects to be retrieved from the files." +
             "Defaults to -1 which corresponds to no limit.")]
         public virtual int MaxObjects { get; set; } = -1;
     }
