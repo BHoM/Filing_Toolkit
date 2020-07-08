@@ -69,8 +69,6 @@
   <ItemGroup>
     <Compile Include="Convert\ToFiling.cs" />
     <Compile Include="Create\FileDirRequest.cs" />
-    <Compile Include="Create\FileData.cs" />
-    <Compile Include="Create\FileSystem.cs" />
     <Compile Include="Modify\ChangeDirectory.cs" />
     <Compile Include="Modify\Rename.cs" />
     <Compile Include="Objects\EqualityComparers\PathComparer.cs" />
