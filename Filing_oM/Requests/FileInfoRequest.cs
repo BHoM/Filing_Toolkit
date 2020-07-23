@@ -12,6 +12,7 @@ using BH.oM.Data.Requests;
 
 namespace BH.oM.Filing
 {
+    [Description("Used to retrieve Files.")]
     public class FileInfoRequest : IRequest, IFileDirRequest
     {
         /***************************************************/
@@ -19,7 +20,7 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Files from this Directory will be pulled. You can also specify a string path.")]
-        public virtual DirectoryInfo Directory { get; set; } = "";
+        public virtual DirectoryInfo FullPath { get; set; } = "";
 
         [Description("Sets the maximum number of Files to retrieve." +
             "\nDefaults to -1 which corresponds to no limit.")]

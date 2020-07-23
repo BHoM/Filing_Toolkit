@@ -19,7 +19,7 @@ namespace BH.Engine.Filing
         [Description("Get the full path of the file or directory.")]
         [Input("fileOrDir", "The file or Directory to get the full path of.")]
         [Output("The full path of the file or Directory.")]
-        public static string FullPath(this IFileSystemInfo  fileOrDir)
+        public static string FullPath(this IFileSystemInfo fileOrDir)
         {
             if (!IsAcyclic(fileOrDir)) throw new ArgumentException("Circular directory hierarchy");
 

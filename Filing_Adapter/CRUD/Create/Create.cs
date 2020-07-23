@@ -41,13 +41,11 @@ namespace BH.Adapter.Filing
 
         protected void Create(IEnumerable<BH.oM.Filing.File> files, PushType pushType)
         {
-            // TODO: improve performance. Use groupby extension. Do not search full list every time.
+            var groupedPerExtension = files.GroupBy(f => Path.GetExtension(f.FullPath())).ToDictionary(g => g.Key, g => g.ToList());
 
-            CreateJson(files.Where(f => Path.GetExtension(f.FullPath()) == ".json"), pushType);
+            CreateJson(groupedPerExtension[".json"], pushType);
 
-            CreateBson(files.Where(f => Path.GetExtension(f.FullPath()) == ".bson"), pushType);
-
-            CreateTxt(files.Where(f => Path.GetExtension(f.FullPath()) == ".txt"), pushType);
+            CreateBson(groupedPerExtension[".bson"], pushType);
         }
 
 
@@ -77,7 +75,7 @@ namespace BH.Adapter.Filing
             return true;
         }
 
-        private bool CreateBson(IEnumerable<BH.oM.Filing.File> objects, PushType pushType)
+        private bool CreateBson(IEnumerable<BH.oM.Filing.File> files, PushType pushType)
         {
             if (pushType != PushType.DeleteThenCreate && pushType != PushType.UpdateOnly)
             {
@@ -88,12 +86,14 @@ namespace BH.Adapter.Filing
             try
             {
                 bool clearfile = pushType == PushType.DeleteThenCreate ? true : false;
-
-                FileStream stream = new FileStream(m_FilePath, clearFile ? FileMode.Create : FileMode.Append);
-                var writer = new BsonBinaryWriter(stream);
-                BsonSerializer.Serialize(writer, typeof(object), objects);
-                stream.Flush();
-                stream.Close();
+                foreach(var file in files)
+                {
+                    FileStream stream = new FileStream(file.FullPath(), clearfile ? FileMode.Create : FileMode.Append);
+                    var writer = new BsonBinaryWriter(stream);
+                    BsonSerializer.Serialize(writer, typeof(object), files);
+                    stream.Flush();
+                    stream.Close();
+                }
             }
             catch (Exception e)
             {
@@ -104,17 +104,7 @@ namespace BH.Adapter.Filing
             return true;
         }
 
-        // Dump the provided content to a text file.
-        private bool CreateTxt(IEnumerable<BH.oM.Filing.File> objects, PushType pushType)
-        {
-            // TODO
-
-            return true;
-        }
-
         /***************************************************/
-
-
     }
 }
 

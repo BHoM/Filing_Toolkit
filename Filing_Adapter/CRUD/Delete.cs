@@ -22,36 +22,47 @@
 
 using BH.oM.Adapter;
 using BH.oM.Base;
+using BH.oM.Data.Requests;
+using BH.oM.Filing;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using BH.Engine.Filing;
+using BH.oM.Filing;
+
 
 namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
-        protected override int IDelete(Type type, IEnumerable<object> ids, ActionConfig actionConfig = null)
+        protected override int Delete(IRequest request, ActionConfig actionConfig = null)
         {
-            IEnumerable<BHoMObject> everything = m_isJSON ? ReadJson() : ReadBson();
-            int initialCount = everything.Count();
+            Delete(request as dynamic);
 
-            HashSet<Guid> toDelete = new HashSet<Guid>(ids.Cast<Guid>());
+            return 0;
+        }
 
-            everything = everything.Where(x => (type == null || !type.IsAssignableFrom(x.GetType())) && (toDelete.Contains((Guid)x.CustomData[AdapterIdName])));
-
-            bool ok = true;
-            if (m_isJSON)
-                ok = CreateJson(everything, true);
-            else
-                ok = CreateBson(everything, true);
-
-            if (!ok)
+        protected void Delete(FileInfoRequest request)
+        {
+            try
             {
-                throw new FieldAccessException();
+                // Check if file exists with its full path    
+                if (System.IO.File.Exists(request.FullPath()))
+                {
+                    // If file found, delete it    
+                    System.IO.File.Delete(Path.Combine(rootFolder, authorsFile));
+                    Console.WriteLine("File deleted.");
+                }
+                else Console.WriteLine("File not found");
+            }
+            catch (IOException ioExp)
+            {
+                Console.WriteLine(ioExp.Message);
             }
 
-            return initialCount - everything.Count();
         }
+        
     }
 }
 
