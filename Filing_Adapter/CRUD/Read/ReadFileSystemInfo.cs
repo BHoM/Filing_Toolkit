@@ -37,11 +37,7 @@ namespace BH.Adapter.Filing
         private List<oM.Filing.IFileSystemInfo> Read(IFileDirRequest request)
         {
             // Convert to most generic type of FileInfo request.
-            FileDirInfoRequest fdr = null;
-            if (request is FileDirInfoRequest)
-                fdr = (FileDirInfoRequest)request;
-            else
-                fdr = BH.Engine.Filing.Create.FileDirRequest(request as dynamic);
+            FileDirRequest fdr = BH.Engine.Filing.Create.FileDirRequest(request as dynamic);
 
             // Recursively walk the directories to retrieve File and Directory Info.
             List<oM.Filing.IFileSystemInfo> output = new List<IFileSystemInfo>();
@@ -50,19 +46,22 @@ namespace BH.Adapter.Filing
             return output;
         }
 
-        private void WalkDirectories(List<oM.Filing.IFileSystemInfo> output, FileDirInfoRequest fdr, int retrievedFiles = 0, int retrievedDirs = 0)
+        private void WalkDirectories(List<oM.Filing.IFileSystemInfo> output, FileDirRequest fdr, int retrievedFiles = 0, int retrievedDirs = 0)
         {
             // Recursion stop condition.
             if (fdr.MaxNesting == 0)
                 return;
 
             // Look in directory and, if requested, recursively in subdirectories.
-            System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.Directory.FullPath());
+            System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.FullPath.FullPath());
             System.IO.DirectoryInfo[] dirArray = currentDir.GetDirectories();
             foreach (System.IO.DirectoryInfo dir in dirArray)
             {
                 oM.Filing.DirectoryInfo bhomDir = (oM.Filing.DirectoryInfo)dir;
                 bhomDir.ParentDirectory = (oM.Filing.DirectoryInfo)dir.Parent;
+
+                if (fdr.Exclusions.Contains(bhomDir))
+                    continue;
 
                 if (fdr.RetrieveDirectories)
                     if (!MaxItemsReached(fdr.MaxDirectories, retrievedDirs))
@@ -71,9 +70,10 @@ namespace BH.Adapter.Filing
                         retrievedDirs += 1;
                     }
 
+
                 if (fdr.RetrieveFiles)
                 {
-                    System.IO.FileInfo[] files;
+                    System.IO.FileInfo[] files = new FileInfo[] { };
 
                     try
                     {
@@ -85,23 +85,29 @@ namespace BH.Adapter.Filing
                         // Write out the message and continue.
                         BH.Engine.Reflection.Compute.RecordNote(e.Message);
                     }
-                }
-                foreach (var f in dir.GetFiles())
-                {
-                    if (!MaxItemsReached(fdr.MaxFiles, retrievedFiles))
+
+                    foreach (var f in files)
                     {
-                        output.Add((oM.Filing.File)f);
-                        retrievedFiles += 1;
+                        if (!MaxItemsReached(fdr.MaxFiles, retrievedFiles))
+                        {
+                            // Check exclusions
+                            if (fdr.Exclusions.Contains((BH.oM.Filing.File)f))
+                                continue;
+
+                            output.Add((oM.Filing.File)f);
+                            retrievedFiles += 1;
+                        }
+                        else
+                            break;
                     }
-                    else
-                        break;
                 }
+
 
                 // Recurse if requested, and if the limits are not exceeded.
                 if (fdr.IncludeSubdirectories == true && MaxItemsReached(fdr.MaxFiles, retrievedFiles, fdr.MaxDirectories, retrievedDirs))
                 {
-                    FileDirInfoRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
-                    fdrRecurse.Directory = bhomDir;
+                    FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
+                    fdrRecurse.FullPath = bhomDir;
                     fdrRecurse.MaxNesting -= 1;
 
                     Read(fdrRecurse);

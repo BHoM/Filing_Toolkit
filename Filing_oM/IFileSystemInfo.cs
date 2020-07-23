@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Filing
 {
+    [Description("Base interface for both files and directories. Rehash of the .NET's interface in BHoM flavour.")]
     public interface IFileSystemInfo  : IObject
     {
         /***************************************************/

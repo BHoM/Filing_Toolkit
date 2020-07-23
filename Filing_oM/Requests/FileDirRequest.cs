@@ -12,14 +12,15 @@ using BH.oM.Data.Requests;
 
 namespace BH.oM.Filing
 {
-    public class FileDirInfoRequest : IRequest, IFileDirRequest
+    [Description("Used to retrieve Directories or Files.")]
+    public class FileDirRequest : IRequest, IFileDirRequest
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("Files from this Directory will be pulled. You can also specify a string path.")]
-        public virtual DirectoryInfo Directory { get; set; } = "";
+        [Description("Directories and/or Files from this FullPath will be pulled. You can also specify a string path.")]
+        public virtual DirectoryInfo FullPath { get; set; } = "";
 
         [Description("Whether to retrieve Files.")]
         public virtual bool RetrieveFiles { get; set; } = true;
@@ -43,6 +44,6 @@ namespace BH.oM.Filing
         public virtual int MaxNesting { get; set; } = -1;
 
         [Description("These files or directories will be excluded from the results. You can also specify string Full Paths.")]
-        public virtual List<IFileSystemInfo > Exclusions { get; set; }
+        public virtual List<IFileSystemInfo> Exclusions { get; set; }
     }
 }

@@ -18,11 +18,19 @@ namespace BH.Engine.Filing
         /**** Methods                           ****/
         /*******************************************/
 
-        public static FileDirInfoRequest FileDirRequest(FileInfoRequest fr)
+        public static FileDirRequest FileDirRequest(string path, bool pullFileContents)
         {
-            return new FileDirInfoRequest()
+            return new FileDirRequest()
             {
-                Directory = fr.Directory,
+                FullPath = path
+            };
+        }
+
+        public static FileDirRequest FileDirRequest(FileInfoRequest fr)
+        {
+            return new FileDirRequest()
+            {
+                FullPath = fr.FullPath,
                 RetrieveDirectories = false,
                 MaxFiles = fr.MaxFiles,
                 IncludeSubdirectories = fr.IncludeSubdirectories,
@@ -31,11 +39,11 @@ namespace BH.Engine.Filing
             };
         }
 
-        public static FileDirInfoRequest FileDirRequest(DirectoryInfoRequest dr)
+        public static FileDirRequest FileDirRequest(DirectoryInfoRequest dr)
         {
-            return new FileDirInfoRequest()
+            return new FileDirRequest()
             {
-                Directory = dr.Directory,
+                FullPath = dr.FullPath,
                 RetrieveFiles = false,
                 MaxDirectories = dr.MaxDirectories,
                 IncludeSubdirectories = dr.IncludeSubdirectories,
@@ -45,12 +53,12 @@ namespace BH.Engine.Filing
         }
 
         [Description("Combines the two requests.")]
-        public static FileDirInfoRequest FileDirRequest(FileInfoRequest fr, DirectoryInfoRequest dr)
+        public static FileDirRequest FileDirRequest(FileInfoRequest fr, DirectoryInfoRequest dr)
         {
-            return new FileDirInfoRequest()
+            return new FileDirRequest()
             {
                 // Take the shortest of the paths (closer to root)
-                Directory = fr.Directory.FullPath().Length < dr.Directory.FullPath().Length ? fr.Directory : dr.Directory, 
+                FullPath = fr.FullPath.FullPath().Length < dr.FullPath.FullPath().Length ? fr.FullPath : dr.FullPath, 
 
                 MaxFiles = fr.MaxFiles,
 
@@ -63,6 +71,11 @@ namespace BH.Engine.Filing
 
                 Exclusions = fr.Exclusions.Concat(dr.Exclusions).ToList()
             };
+        }
+
+        public static FileDirRequest FileDirRequest(FileDirRequest fr)
+        {
+            return fr;
         }
 
         /*******************************************/

@@ -19,7 +19,7 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Files or directories included in this Directory will be pulled. You can also specify a string path.")]
-        DirectoryInfo Directory { get; set; }
+        DirectoryInfo FullPath { get; set; }
 
         [Description("If enabled, look also in subdirectories.")]
         bool IncludeSubdirectories { get; set; }

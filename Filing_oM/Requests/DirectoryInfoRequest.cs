@@ -19,7 +19,7 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Directories included in Directory will be pulled. You can also specify a string path.")]
-        public virtual DirectoryInfo Directory { get; set; } = "";
+        public virtual DirectoryInfo FullPath { get; set; } = "";
 
         [Description("Sets the maximum number of Directories to retrieve." +
             "\nDefaults to -1 which corresponds to no limit.")]
