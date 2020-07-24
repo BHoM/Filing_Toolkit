@@ -37,28 +37,25 @@ namespace BH.Adapter.Filing
         private IEnumerable<object> Read(FileDirRequest fdr)
         {
             // Recursively walk the directories to retrieve File and Directory Info.
-            List<oM.Filing.IFile> output = new List<IFile>();
+            List<oM.Filing.IContent> output = new List<IContent>();
 
-            string fullPath = fdr.FullPath.FullPath();
+            string fullPath = fdr.FullPath.IFullPath();
             if (Query.IsFile(fullPath))
-            {
-                FileContentRequest fileContentRequest = new FileContentRequest() { Files = new List<oM.Filing.File>() { fullPath } };
-                return Read(fileContentRequest);
-            }
+                RetrieveFile(fullPath, fdr.IncludeFileContents);
             else
                 WalkDirectories(output, fdr);
 
             return output;
         }
 
-        private void WalkDirectories(List<oM.Filing.IFile> output, FileDirRequest fdr, int retrievedFiles = 0, int retrievedDirs = 0)
+        private void WalkDirectories(List<oM.Filing.IContent> output, FileDirRequest fdr, int retrievedFiles = 0, int retrievedDirs = 0)
         {
             // Recursion stop condition.
             if (fdr.MaxNesting == 0)
                 return;
 
             // Look in directory and, if requested, recursively in subdirectories.
-            System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.FullPath.FullPath());
+            System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.FullPath.IFullPath());
             System.IO.DirectoryInfo[] dirArray = new System.IO.DirectoryInfo[] { };
 
             if (!Path.HasExtension(currentDir.FullName))
@@ -66,8 +63,8 @@ namespace BH.Adapter.Filing
 
             foreach (System.IO.DirectoryInfo dir in dirArray)
             {
-                oM.Filing.FileInfo bhomDir = (oM.Filing.FileInfo)dir;
-                bhomDir.ParentDirectory = (oM.Filing.FileInfo)dir.Parent;
+                oM.Filing.Directory bhomDir = (oM.Filing.Directory)dir;
+                bhomDir.ParentDirectory = (oM.Filing.BaseInfo)dir.Parent;
 
                 if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
                     continue;
@@ -116,13 +113,31 @@ namespace BH.Adapter.Filing
                 if (fdr.IncludeSubdirectories == true && MaxItemsReached(fdr.MaxFiles, retrievedFiles, fdr.MaxDirectories, retrievedDirs))
                 {
                     FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
-                    fdrRecurse.FullPath = bhomDir;
+                    fdrRecurse.FullPath = bhomDir.IFullPath();
                     fdrRecurse.MaxNesting -= 1;
 
                     Read(fdrRecurse);
                 }
             }
         }
+
+        private oM.Filing.File RetrieveFile(string fullPath, bool readContent)
+        {
+            oM.Filing.File retrievedFile = new oM.Filing.File();
+
+            FileInfo fi = new FileInfo(fullPath);
+
+            retrievedFile = (oM.Filing.File)fi;
+
+            if (readContent)
+            {
+                var content = ReadContent(fullPath);
+                retrievedFile.Content.AddRange(content);
+            }
+
+            return retrievedFile;
+        }
+
 
         /***************************************************/
 

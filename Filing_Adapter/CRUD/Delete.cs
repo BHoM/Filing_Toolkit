@@ -49,7 +49,7 @@ namespace BH.Adapter.Filing
             // The code will have to replicate the WalkDirectories function for the Read, only allowing delete.
             // Consider centralising-abstracting the method.
 
-            string fullPath = fdr.FullPath();
+            string fullPath = fdr.IFullPath();
             try
             {
                 // Check if file exists with its full path    

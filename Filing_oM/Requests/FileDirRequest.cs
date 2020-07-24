@@ -20,7 +20,7 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Directory and/or Files from this FullPath will be queried. You can also specify a string path.")]
-        public virtual FileInfo FullPath { get; set; } = "";
+        public virtual BaseInfo FullPath { get; set; } = "";
 
         [Description("Whether to include Files.")]
         public virtual bool IncludeFiles { get; set; } = true;
@@ -30,6 +30,9 @@ namespace BH.oM.Filing
 
         [Description("If enabled, look also in subdirectories.")]
         public virtual bool IncludeSubdirectories { get; set; } = false;
+
+        [Description("Whether to include the contents of the Files.")]
+        public virtual bool IncludeFileContents { get; set; } = false;
 
         [Description("If IncludeSubdirectories is true, this sets the maximum subdirectiory nesting level to look in." +
             "\nDefaults to -1 which corresponds to no limit.")]
@@ -44,7 +47,7 @@ namespace BH.oM.Filing
         public virtual int MaxDirectories { get; set; } = -1;
 
         [Description("These files or directories will be excluded from the results. You can also specify string Full Paths.")]
-        public virtual List<IFile> Exclusions { get; set; } = new List<IFile>();
+        public virtual List<IInfo> Exclusions { get; set; } = new List<IInfo>();
 
         /***************************************************/
         /**** Implicit cast                             ****/

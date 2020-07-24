@@ -23,7 +23,7 @@ namespace BH.Engine.Filing
         [Input("directoryName", "Name of the directory.")]
         [Input("content", "The content of the file.")]
         [Description("Creates a oM.Filing.File object.")]
-        public static oM.Filing.File Directory(oM.Filing.FileInfo directoryFullPath)
+        public static oM.Filing.Directory Directory(oM.Filing.BaseInfo directoryFullPath)
         {
             string dirFullPath = directoryFullPath.IFullPath();
             if (Path.HasExtension(dirFullPath))
@@ -34,7 +34,7 @@ namespace BH.Engine.Filing
 
             var di = new DirectoryInfo(dirFullPath);
 
-            return new oM.Filing.File()
+            return new oM.Filing.Directory()
             {
                 ParentDirectory = di.Parent.FullName,
                 Name = di.Name,
@@ -45,7 +45,7 @@ namespace BH.Engine.Filing
         [Input("directoryName", "Name of the directory.")]
         [Input("content", "The content of the file.")]
         [Description("Creates a oM.Filing.File object.")]
-        public static oM.Filing.File Directory(oM.Filing.FileInfo parentDirectory, string directoryName)
+        public static oM.Filing.Directory Directory(oM.Filing.BaseInfo parentDirectory, string directoryName)
         {
             if (Path.HasExtension(directoryName))
             {
@@ -53,7 +53,7 @@ namespace BH.Engine.Filing
                 return null;
             }
 
-            return new oM.Filing.File()
+            return new oM.Filing.Directory()
             {
                 ParentDirectory = parentDirectory,
                 Name = directoryName,

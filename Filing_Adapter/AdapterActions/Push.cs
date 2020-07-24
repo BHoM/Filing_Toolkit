@@ -38,12 +38,12 @@ namespace BH.Adapter.Filing
                     return new List<object>();
                 }
 
-            IEnumerable<oM.Filing.File> files = objects.OfType<oM.Filing.File>();
-            if (objects.Count() != files.Count())
+            IEnumerable<oM.Filing.IContent> files = objects.OfType<oM.Filing.IContent>();
+            if (objects.Where(o => o != null).Count() != files.Count())
                 BH.Engine.Reflection.Compute.RecordWarning($"File Adapter can only push objects of type {nameof(oM.Filing.File)}." +
-                    $"\nYou can append BHoMObjects to be pushed in its {nameof(oM.Filing.File.Content)} property.");
+                    $"\nYou can append BHoMObjects to be pushed in its {nameof(oM.Filing.IContent.Content)} property.");
 
-            List<BH.oM.Filing.IFile> createdFiles = new List<oM.Filing.IFile>();
+            List<BH.oM.Filing.IContent> createdFiles = new List<oM.Filing.IContent>();
             createdFiles = Create(files, pushType);
 
             m_enableDeleteWarning = true;

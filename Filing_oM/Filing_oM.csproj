@@ -60,13 +60,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileInfo.cs" />
+    <Compile Include="Directory.cs" />
+    <Compile Include="BaseInfo.cs" />
     <Compile Include="enums\Encodings.cs" />
+    <Compile Include="IInfo.cs" />
+    <Compile Include="IFile.cs" />
     <Compile Include="Requests\FileContentRequest.cs" />
     <Compile Include="Requests\FileDirRequest.cs" />
     <Compile Include="Config\FilingConfig.cs" />
     <Compile Include="enums\FileFormat.cs" />
-    <Compile Include="IFileSystemInfo.cs" />
     <Compile Include="File.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
