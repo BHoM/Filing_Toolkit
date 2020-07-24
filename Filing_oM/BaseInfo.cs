@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Filing
 {
-    [Description("Points to a File or Directory, but does not store the contents. Rehash of the .NET's class 'FileSystemInfo' in BHoM flavour.")]
-    public class FileInfo : IFile
+    [Description("Contains the information and attributes of a File or Directory, but it does not contain any content. Rehash of the .NET's base class 'FileSystemInfo' in BHoM flavour.")]
+    public class BaseInfo : IInfo
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
         [Description("Full path of parent Directory.")]
-        public virtual FileInfo ParentDirectory { get; set; }
+        public virtual BaseInfo ParentDirectory { get; set; }
 
         [Description("Name of the Directory or File.")]
         public virtual string Name { get; set; }
@@ -48,30 +48,54 @@ namespace BH.oM.Filing
 
 
         [Description(@"Root folder, such as '\', 'C:', or * '\\server\share'.")]
-        public FileInfo Root { get; }
+        public BaseInfo Root { get; }
 
 
         /***************************************************/
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator FileInfo(System.IO.DirectoryInfo directoryInfo)
+        public static explicit operator BaseInfo(System.IO.FileInfo fi)
         {
-            return directoryInfo != null ? new FileInfo()
+            return fi != null ? new BaseInfo()
             {
-                ParentDirectory = (FileInfo)directoryInfo.Parent,
+                ParentDirectory = (BaseInfo)fi.Directory,
 
-                Name = directoryInfo.Name,
+                Name = fi.Name,
 
-                Exists = directoryInfo.Exists,
+                Exists = fi.Exists,
 
-                Attributes = directoryInfo.Attributes,
-                CreationTime = directoryInfo.CreationTime,
-                CreationTimeUtc = directoryInfo.CreationTimeUtc,
-                LastAccessTime = directoryInfo.LastAccessTime,
-                LastAccessTimeUtc = directoryInfo.LastAccessTimeUtc,
-                LastWriteTime = directoryInfo.LastWriteTime,
-                LastWriteTimeUtc = directoryInfo.LastWriteTimeUtc,
+                IsReadOnly = fi.IsReadOnly,
+
+                Length = fi.Length,
+
+                Attributes = fi.Attributes,
+                CreationTime = fi.CreationTime,
+                CreationTimeUtc = fi.CreationTimeUtc,
+                LastAccessTime = fi.LastAccessTime,
+                LastAccessTimeUtc = fi.LastAccessTimeUtc,
+                LastWriteTime = fi.LastWriteTime,
+                LastWriteTimeUtc = fi.LastWriteTimeUtc,
+            } : null;
+        }
+
+        public static explicit operator BaseInfo(System.IO.DirectoryInfo di)
+        {
+            return di != null ? new BaseInfo()
+            {
+                ParentDirectory = (BaseInfo)di.Parent,
+
+                Name = di.Name,
+
+                Exists = di.Exists,
+
+                Attributes = di.Attributes,
+                CreationTime = di.CreationTime,
+                CreationTimeUtc = di.CreationTimeUtc,
+                LastAccessTime = di.LastAccessTime,
+                LastAccessTimeUtc = di.LastAccessTimeUtc,
+                LastWriteTime = di.LastWriteTime,
+                LastWriteTimeUtc = di.LastWriteTimeUtc,
             } : null;
         }
 
@@ -79,13 +103,12 @@ namespace BH.oM.Filing
         /**** Implicit cast                             ****/
         /***************************************************/
 
-        public static implicit operator FileInfo(string directoryFullPath)
+        public static implicit operator BaseInfo(string directoryFullPath)
         {
             if (!String.IsNullOrWhiteSpace(directoryFullPath))
-                return (FileInfo)new System.IO.DirectoryInfo(directoryFullPath);
+                return (BaseInfo)new System.IO.DirectoryInfo(directoryFullPath);
             else
                 return null;
         }
-
     }
 }

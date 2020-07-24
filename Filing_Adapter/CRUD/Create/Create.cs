@@ -30,6 +30,7 @@ using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Filing;
+using BH.oM.Filing;
 
 namespace BH.Adapter.Filing
 {
@@ -39,23 +40,23 @@ namespace BH.Adapter.Filing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        protected List<BH.oM.Filing.IFile> Create(IEnumerable<BH.oM.Filing.File> files, PushType pushType)
+        protected List<BH.oM.Filing.IContent> Create(IEnumerable<IContent> filesOrDirs, PushType pushType)
         {
-            List<BH.oM.Filing.IFile> createdFiles = new List<oM.Filing.IFile>();
+            List<BH.oM.Filing.IContent> createdFiles = new List<oM.Filing.IContent>();
 
-            var groupedPerExtension = files.GroupBy(f => Path.GetExtension(f.FullPath())).ToDictionary(g => g.Key, g => g.ToList());
+            var groupedPerExtension = filesOrDirs.GroupBy(f => Path.GetExtension(f.IFullPath())).ToDictionary(g => g.Key, g => g.ToList());
 
-            List<oM.Filing.File> jsons = new List<oM.Filing.File>();
+            List<IContent> jsons = new List<IContent>();
             if (groupedPerExtension.TryGetValue(".json", out jsons))
-                createdFiles.AddRange(CreateJson(jsons, pushType));
+                createdFiles.AddRange(CreateJson(jsons.OfType<oM.Filing.File>(), pushType).Cast<IContent>());
 
-            List<oM.Filing.File> bsons = new List<oM.Filing.File>();
+            List<IContent> bsons = new List<IContent>();
             if (groupedPerExtension.TryGetValue(".bson", out bsons))
-                createdFiles.AddRange(CreateBson(bsons, pushType));
+                createdFiles.AddRange(CreateBson(bsons.OfType<oM.Filing.File>(), pushType).Cast<IContent>());
 
-            List<oM.Filing.File> folders = new List<oM.Filing.File>();
+            List<IContent> folders = new List<IContent>();
             if (groupedPerExtension.TryGetValue("", out folders))
-                createdFiles.AddRange(CreateDirectory(folders, pushType));
+                createdFiles.AddRange(CreateDirectory(folders.OfType<oM.Filing.File>(), pushType).Cast<IContent>());
 
             return createdFiles;
         }
@@ -65,25 +66,32 @@ namespace BH.Adapter.Filing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private List<BH.oM.Filing.IFile> CreateJson(IEnumerable<BH.oM.Filing.File> files, PushType pushType)
+        private List<oM.Filing.File> CreateJson(IEnumerable<BH.oM.Filing.File> files, PushType pushType)
         {
-            List<BH.oM.Filing.IFile> createdFiles = new List<oM.Filing.IFile>();
+            List<oM.Filing.File> createdFiles = new List<oM.Filing.File>();
 
             foreach (var file in files)
             {
-                string fullPath = file.FullPath();
+                string fullPath = file.IFullPath();
 
                 bool filecreated = true;
                 try
                 {
                     if (pushType == PushType.DeleteThenCreate) // Overwrite existing files. TODO CHECK: does this resets the create date? I need that it does.
-                        File.WriteAllLines(fullPath, file.Content.Select(obj => obj.ToJson()));
+                    {
+                        var currentTime = DateTime.Now;
+                        var currentTimeUTC = DateTime.UtcNow;
+
+                        System.IO.File.WriteAllLines(fullPath, file.Content.Select(obj => obj.ToJson()));
+                        System.IO.File.SetCreationTime(fullPath, currentTime);
+                        System.IO.File.SetCreationTimeUtc(fullPath, currentTimeUTC);
+                    }
                     else if (pushType == PushType.UpdateOnly) // Append the text to existing files.
-                        File.AppendAllLines(fullPath, file.Content.Select(obj => obj.ToJson()));
+                        System.IO.File.AppendAllLines(fullPath, file.Content.Select(obj => obj.ToJson()));
                     else if (pushType == PushType.CreateOnly) // Create only files that didn't exist. Do not append anything to existing ones.
                     {
-                        if (!File.Exists(fullPath))
-                            File.WriteAllLines(fullPath, file.Content.Select(obj => obj.ToJson()));
+                        if (!System.IO.File.Exists(fullPath))
+                            System.IO.File.WriteAllLines(fullPath, file.Content.Select(obj => obj.ToJson()));
                         else
                             BH.Engine.Reflection.Compute.RecordNote($"File {fullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
                     }
@@ -112,7 +120,7 @@ namespace BH.Adapter.Filing
             return createdFiles;
         }
 
-        private List<BH.oM.Filing.IFile> CreateBson(IEnumerable<BH.oM.Filing.File> files, PushType pushType)
+        private List<BH.oM.Filing.IContent> CreateBson(IEnumerable<BH.oM.Filing.File> files, PushType pushType)
         {
             if (pushType != PushType.DeleteThenCreate && pushType != PushType.UpdateOnly)
             {
@@ -120,13 +128,13 @@ namespace BH.Adapter.Filing
                     $"\nValid options: {PushType.DeleteThenCreate} or {PushType.UpdateOnly}.");
             }
 
-            List<BH.oM.Filing.IFile> createdFiles = new List<oM.Filing.IFile>();
+            List<BH.oM.Filing.IContent> createdFiles = new List<oM.Filing.IContent>();
 
             bool clearfile = pushType == PushType.DeleteThenCreate ? true : false;
 
             foreach (var file in files)
             {
-                string fullPath = file.FullPath();
+                string fullPath = file.IFullPath();
                 try
                 {
                     FileStream stream = new FileStream(fullPath, clearfile ? FileMode.Create : FileMode.Append);
@@ -152,7 +160,7 @@ namespace BH.Adapter.Filing
             return createdFiles;
         }
 
-        private List<BH.oM.Filing.IFile> CreateDirectory(IEnumerable<BH.oM.Filing.File> directory, PushType pushType)
+        private List<BH.oM.Filing.IContent> CreateDirectory(IEnumerable<BH.oM.Filing.File> directory, PushType pushType)
         {
             if (pushType != PushType.DeleteThenCreate && pushType != PushType.UpdateOnly)
             {
@@ -160,14 +168,14 @@ namespace BH.Adapter.Filing
                     $"\nValid options: {PushType.DeleteThenCreate} or {PushType.UpdateOnly}.");
             }
 
-            List<BH.oM.Filing.IFile> createdDirs = new List<oM.Filing.IFile>();
+            List<BH.oM.Filing.IContent> createdDirs = new List<oM.Filing.IContent>();
 
             bool clearfile = pushType == PushType.DeleteThenCreate ? true : false;
 
             foreach (var dir in directory)
             {
-                string fullPath = dir.FullPath();
-                bool exists = Directory.Exists(fullPath);
+                string fullPath = dir.IFullPath();
+                bool exists = System.IO.Directory.Exists(fullPath);
 
                 bool directoryCreated = true;
 
@@ -176,14 +184,14 @@ namespace BH.Adapter.Filing
                     if (pushType == PushType.DeleteThenCreate) // Deletes and recreates the directory.
                     {
                         if (exists)
-                            Directory.Delete(fullPath, true); // Deletes the directory and all contents. To make things safer, a Warning is exposed in the Push before proceeding.
+                            System.IO.Directory.Delete(fullPath, true); // Deletes the directory and all contents. To make things safer, a Warning is exposed in the Push before proceeding.
 
-                        Directory.CreateDirectory(fullPath);
+                        System.IO.Directory.CreateDirectory(fullPath);
                     }
                     else if (pushType == PushType.CreateOnly || pushType == PushType.UpdateOnly) // Create only directories that didn't exist.
                     {
                         if (!exists)
-                            Directory.CreateDirectory(fullPath);
+                            System.IO.Directory.CreateDirectory(fullPath);
                         else
                         {
                             BH.Engine.Reflection.Compute.RecordNote($"File {fullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
@@ -204,8 +212,8 @@ namespace BH.Adapter.Filing
 
                 if (directoryCreated)
                 {
-                    System.IO.DirectoryInfo fileinfo = new System.IO.DirectoryInfo(fullPath);
-                    oM.Filing.FileInfo createdDir = (oM.Filing.FileInfo)fileinfo;
+                    System.IO.DirectoryInfo dirInfo = new System.IO.DirectoryInfo(fullPath);
+                    oM.Filing.Directory createdDir = (oM.Filing.Directory)dirInfo;
                     createdDirs.Add(createdDir);
                 }
             }

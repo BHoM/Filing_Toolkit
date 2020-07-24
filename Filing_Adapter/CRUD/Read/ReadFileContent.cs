@@ -44,26 +44,36 @@ namespace BH.Adapter.Filing
 
             foreach (var fileInfo in fcr.Files)
             {
-                List<object> retrievedObjects = new List<object>();
+                string fileFullPath = fileInfo.IFullPath();
 
-                string fileFullPath = fileInfo.FullPath();
-                string extension = Path.GetExtension(fileFullPath);
-
-                if (extension == ".json")
-                    retrievedObjects.AddRange(ReadJson(fileFullPath));
-                else if (extension == ".bson")
-                    retrievedObjects.AddRange(ReadBson(fileFullPath));
-                else
-                    BH.Engine.Reflection.Compute.RecordWarning($"Only JSON and BSON file formats are currently supported by the {(this as dynamic).GetType().Name}.");
+                var retrievedObjects = ReadContent(fileFullPath);
 
                 output.AddRange(
-                    retrievedObjects
-                        .Where(o => fcr.Types.Count > 0 ? fcr.Types.Any(t => t == o.GetType()) : true)
-                        .Where(o => fcr.FragmentTypes.Count > 0 ? (o as BHoMObject)?.Fragments.Select(f => f.GetType()).Intersect(fcr.FragmentTypes).Any() ?? false : true)
-                        .Where(o => fcr.CustomDataKeys.Count > 0 ? (o as BHoMObject)?.CustomData.Keys.Intersect(fcr.CustomDataKeys).Any() ?? false : true)
-                );
+                  retrievedObjects
+                      .Where(o => fcr.Types.Count > 0 ? fcr.Types.Any(t => t == o.GetType()) : true)
+                      .Where(o => fcr.FragmentTypes.Count > 0 ? (o as BHoMObject)?.Fragments.Select(f => f.GetType()).Intersect(fcr.FragmentTypes).Any() ?? false : true)
+                      .Where(o => fcr.CustomDataKeys.Count > 0 ? (o as BHoMObject)?.CustomData.Keys.Intersect(fcr.CustomDataKeys).Any() ?? false : true)
+                 );
             }
-         
+
+            return output;
+        }
+
+        protected IEnumerable<object> ReadContent(string fileFullPath)
+        {
+            List<object> output = new List<object>();
+
+            List<object> retrievedObjects = new List<object>();
+
+            string extension = Path.GetExtension(fileFullPath);
+
+            if (extension == ".json")
+                retrievedObjects.AddRange(ReadJson(fileFullPath));
+            else if (extension == ".bson")
+                retrievedObjects.AddRange(ReadBson(fileFullPath));
+            else
+                BH.Engine.Reflection.Compute.RecordWarning($"Only JSON and BSON file formats are currently supported by the {(this as dynamic).GetType().Name}.");
+
             return output;
         }
 

@@ -17,44 +17,30 @@ namespace BH.Engine.Filing
         /*** Methods                                     ***/
         /***************************************************/
 
-        [Description("Get the full path of the file or directory.")]
-        public static string IFullPath(this IObject fileOrDir)
+        [Description("Get the full path.")]
+        public static string IFullPath(this IObject iObject)
         {
-            return FullPath(fileOrDir as dynamic);
+            return iObject != null ? FullPath(iObject as dynamic) : null;
         }
 
-        [Description("Get the full path of the file or directory.")]
-        [Input("fileOrDir", "The file or Directory to get the full path of.")]
-        [Output("The full path of the file or Directory.")]
-        public static string FullPath(this IFile fileOrDir)
+        private static string FullPath(this IContent fileOrDir)
         {
             if (!IsAcyclic(fileOrDir)) throw new ArgumentException("Circular directory hierarchy");
 
-            return FullPath(fileOrDir as dynamic);
+            return Path.Combine(fileOrDir.ParentDirectory.FullPath(), fileOrDir.Name);
         }
 
-        public static string FullPath(this FileDirRequest fdr)
+        private static string FullPath(this FileDirRequest fdr)
         {
             return FullPath(fdr.FullPath);
         }
 
-        [Description("Get the full path of the file, including extension.")]
-        [Input("file", "The file to get the path of.")]
-        [Output("The full path of the file separated by the supplied delimiter.")]
-        private static string FullPath(this BH.oM.Filing.File file)
+        private static string FullPath(this IInfo baseInfo)
         {
-            return Path.Combine(file.ParentDirectory.FullPath(), file.Name);
-        }
+            if (baseInfo.ParentDirectory == null)
+                return baseInfo.Name;
 
-        [Description("Get the full path of the directory.")]
-        [Input("directory", "The directory to get the path of.")]
-        [Output("The path of the file separated by the supplied separator.")]
-        private static string FullPath(this BH.oM.Filing.FileInfo directory)
-        {
-            if (directory.ParentDirectory == null)
-                return directory.Name;
-
-            return Path.Combine(directory.ParentDirectory.FullPath(), directory.Name);
+            return Path.Combine(baseInfo.ParentDirectory.FullPath(), baseInfo.Name);
         }
 
         //Fallback
@@ -62,8 +48,6 @@ namespace BH.Engine.Filing
         {
             return null;
         }
-
-
 
         /***************************************************/
 

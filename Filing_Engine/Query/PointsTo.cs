@@ -18,7 +18,7 @@ namespace BH.Engine.Filing
 
         [Description("Whether the oM.Filing.FileInfo points to a File or a Directory.")]
         [Output("True if points to a File, false if it points to a Directory.")]
-        public static bool IsFile(this oM.Filing.FileInfo fi)
+        public static bool IsFile(this oM.Filing.BaseInfo fi)
         {
             return IsFile(fi.IFullPath());
         }

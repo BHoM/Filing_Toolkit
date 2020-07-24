@@ -11,28 +11,21 @@ using System.ComponentModel;
 
 namespace BH.oM.Filing
 {
-    [Description("A File. It can include the content of the File.")]
-    public class File : IContent 
+    [Description("A Directory. It can include the content of the Directory.")]
+    public class Directory : IContent 
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("Full path of parent Directory of the File. You can also specify a string path.")]
+        [Description("Full path of parent Directory. You can also specify a string path.")]
         public virtual BaseInfo ParentDirectory { get; set; }
 
-        [Description("Name of the file, INCLUDING Extension.")]
+        [Description("Name of the directory.")]
         public virtual string Name { get; set; }
 
         [Description("Gets a value indicating whether a file exists.")]
         public virtual bool Exists { get; set; } = false;
-
-        [Description("Gets or sets a value that determines if the current file is read only.")]
-        public virtual bool IsReadOnly { get; set; } = false;
-
-        [Description("Gets the size, in bytes, of the current file.")]
-        public virtual long Length { get; set; } = 0;
-
 
         [Description("Attributes indicating if ReadOnly, Hidden, System File, etc.")]
         public virtual FileAttributes Attributes { get; set; }
@@ -43,7 +36,6 @@ namespace BH.oM.Filing
         public virtual DateTime LastAccessTimeUtc { get; set; }
         public virtual DateTime LastWriteTime { get; set; }
         public virtual DateTime LastWriteTimeUtc { get; set; }
-
 
         [Description("User owning the file, if any, or the user who created the object File.")]
         public virtual Human Owner { get; set; }
@@ -56,9 +48,9 @@ namespace BH.oM.Filing
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator File(BaseInfo bi)
+        public static explicit operator Directory(BaseInfo bi)
         {
-            return bi != null ? new File()
+            return bi != null ? new Directory()
             {
                 ParentDirectory = bi.ParentDirectory,
 
@@ -76,27 +68,23 @@ namespace BH.oM.Filing
             } : null;
         }
 
-        public static explicit operator File(System.IO.FileInfo fi)
+        public static explicit operator Directory(System.IO.DirectoryInfo di)
         {
-            return fi != null ? new File()
+            return di != null ? new Directory()
             {
-                ParentDirectory = (BaseInfo)fi.Directory,
+                ParentDirectory = (BaseInfo)System.IO.Directory.GetParent(di.FullName),
 
-                Name = fi.Name,
+                Name = di.Name,
 
-                Exists = fi.Exists,
+                Exists = di.Exists,
 
-                IsReadOnly = fi.IsReadOnly,
-
-                Length = fi.Length,
-
-                Attributes = fi.Attributes,
-                CreationTime = fi.CreationTime,
-                CreationTimeUtc = fi.CreationTimeUtc,
-                LastAccessTime = fi.LastAccessTime,
-                LastAccessTimeUtc = fi.LastAccessTimeUtc,
-                LastWriteTime = fi.LastWriteTime,
-                LastWriteTimeUtc = fi.LastWriteTimeUtc,
+                Attributes = di.Attributes,
+                CreationTime = di.CreationTime,
+                CreationTimeUtc = di.CreationTimeUtc,
+                LastAccessTime = di.LastAccessTime,
+                LastAccessTimeUtc = di.LastAccessTimeUtc,
+                LastWriteTime = di.LastWriteTime,
+                LastWriteTimeUtc = di.LastWriteTimeUtc,
             } : null;
         }
 
@@ -104,10 +92,10 @@ namespace BH.oM.Filing
         /**** Implicit cast                             ****/
         /***************************************************/
 
-        public static implicit operator File(string fileFullPath)
+        public static implicit operator Directory(string fileFullPath)
         {
             if (!String.IsNullOrWhiteSpace(fileFullPath))
-                return (File)new System.IO.FileInfo(fileFullPath);
+                return (Directory)new System.IO.DirectoryInfo(fileFullPath);
             else
                 return null;
         }
