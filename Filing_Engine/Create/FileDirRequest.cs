@@ -18,64 +18,15 @@ namespace BH.Engine.Filing
         /**** Methods                           ****/
         /*******************************************/
 
-        public static FileDirRequest FileDirRequest(string path, bool pullFileContents)
+        public static FileDirRequest FileDirRequest(string fullPath, bool includeDirectories = true, bool includeFiles = true, bool includeSubDirectories = true)
         {
             return new FileDirRequest()
             {
-                FullPath = path
+                FullPath = fullPath,
+                IncludeDirectories = includeDirectories,
+                IncludeFiles = includeFiles,
+                IncludeSubdirectories = includeSubDirectories
             };
-        }
-
-        public static FileDirRequest FileDirRequest(FileInfoRequest fr)
-        {
-            return new FileDirRequest()
-            {
-                FullPath = fr.FullPath,
-                RetrieveDirectories = false,
-                MaxFiles = fr.MaxFiles,
-                IncludeSubdirectories = fr.IncludeSubdirectories,
-                MaxNesting = fr.MaxNesting,
-                Exclusions = fr.Exclusions
-            };
-        }
-
-        public static FileDirRequest FileDirRequest(DirectoryInfoRequest dr)
-        {
-            return new FileDirRequest()
-            {
-                FullPath = dr.FullPath,
-                RetrieveFiles = false,
-                MaxDirectories = dr.MaxDirectories,
-                IncludeSubdirectories = dr.IncludeSubdirectories,
-                MaxNesting = dr.MaxNesting,
-                Exclusions = dr.Exclusions
-            };
-        }
-
-        [Description("Combines the two requests.")]
-        public static FileDirRequest FileDirRequest(FileInfoRequest fr, DirectoryInfoRequest dr)
-        {
-            return new FileDirRequest()
-            {
-                // Take the shortest of the paths (closer to root)
-                FullPath = fr.FullPath.FullPath().Length < dr.FullPath.FullPath().Length ? fr.FullPath : dr.FullPath, 
-
-                MaxFiles = fr.MaxFiles,
-
-                MaxDirectories = dr.MaxDirectories,
-
-                IncludeSubdirectories = fr.IncludeSubdirectories || dr.IncludeSubdirectories,
-                
-                // Take the min of the nesting maximums
-                MaxNesting = Math.Min(fr.MaxNesting, dr.MaxNesting),
-
-                Exclusions = fr.Exclusions.Concat(dr.Exclusions).ToList()
-            };
-        }
-
-        public static FileDirRequest FileDirRequest(FileDirRequest fr)
-        {
-            return fr;
         }
 
         /*******************************************/

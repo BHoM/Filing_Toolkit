@@ -60,17 +60,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DirectoryInfo.cs" />
-    <Compile Include="enums\Encodings.cs" />
-    <Compile Include="Requests\DirectoryInfoRequest.cs" />
-    <Compile Include="Requests\FileContentRequest.cs" />
-    <Compile Include="Requests\FileDirInfoRequest.cs" />
-    <Compile Include="Requests\IFileDirRequest.cs" />
-    <Compile Include="Requests\FileInfoRequest.cs" />
-    <Compile Include="FilingConfig.cs" />
-    <Compile Include="FileFormat.cs" />
-    <Compile Include="IFile.cs" />
     <Compile Include="FileInfo.cs" />
+    <Compile Include="enums\Encodings.cs" />
+    <Compile Include="Requests\FileContentRequest.cs" />
+    <Compile Include="Requests\FileDirRequest.cs" />
+    <Compile Include="Config\FilingConfig.cs" />
+    <Compile Include="enums\FileFormat.cs" />
+    <Compile Include="IFileSystemInfo.cs" />
+    <Compile Include="File.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

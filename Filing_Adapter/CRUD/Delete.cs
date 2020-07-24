@@ -43,18 +43,25 @@ namespace BH.Adapter.Filing
             return 0;
         }
 
-        protected void Delete(FileInfoRequest request)
+        protected void Delete(FileDirRequest fdr)
         {
+            // TODO: This deletes a single file only.
+            // The code will have to replicate the WalkDirectories function for the Read, only allowing delete.
+            // Consider centralising-abstracting the method.
+
+            string fullPath = fdr.FullPath();
             try
             {
                 // Check if file exists with its full path    
-                if (System.IO.File.Exists(request.FullPath()))
+                if (System.IO.File.Exists(fullPath))
                 {
                     // If file found, delete it    
-                    System.IO.File.Delete(Path.Combine(rootFolder, authorsFile));
-                    Console.WriteLine("File deleted.");
+                    System.IO.File.Delete(fullPath);
+                    BH.Engine.Reflection.Compute.RecordNote($"File deleted: {fullPath}");
                 }
-                else Console.WriteLine("File not found");
+                else
+                    BH.Engine.Reflection.Compute.RecordWarning($"File not found: {fullPath}");
+
             }
             catch (IOException ioExp)
             {

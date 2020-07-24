@@ -14,5 +14,7 @@ namespace BH.Adapter.Filing
             // By default, if they exist already, the files to be created are wiped out and then re-created.
             this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.DeleteThenCreate;
         }
+
+        private bool m_enableDeleteWarning = true;
     }
 }
