@@ -12,21 +12,28 @@ using BH.oM.Data.Requests;
 
 namespace BH.oM.Filing
 {
-    [Description("Used to retrieve Directories or Files.")]
-    public class FileDirRequest : IRequest, IFileDirRequest
+    [Description("Used to query Directories or Files.")]
+    public class FileDirRequest : IRequest
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("Directories and/or Files from this FullPath will be pulled. You can also specify a string path.")]
-        public virtual DirectoryInfo FullPath { get; set; } = "";
+        [Description("Directory and/or Files from this FullPath will be queried. You can also specify a string path.")]
+        public virtual FileInfo FullPath { get; set; } = "";
 
-        [Description("Whether to retrieve Files.")]
-        public virtual bool RetrieveFiles { get; set; } = true;
+        [Description("Whether to include Files.")]
+        public virtual bool IncludeFiles { get; set; } = true;
 
-        [Description("Whether to retrieve Directories.")]
-        public virtual bool RetrieveDirectories { get; set; } = true;
+        [Description("Whether to include Directories.")]
+        public virtual bool IncludeDirectories { get; set; } = true;
+
+        [Description("If enabled, look also in subdirectories.")]
+        public virtual bool IncludeSubdirectories { get; set; } = false;
+
+        [Description("If IncludeSubdirectories is true, this sets the maximum subdirectiory nesting level to look in." +
+            "\nDefaults to -1 which corresponds to no limit.")]
+        public virtual int MaxNesting { get; set; } = -1;
 
         [Description("Sets the maximum number of Files to retrieve." +
             "\nDefaults to -1 which corresponds to no limit.")]
@@ -36,14 +43,19 @@ namespace BH.oM.Filing
             "\nDefaults to -1 which corresponds to no limit.")]
         public virtual int MaxDirectories { get; set; } = -1;
 
-        [Description("If enabled, look also in subdirectories.")]
-        public virtual bool IncludeSubdirectories { get; set; } = false;
-
-        [Description("If IncludeSubdirectories is true, this sets the maximum subdirectiory nesting level to look in." +
-            "\nDefaults to -1 which corresponds to no limit.")]
-        public virtual int MaxNesting { get; set; } = -1;
-
         [Description("These files or directories will be excluded from the results. You can also specify string Full Paths.")]
-        public virtual List<IFileSystemInfo> Exclusions { get; set; }
+        public virtual List<IFile> Exclusions { get; set; } = new List<IFile>();
+
+        /***************************************************/
+        /**** Implicit cast                             ****/
+        /***************************************************/
+
+        public static implicit operator FileDirRequest(string fullPath)
+        {
+            if (!String.IsNullOrWhiteSpace(fullPath))
+                return new FileDirRequest() { FullPath = fullPath };
+            else
+                return null;
+        }
     }
 }

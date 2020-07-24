@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Filing
 {
-    [Description("Base interface for both files and directories. Rehash of the .NET's interface in BHoM flavour.")]
-    public interface IFileSystemInfo  : IObject
+    [Description("Points to a File or Directory, but does not store the contents. Rehash of the .NET's class 'FileSystemInfo' in BHoM flavour.")]
+    public interface IFile  : IObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
       
         [Description("Parent Directory of the File or Directory.")]
-        DirectoryInfo ParentDirectory { get; set; }
+        FileInfo ParentDirectory { get; set; }
 
         [Description("Name of the file (WITHOUT Extension) or of the Directory.")]
         string Name { get; set; }

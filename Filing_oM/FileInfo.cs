@@ -1,29 +1,29 @@
 using BH.oM.Base;
 using BH.oM.Humans;
-using System.IO.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
-using System.ComponentModel;
 
 namespace BH.oM.Filing
 {
-    public class File : IFileSystemInfo 
+    [Description("Points to a File or Directory, but does not store the contents. Rehash of the .NET's class 'FileSystemInfo' in BHoM flavour.")]
+    public class FileInfo : IFile
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("Full path of parent Directory of the File.")]
-        public virtual DirectoryInfo ParentDirectory { get; set; }
+        [Description("Full path of parent Directory.")]
+        public virtual FileInfo ParentDirectory { get; set; }
 
-        [Description("Name of the file, INCLUDING Extension.")]
+        [Description("Name of the Directory or File.")]
         public virtual string Name { get; set; }
 
-        [Description("Gets a value indicating whether a file exists.")]
+        [Description("Gets a value indicating whether the directory exists.")]
         public virtual bool Exists { get; set; } = false;
 
         [Description("Gets or sets a value that determines if the current file is read only.")]
@@ -43,39 +43,35 @@ namespace BH.oM.Filing
         public virtual DateTime LastWriteTime { get; set; }
         public virtual DateTime LastWriteTimeUtc { get; set; }
 
-
         [Description("User owning the file, if any, or the user who created the object File.")]
         public virtual Human Owner { get; set; }
 
-        [Description("The content of the file.")]
-        public virtual List<object> Content { get; set; }
+
+        [Description(@"Root folder, such as '\', 'C:', or * '\\server\share'.")]
+        public FileInfo Root { get; }
 
 
         /***************************************************/
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator File(System.IO.FileInfo fi)
+        public static explicit operator FileInfo(System.IO.DirectoryInfo directoryInfo)
         {
-            return fi != null ? new File()
+            return directoryInfo != null ? new FileInfo()
             {
-                ParentDirectory = (DirectoryInfo)fi.Directory,
+                ParentDirectory = (FileInfo)directoryInfo.Parent,
 
-                Name = fi.Name,
+                Name = directoryInfo.Name,
 
-                Exists = fi.Exists,
+                Exists = directoryInfo.Exists,
 
-                IsReadOnly = fi.IsReadOnly,
-
-                Length = fi.Length,
-
-                Attributes = fi.Attributes,
-                CreationTime = fi.CreationTime,
-                CreationTimeUtc = fi.CreationTimeUtc,
-                LastAccessTime = fi.LastAccessTime,
-                LastAccessTimeUtc = fi.LastAccessTimeUtc,
-                LastWriteTime = fi.LastWriteTime,
-                LastWriteTimeUtc = fi.LastWriteTimeUtc,
+                Attributes = directoryInfo.Attributes,
+                CreationTime = directoryInfo.CreationTime,
+                CreationTimeUtc = directoryInfo.CreationTimeUtc,
+                LastAccessTime = directoryInfo.LastAccessTime,
+                LastAccessTimeUtc = directoryInfo.LastAccessTimeUtc,
+                LastWriteTime = directoryInfo.LastWriteTime,
+                LastWriteTimeUtc = directoryInfo.LastWriteTimeUtc,
             } : null;
         }
 
@@ -83,12 +79,13 @@ namespace BH.oM.Filing
         /**** Implicit cast                             ****/
         /***************************************************/
 
-        public static implicit operator File(string fileFullPath)
+        public static implicit operator FileInfo(string directoryFullPath)
         {
-            if (!String.IsNullOrWhiteSpace(fileFullPath))
-                return (File)new System.IO.FileInfo(fileFullPath);
+            if (!String.IsNullOrWhiteSpace(directoryFullPath))
+                return (FileInfo)new System.IO.DirectoryInfo(directoryFullPath);
             else
                 return null;
         }
+
     }
 }

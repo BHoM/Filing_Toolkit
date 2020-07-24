@@ -34,19 +34,24 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
-        private List<oM.Filing.IFileSystemInfo> Read(IFileDirRequest request)
+        private IEnumerable<object> Read(FileDirRequest fdr)
         {
-            // Convert to most generic type of FileInfo request.
-            FileDirRequest fdr = BH.Engine.Filing.Create.FileDirRequest(request as dynamic);
-
             // Recursively walk the directories to retrieve File and Directory Info.
-            List<oM.Filing.IFileSystemInfo> output = new List<IFileSystemInfo>();
-            WalkDirectories(output, fdr);
+            List<oM.Filing.IFile> output = new List<IFile>();
+
+            string fullPath = fdr.FullPath.FullPath();
+            if (Query.IsFile(fullPath))
+            {
+                FileContentRequest fileContentRequest = new FileContentRequest() { Files = new List<oM.Filing.File>() { fullPath } };
+                return Read(fileContentRequest);
+            }
+            else
+                WalkDirectories(output, fdr);
 
             return output;
         }
 
-        private void WalkDirectories(List<oM.Filing.IFileSystemInfo> output, FileDirRequest fdr, int retrievedFiles = 0, int retrievedDirs = 0)
+        private void WalkDirectories(List<oM.Filing.IFile> output, FileDirRequest fdr, int retrievedFiles = 0, int retrievedDirs = 0)
         {
             // Recursion stop condition.
             if (fdr.MaxNesting == 0)
@@ -54,16 +59,20 @@ namespace BH.Adapter.Filing
 
             // Look in directory and, if requested, recursively in subdirectories.
             System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.FullPath.FullPath());
-            System.IO.DirectoryInfo[] dirArray = currentDir.GetDirectories();
+            System.IO.DirectoryInfo[] dirArray = new System.IO.DirectoryInfo[] { };
+
+            if (!Path.HasExtension(currentDir.FullName))
+                dirArray = currentDir.GetDirectories();
+
             foreach (System.IO.DirectoryInfo dir in dirArray)
             {
-                oM.Filing.DirectoryInfo bhomDir = (oM.Filing.DirectoryInfo)dir;
-                bhomDir.ParentDirectory = (oM.Filing.DirectoryInfo)dir.Parent;
+                oM.Filing.FileInfo bhomDir = (oM.Filing.FileInfo)dir;
+                bhomDir.ParentDirectory = (oM.Filing.FileInfo)dir.Parent;
 
-                if (fdr.Exclusions.Contains(bhomDir))
+                if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
                     continue;
 
-                if (fdr.RetrieveDirectories)
+                if (fdr.IncludeDirectories)
                     if (!MaxItemsReached(fdr.MaxDirectories, retrievedDirs))
                     {
                         output.Add(bhomDir);
@@ -71,9 +80,9 @@ namespace BH.Adapter.Filing
                     }
 
 
-                if (fdr.RetrieveFiles)
+                if (fdr.IncludeFiles)
                 {
-                    System.IO.FileInfo[] files = new FileInfo[] { };
+                    System.IO.FileInfo[] files = new System.IO.FileInfo[] { };
 
                     try
                     {
@@ -91,7 +100,7 @@ namespace BH.Adapter.Filing
                         if (!MaxItemsReached(fdr.MaxFiles, retrievedFiles))
                         {
                             // Check exclusions
-                            if (fdr.Exclusions.Contains((BH.oM.Filing.File)f))
+                            if (fdr.Exclusions != null && fdr.Exclusions.Contains((BH.oM.Filing.File)f))
                                 continue;
 
                             output.Add((oM.Filing.File)f);
