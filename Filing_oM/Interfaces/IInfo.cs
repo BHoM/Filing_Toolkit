@@ -17,7 +17,7 @@ namespace BH.oM.Filing
         /***************************************************/
       
         [Description("Parent Directory of the File or Directory.")]
-        BaseInfo ParentDirectory { get; set; }
+        Info ParentDirectory { get; set; }
 
         [Description("Name of the file (WITHOUT Extension) or of the Directory.")]
         string Name { get; set; }

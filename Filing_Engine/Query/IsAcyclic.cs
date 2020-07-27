@@ -20,12 +20,12 @@ namespace BH.Engine.Filing
         [Output("Whether the file hierachy is Acyclic.")]
         public static bool IsAcyclic(this IInfo file)
         {
-            return IsAcyclic(file as dynamic, new HashSet<BaseInfo>());
+            return IsAcyclic(file as dynamic, new HashSet<Info>());
         }
 
         /***************************************************/
 
-        private static bool IsAcyclic(IInfo file, HashSet<BaseInfo> encountered)
+        private static bool IsAcyclic(IInfo file, HashSet<Info> encountered)
         {
             if (file.ParentDirectory == null) return true;
 
