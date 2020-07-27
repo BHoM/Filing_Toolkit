@@ -34,80 +34,89 @@ namespace BH.Adapter.Filing
 
         private oM.Reflection.Output<List<object>, bool> RunCommand(IMRCCommand command)
         {
-            IEnumerable<Tuple<string, string>> oldAndTargetPaths =
-                command.FullPath.Zip(command.TargetFullPath,
-                (o, n) => new Tuple<string, string>(o.NormalisePath(), n.NormalisePath()));
+            string source = command.FullPath?.NormalisePath();
+            string target = command.TargetFullPath?.NormalisePath();
 
-            if (command is RenameCommand)
-                return Move(oldAndTargetPaths, true);
+            if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(target))
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("Please specify a valid oM.Filing.Command.");
+                return null;
+            }
+            RenameCommand renameCommand = command as RenameCommand;
+            if (renameCommand != null)
+                return Move(source, target, true);
 
-            if (command is MoveCommand)
-                return Move(oldAndTargetPaths, false);
+            MoveCommand moveCommand = command as MoveCommand;
+            if (moveCommand != null)
+                return Move(source, target, false, moveCommand.OverwriteTarget, moveCommand.CreateDirectoryIfNotExist);
 
-            if (command is CopyCommand)
-                return Copy(oldAndTargetPaths);
+            CopyCommand copyCommand = command as CopyCommand;
+            if (copyCommand != null)
+                return Copy(source, target, copyCommand.OverwriteTarget, copyCommand.CreateDirectoryIfNotExist);
 
             return new Output<List<object>, bool>() { Item1 = null, Item2 = false };
         }
 
-        private oM.Reflection.Output<List<object>, bool> Move(IEnumerable<Tuple<string, string>> oldAndTargetPaths, bool renameOnly)
+        private Output<List<object>, bool> Move(string source, string target, bool renameOnlyWithinFolder, bool overwriteTarget = false, bool createDir = true)
         {
             var output = new Output<List<object>, bool>() { Item1 = new List<object>(), Item2 = false };
 
-            foreach (var fullPaths in oldAndTargetPaths)
+            string parent1 = System.IO.Directory.GetParent(source).FullName;
+            string parent2 = System.IO.Directory.GetParent(target).FullName;
+
+            if (renameOnlyWithinFolder && parent1 != parent2)
             {
-                try
-                {
-                    string parent1 = System.IO.Directory.GetParent(fullPaths.Item1).FullName;
-                    string parent2 = System.IO.Directory.GetParent(fullPaths.Item2).FullName;
+                BH.Engine.Reflection.Compute.RecordWarning($"Cannot rename `{source}`" +
+                    $"because the target parent folder is different from the original.");
 
-                    if (renameOnly && parent1 != parent2)
-                    {
-                        BH.Engine.Reflection.Compute.RecordWarning($"Cannot rename `{fullPaths.Item1}`" +
-                            $"because the target parent folder is different from the original.");
+                output.Item2 = false;
 
-                        output.Item1.Add(false);
-                    }
-                    else
-                    {
-                        System.IO.File.Move(fullPaths.Item1, fullPaths.Item2);
-                        output.Item1.Add(true);
-                    }
-                }
-                catch (Exception e)
-                {
-                    BH.Engine.Reflection.Compute.RecordWarning(e.Message);
-                }
-
-                output.Item1.Add(false);
+                return output;
             }
 
-            if (!output.Item1.Contains(false)) // all move/renames worked
-                output.Item2 = true;
+            try
+            {
+                if (overwriteTarget && System.IO.File.Exists(target))
+                {
+                    System.IO.File.Delete(target);
+                }
+
+                if (createDir && !System.IO.Directory.Exists(parent2))
+                    System.IO.Directory.CreateDirectory(parent2);
+
+                System.IO.File.Move(source, target);
+            }
+            catch (Exception e)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning(e.Message);
+                return output;
+            }
+
+            output.Item1.Add(target);
+            output.Item2 = true;
 
             return output;
         }
 
-        private oM.Reflection.Output<List<object>, bool> Copy(IEnumerable<Tuple<string, string>> oldAndTargetPaths)
+        private oM.Reflection.Output<List<object>, bool> Copy(string source, string target, bool overwrite = false, bool createDir = true)
         {
             var output = new Output<List<object>, bool>() { Item1 = new List<object>(), Item2 = false };
 
-            foreach (var fullPaths in oldAndTargetPaths)
+            try
             {
-                try
-                {
-                    System.IO.File.Copy(fullPaths.Item1, fullPaths.Item2);
-                    output.Item1.Add(true);
-                }
-                catch (Exception e)
-                {
-                    BH.Engine.Reflection.Compute.RecordWarning(e.Message);
-                }
-                output.Item1.Add(false);
+                if (createDir)
+                    (new FileInfo(target)).Directory.Create(); // Creates the directory if it doesn't exist.
+
+                System.IO.File.Copy(source, target, overwrite);
+            }
+            catch (Exception e)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning(e.Message);
+                return output;
             }
 
-            if (!output.Item1.Contains(false)) // all copy worked
-                output.Item2 = true;
+            output.Item1.Add(target);
+            output.Item2 = true;
 
             return output;
         }
