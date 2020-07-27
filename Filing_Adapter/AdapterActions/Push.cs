@@ -23,6 +23,8 @@ namespace BH.Adapter.Filing
 
         public override List<object> Push(IEnumerable<object> objects, string tag = "", PushType pushType = PushType.AdapterDefault, ActionConfig actionConfig = null)
         {
+            oM.Filing.PushConfig pushConfig = actionConfig as oM.Filing.PushConfig;
+
             if (pushType == PushType.AdapterDefault)
                 pushType = m_AdapterSettings.DefaultPushType;
 
@@ -44,9 +46,7 @@ namespace BH.Adapter.Filing
                     $"\nYou can append BHoMObjects to be pushed in its {nameof(oM.Filing.IContent.Content)} property.");
 
             List<BH.oM.Filing.IContent> createdFiles = new List<oM.Filing.IContent>();
-            createdFiles = Create(files, pushType);
-
-            m_enableDeleteWarning = true;
+            createdFiles = Create(files, pushType, pushConfig);
 
             return createdFiles.OfType<object>().ToList();
         }

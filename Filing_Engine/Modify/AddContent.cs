@@ -17,7 +17,7 @@ namespace BH.Engine.Filing
         /**** Methods                                   ****/
         /***************************************************/
 
-        [Description("Add content to a file.")]
+        [Description("Add the input content to the specified oM.Filing.File.")]
         public static File AddContent(this File file, List<object> content)
         {
             File cloned = file.DeepClone();
@@ -25,7 +25,5 @@ namespace BH.Engine.Filing
 
             return cloned;
         }
-        
-        /***************************************************/
     }
 }
