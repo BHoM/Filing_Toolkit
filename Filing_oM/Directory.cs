@@ -19,7 +19,7 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Full path of parent Directory. You can also specify a string path.")]
-        public virtual BaseInfo ParentDirectory { get; set; }
+        public virtual Info ParentDirectory { get; set; }
 
         [Description("Name of the directory.")]
         public virtual string Name { get; set; }
@@ -48,7 +48,7 @@ namespace BH.oM.Filing
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator Directory(BaseInfo bi)
+        public static explicit operator Directory(Info bi)
         {
             return bi != null ? new Directory()
             {
@@ -72,7 +72,7 @@ namespace BH.oM.Filing
         {
             return di != null ? new Directory()
             {
-                ParentDirectory = (BaseInfo)System.IO.Directory.GetParent(di.FullName),
+                ParentDirectory = (Info)System.IO.Directory.GetParent(di.FullName),
 
                 Name = di.Name,
 

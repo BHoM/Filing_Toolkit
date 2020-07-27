@@ -13,14 +13,14 @@ using BH.oM.Data.Requests;
 namespace BH.oM.Filing
 {
     [Description("Used to query Directories or Files.")]
-    public class FileDirRequest : IRequest
+    public class FileDirRequest : IFileRequest, IDirectoryRequest
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
         [Description("Directory and/or Files from this FullPath will be queried. You can also specify a string path.")]
-        public virtual BaseInfo FullPath { get; set; } = "";
+        public virtual Info FullPath { get; set; } = "";
 
         [Description("Whether to include Files.")]
         public virtual bool IncludeFiles { get; set; } = true;
@@ -59,6 +59,26 @@ namespace BH.oM.Filing
                 return new FileDirRequest() { FullPath = fullPath };
             else
                 return null;
+        }
+
+        public static implicit operator FileDirRequest(FileRequest fr)
+        {
+            return new FileDirRequest() {
+                FullPath = fr.FullPath,
+                IncludeFileContents = fr.IncludeFileContents
+            };
+        }
+
+        public static implicit operator FileDirRequest(DirectoryRequest dr)
+        {
+            return new FileDirRequest()
+            {
+                FullPath = dr.FullPath,
+                IncludeDirectories = true,
+                IncludeSubdirectories = dr.IncludeSubdirectories,
+                MaxNesting = dr.MaxNesting,
+                Exclusions = dr.Exclusions
+            };
         }
     }
 }

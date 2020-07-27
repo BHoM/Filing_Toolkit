@@ -42,19 +42,18 @@ namespace BH.Adapter.Filing
         {
             List<object> output = new List<object>();
 
-            foreach (var fileInfo in fcr.Files)
-            {
-                string fileFullPath = fileInfo.IFullPath();
+            oM.Filing.File fileInfo = fcr.File;
 
-                var retrievedObjects = ReadContent(fileFullPath);
+            string fileFullPath = fileInfo.IFullPath();
 
-                output.AddRange(
-                  retrievedObjects
-                      .Where(o => fcr.Types.Count > 0 ? fcr.Types.Any(t => t == o.GetType()) : true)
-                      .Where(o => fcr.FragmentTypes.Count > 0 ? (o as BHoMObject)?.Fragments.Select(f => f.GetType()).Intersect(fcr.FragmentTypes).Any() ?? false : true)
-                      .Where(o => fcr.CustomDataKeys.Count > 0 ? (o as BHoMObject)?.CustomData.Keys.Intersect(fcr.CustomDataKeys).Any() ?? false : true)
-                 );
-            }
+            var retrievedObjects = ReadContent(fileFullPath);
+
+            output.AddRange(
+              retrievedObjects
+                  .Where(o => fcr.Types.Count > 0 ? fcr.Types.Any(t => t == o.GetType()) : true)
+                  .Where(o => fcr.FragmentTypes.Count > 0 ? (o as BHoMObject)?.Fragments.Select(f => f.GetType()).Intersect(fcr.FragmentTypes).Any() ?? false : true)
+                  .Where(o => fcr.CustomDataKeys.Count > 0 ? (o as BHoMObject)?.CustomData.Keys.Intersect(fcr.CustomDataKeys).Any() ?? false : true)
+             );
 
             return output;
         }
@@ -77,7 +76,6 @@ namespace BH.Adapter.Filing
             return output;
         }
 
-
         private IEnumerable<object> ReadJson(string fileFullPath)
         {
             string[] json = System.IO.File.ReadAllLines(fileFullPath);
@@ -86,7 +84,6 @@ namespace BH.Adapter.Filing
                 BH.Engine.Reflection.Compute.RecordWarning("Could not convert some object to BHoMObject.");
             return converted;
         }
-
 
         private IEnumerable<object> ReadBson(string filePath)
         {

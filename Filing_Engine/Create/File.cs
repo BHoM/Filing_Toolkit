@@ -23,7 +23,7 @@ namespace BH.Engine.Filing
         [Input("fullFileName", "Name of the file, INCLUDING Extension.")]
         [Input("content", "The content of the file.")]
         [Description("Creates a oM.Filing.File object.")]
-        public static oM.Filing.File File(oM.Filing.BaseInfo parentDirectory, string fullFileName, List<object> content = null)
+        public static oM.Filing.File File(oM.Filing.Info parentDirectory, string fullFileName, List<object> content = null)
         {
             if (!Path.HasExtension(fullFileName))
             {

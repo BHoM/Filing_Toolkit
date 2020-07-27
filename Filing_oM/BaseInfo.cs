@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 namespace BH.oM.Filing
 {
     [Description("Contains the information and attributes of a File or Directory, but it does not contain any content. Rehash of the .NET's base class 'FileSystemInfo' in BHoM flavour.")]
-    public class BaseInfo : IInfo
+    public class Info : IInfo
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
         [Description("Full path of parent Directory.")]
-        public virtual BaseInfo ParentDirectory { get; set; }
+        public virtual Info ParentDirectory { get; set; }
 
         [Description("Name of the Directory or File.")]
         public virtual string Name { get; set; }
@@ -48,18 +48,18 @@ namespace BH.oM.Filing
 
 
         [Description(@"Root folder, such as '\', 'C:', or * '\\server\share'.")]
-        public BaseInfo Root { get; }
+        public Info Root { get; }
 
 
         /***************************************************/
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator BaseInfo(System.IO.FileInfo fi)
+        public static explicit operator Info(System.IO.FileInfo fi)
         {
-            return fi != null ? new BaseInfo()
+            return fi != null ? new Info()
             {
-                ParentDirectory = (BaseInfo)fi.Directory,
+                ParentDirectory = (Info)fi.Directory,
 
                 Name = fi.Name,
 
@@ -79,11 +79,11 @@ namespace BH.oM.Filing
             } : null;
         }
 
-        public static explicit operator BaseInfo(System.IO.DirectoryInfo di)
+        public static explicit operator Info(System.IO.DirectoryInfo di)
         {
-            return di != null ? new BaseInfo()
+            return di != null ? new Info()
             {
-                ParentDirectory = (BaseInfo)di.Parent,
+                ParentDirectory = (Info)di.Parent,
 
                 Name = di.Name,
 
@@ -103,10 +103,10 @@ namespace BH.oM.Filing
         /**** Implicit cast                             ****/
         /***************************************************/
 
-        public static implicit operator BaseInfo(string directoryFullPath)
+        public static implicit operator Info(string directoryFullPath)
         {
             if (!String.IsNullOrWhiteSpace(directoryFullPath))
-                return (BaseInfo)new System.IO.DirectoryInfo(directoryFullPath);
+                return (Info)new System.IO.DirectoryInfo(directoryFullPath);
             else
                 return null;
         }

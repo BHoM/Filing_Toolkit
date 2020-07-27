@@ -64,7 +64,7 @@ namespace BH.Adapter.Filing
             foreach (System.IO.DirectoryInfo dir in dirArray)
             {
                 oM.Filing.Directory bhomDir = (oM.Filing.Directory)dir;
-                bhomDir.ParentDirectory = (oM.Filing.BaseInfo)dir.Parent;
+                bhomDir.ParentDirectory = (oM.Filing.Info)dir.Parent;
 
                 if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
                     continue;
