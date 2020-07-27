@@ -60,8 +60,6 @@ namespace BH.Adapter.Filing
 
         protected IEnumerable<object> ReadContent(string fileFullPath)
         {
-            List<object> output = new List<object>();
-
             List<object> retrievedObjects = new List<object>();
 
             string extension = Path.GetExtension(fileFullPath);
@@ -73,14 +71,22 @@ namespace BH.Adapter.Filing
             else
                 BH.Engine.Reflection.Compute.RecordWarning($"Only JSON and BSON file formats are currently supported by the {(this as dynamic).GetType().Name}.");
 
-            return output;
+            return retrievedObjects;
         }
 
         private IEnumerable<object> ReadJson(string fileFullPath)
         {
             string[] json = System.IO.File.ReadAllLines(fileFullPath);
             var converted = json.Select(x => Engine.Serialiser.Convert.FromJson(x)).Where(x => x != null);
-            if (converted.Count() < json.Count())
+
+            if (json.Count() == 1 && converted.Count() == 1 && converted.FirstOrDefault() is BH.oM.Base.CustomObject)
+            {
+                // The json is in standard JSON specification (not like in the old "File_Adapter format").
+                // This results in a CustomObject being extracted, where all actual objects are in CustomData.
+                // Extract actual objects from CustomData.
+                converted = (converted.First() as CustomObject).CustomData.Values;
+            }
+            else if (converted.Count() < json.Count())
                 BH.Engine.Reflection.Compute.RecordWarning("Could not convert some object to BHoMObject.");
             return converted;
         }

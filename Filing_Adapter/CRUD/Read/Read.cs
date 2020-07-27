@@ -34,112 +34,51 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
-        private IEnumerable<object> Read(FileDirRequest fdr)
+        protected IEnumerable<object> Read(FileDirRequest fdr)
         {
             // Recursively walk the directories to retrieve File and Directory Info.
             List<oM.Filing.IContent> output = new List<IContent>();
 
             string fullPath = fdr.FullPath.IFullPath();
             if (Query.IsFile(fullPath))
-                RetrieveFile(fullPath, fdr.IncludeFileContents);
+                output.Add(RetrieveFile(fullPath, fdr.IncludeFileContents));
             else
                 WalkDirectories(output, fdr);
 
             return output;
         }
 
-        private void WalkDirectories(List<oM.Filing.IContent> output, FileDirRequest fdr, int retrievedFiles = 0, int retrievedDirs = 0)
+        protected IEnumerable<object> Read(FileRequest fr)
         {
-            // Recursion stop condition.
-            if (fdr.MaxNesting == 0)
-                return;
-
-            // Look in directory and, if requested, recursively in subdirectories.
-            System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.FullPath.IFullPath());
-            System.IO.DirectoryInfo[] dirArray = new System.IO.DirectoryInfo[] { };
-
-            if (!Path.HasExtension(currentDir.FullName))
-                dirArray = currentDir.GetDirectories();
-
-            foreach (System.IO.DirectoryInfo dir in dirArray)
-            {
-                oM.Filing.Directory bhomDir = (oM.Filing.Directory)dir;
-                bhomDir.ParentDirectory = (oM.Filing.Info)dir.Parent;
-
-                if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
-                    continue;
-
-                if (fdr.IncludeDirectories)
-                    if (!MaxItemsReached(fdr.MaxDirectories, retrievedDirs))
-                    {
-                        output.Add(bhomDir);
-                        retrievedDirs += 1;
-                    }
-
-
-                if (fdr.IncludeFiles)
-                {
-                    System.IO.FileInfo[] files = new System.IO.FileInfo[] { };
-
-                    try
-                    {
-                        files = dir.GetFiles("*.*");
-                    }
-                    // This is thrown if one of the files requires permissions greater than the application provides.
-                    catch (UnauthorizedAccessException e)
-                    {
-                        // Write out the message and continue.
-                        BH.Engine.Reflection.Compute.RecordNote(e.Message);
-                    }
-
-                    foreach (var f in files)
-                    {
-                        if (!MaxItemsReached(fdr.MaxFiles, retrievedFiles))
-                        {
-                            // Check exclusions
-                            if (fdr.Exclusions != null && fdr.Exclusions.Contains((BH.oM.Filing.File)f))
-                                continue;
-
-                            output.Add((oM.Filing.File)f);
-                            retrievedFiles += 1;
-                        }
-                        else
-                            break;
-                    }
-                }
-
-
-                // Recurse if requested, and if the limits are not exceeded.
-                if (fdr.IncludeSubdirectories == true && MaxItemsReached(fdr.MaxFiles, retrievedFiles, fdr.MaxDirectories, retrievedDirs))
-                {
-                    FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
-                    fdrRecurse.FullPath = bhomDir.IFullPath();
-                    fdrRecurse.MaxNesting -= 1;
-
-                    Read(fdrRecurse);
-                }
-            }
+            return Read((FileDirRequest)fr);
         }
+
+        protected IEnumerable<object> Read(DirectoryRequest dr)
+        {
+            return Read((FileDirRequest)dr);
+        }
+
+        /***************************************************/
 
         private oM.Filing.File RetrieveFile(string fullPath, bool readContent)
         {
-            oM.Filing.File retrievedFile = new oM.Filing.File();
+            return RetrieveFile(new FileInfo(fullPath), readContent);
+        }
 
-            FileInfo fi = new FileInfo(fullPath);
+        private oM.Filing.File RetrieveFile(FileInfo fi, bool readContent)
+        {
+            oM.Filing.File retrievedFile = new oM.Filing.File();
 
             retrievedFile = (oM.Filing.File)fi;
 
             if (readContent)
             {
-                var content = ReadContent(fullPath);
+                var content = ReadContent(fi.FullName);
                 retrievedFile.Content.AddRange(content);
             }
 
             return retrievedFile;
         }
-
-
-        /***************************************************/
 
         private bool MaxItemsReached(int maxItems, int retrievedItemsCount)
         {

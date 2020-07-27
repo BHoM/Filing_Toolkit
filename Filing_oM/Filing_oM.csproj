@@ -60,8 +60,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CopyCommand.cs" />
+    <Compile Include="Commands\MoveCommand.cs" />
+    <Compile Include="Commands\IMRCCommand.cs" />
+    <Compile Include="Commands\RenameCommand.cs" />
+    <Compile Include="Config\PushConfig.cs" />
     <Compile Include="Directory.cs" />
-    <Compile Include="BaseInfo.cs" />
+    <Compile Include="Info.cs" />
     <Compile Include="enums\Encodings.cs" />
     <Compile Include="Interfaces\IInfo.cs" />
     <Compile Include="Interfaces\IContent.cs" />
@@ -76,6 +81,7 @@
     <Compile Include="File.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

@@ -74,6 +74,7 @@
     <Compile Include="Modify\RemoveContent.cs" />
     <Compile Include="Modify\AddContent.cs" />
     <Compile Include="Modify\ChangeDirectory.cs" />
+    <Compile Include="Modify\NormalisePath.cs" />
     <Compile Include="Modify\Rename.cs" />
     <Compile Include="Objects\EqualityComparers\PathComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

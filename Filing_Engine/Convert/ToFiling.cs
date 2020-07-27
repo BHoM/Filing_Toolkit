@@ -16,25 +16,21 @@ namespace BH.Engine.Filing
         /*** Methods                                     ***/
         /***************************************************/
 
-        //public static FileSystemInfo ToFiling(this IFile fileOrDir)
-        //{
-        //    return ToFiling(fileOrDir as dynamic);
-        //}
+        [Description("Converts the provided FileInfo into a BH.oM.Filing.File." +
+            "\nTo populate its `Content` property you need to pull the file.")]
+        public static oM.Filing.File ToFiling(FileInfo fileInfo)
+        {
+            return (oM.Filing.File)fileInfo;
+        }
 
-        //public static FileInfo ToFiling(this BH.oM.Filing.File file)
-        //{
-        //    FileInfo fileInfo = new FileInfo(file.FullName);
+        /***************************************************/
 
-        //    fileInfo.Exists = file.Exists;
-
-
-
-        //}
-
-        //public static DirectoryInfo ToFiling(this BH.oM.Filing.Directory directory)
-        //{
-        //    return
-        //}
+        [Description("Converts the provided DirectoryInfo into a BH.oM.Filing.Directory." +
+            "\nTo populate its `Content` property you need to pull the Directory.")]
+        public static oM.Filing.Directory ToFiling(DirectoryInfo directoryInfo)
+        {
+            return (oM.Filing.Directory)directoryInfo;
+        }
 
         /***************************************************/
     }

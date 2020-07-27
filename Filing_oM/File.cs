@@ -49,7 +49,7 @@ namespace BH.oM.Filing
         public virtual Human Owner { get; set; }
 
         [Description("The content of the file.")]
-        public virtual List<object> Content { get; set; }
+        public virtual List<object> Content { get; set; } = new List<object>();
 
 
         /***************************************************/

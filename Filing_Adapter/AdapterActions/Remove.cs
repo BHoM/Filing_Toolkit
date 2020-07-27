@@ -21,15 +21,9 @@ namespace BH.Adapter.Filing
         /**** Methods                                  *****/
         /***************************************************/
 
-        public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
+        public override int Remove(IRequest request, ActionConfig actionConfig = null)
         {
-            if (request == null)
-            {
-                BH.Engine.Reflection.Compute.RecordWarning("Please specify a valid request.");
-                return new List<object>();
-            }
-
-            return Read(request as dynamic);
+            return Delete(request as dynamic);
         }
 
         /***************************************************/

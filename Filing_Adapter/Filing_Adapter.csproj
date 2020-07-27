@@ -65,6 +65,9 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Reflection_oM, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Serialiser_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Serialiser_Engine.dll</HintPath>
     </Reference>
@@ -81,12 +84,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdapterActions\Execute.cs" />
+    <Compile Include="AdapterActions\Remove.cs" />
     <Compile Include="AdapterActions\Push.cs" />
     <Compile Include="AdapterActions\Pull.cs" />
+    <Compile Include="CRUD\Create\CreateDirectory.cs" />
+    <Compile Include="CRUD\Create\CreateBson.cs" />
+    <Compile Include="CRUD\Create\CreateJson.cs" />
     <Compile Include="CRUD\Create\Create.cs" />
-    <Compile Include="CRUD\Delete.cs" />
+    <Compile Include="CRUD\Delete\Delete.cs" />
     <Compile Include="CRUD\Read\Read.cs" />
     <Compile Include="CRUD\Read\ReadFileContent.cs" />
+    <Compile Include="Methods\WalkDirectories.cs" />
     <Compile Include="FilingAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -105,9 +114,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CRUD\Delete\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
