@@ -15,6 +15,13 @@ namespace BH.oM.Filing
         public string FullPath { get; set; } 
 
         [Description("The new Full paths of the Files. Files will be Copied there.")]
-        public string TargetFullPath { get; set; } 
+        public string TargetFullPath { get; set; }
+
+        [Description("Whether to create the target Directory if it doesn't exist.")]
+        public bool CreateDirectoryIfNotExist { get; set; } = true;
+
+        [Description("Whether to override the target.")]
+        public bool OverwriteTarget { get; set; } = false;
+
     }
 }

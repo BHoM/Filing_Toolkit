@@ -12,7 +12,7 @@ namespace BH.oM.Filing
     public class RenameCommand : IMRCCommand
     {
         [Description("Full paths of the items to be Renamed.")]
-        public string FullPaths { get; set; }
+        public string FullPath { get; set; }
 
         [Description("The new Full paths of the Files. Files will be Renamed.")]
         public string TargetFullPath { get; set; }
