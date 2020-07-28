@@ -28,6 +28,13 @@ namespace BH.Adapter.Filing
             if (pushType == PushType.AdapterDefault)
                 pushType = m_AdapterSettings.DefaultPushType;
 
+            if (pushType == PushType.FullPush)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning($"The specified {nameof(PushType)} {nameof(PushType.FullPush)} is not supported.");
+                return new List<object>();
+            }
+                
+
             if (pushType == PushType.DeleteThenCreate)
                 if (m_Push_enableDeleteWarning && !pushConfig.DisableWarnings)
                 {
