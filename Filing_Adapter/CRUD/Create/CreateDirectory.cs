@@ -62,13 +62,14 @@ namespace BH.Adapter.Filing
 
                         System.IO.Directory.CreateDirectory(fullPath);
                     }
-                    else if (pushType == PushType.CreateOnly) // Create only directories that didn't exist.
+                    else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting || pushType == PushType.UpdateOrCreate) 
                     {
+                        // Create only directories that didn't exist.
                         if (!exists)
                             System.IO.Directory.CreateDirectory(fullPath);
                         else
                         {
-                            BH.Engine.Reflection.Compute.RecordNote($"File {fullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
+                            BH.Engine.Reflection.Compute.RecordNote($"Directory {fullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
                             directoryCreated = false;
                         }
                     }
