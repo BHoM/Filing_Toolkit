@@ -53,7 +53,7 @@ namespace BH.Adapter.Filing
 
                 bool success = false;
 
-                if (dir != null && rr.FoldersMustBeEmtpy == false || !dir.Content.Any()) 
+                if (dir != null) 
                     success |= DeleteDirectory(fullPath);
 
 
