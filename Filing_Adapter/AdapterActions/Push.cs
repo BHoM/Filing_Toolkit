@@ -23,19 +23,20 @@ namespace BH.Adapter.Filing
 
         public override List<object> Push(IEnumerable<object> objects, string tag = "", PushType pushType = PushType.AdapterDefault, ActionConfig actionConfig = null)
         {
-            oM.Filing.PushConfig pushConfig = actionConfig as oM.Filing.PushConfig;
+            oM.Filing.PushConfig pushConfig = actionConfig as oM.Filing.PushConfig ?? new PushConfig();
 
             if (pushType == PushType.AdapterDefault)
                 pushType = m_AdapterSettings.DefaultPushType;
 
             if (pushType == PushType.DeleteThenCreate)
-                if (m_enableDeleteWarning)
+                if (m_Push_enableDeleteWarning && !pushConfig.DisableWarnings)
                 {
                     BH.Engine.Reflection.Compute.RecordWarning($"You have selected the {nameof(PushType)} {nameof(PushType.DeleteThenCreate)}." +
                         $"\nThis has the potential of deleting files and folders with their contents." +
-                        $"\nMake sure that you know what you are doing. This wanrning is not repeated. Re-enable the component to continue.");
+                        $"\nMake sure that you know what you are doing. This warning will not be repeated." +
+                        $"\nRe-enable the component to continue.");
 
-                    m_enableDeleteWarning = false;
+                    m_Push_enableDeleteWarning = false;
 
                     return new List<object>();
                 }

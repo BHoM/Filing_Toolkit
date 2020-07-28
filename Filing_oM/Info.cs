@@ -32,7 +32,6 @@ namespace BH.oM.Filing
         [Description("Gets the size, in bytes, of the current file.")]
         public virtual long Length { get; set; } = 0;
 
-
         [Description("Attributes indicating if ReadOnly, Hidden, System File, etc.")]
         public virtual FileAttributes Attributes { get; set; }
 
@@ -43,13 +42,11 @@ namespace BH.oM.Filing
         public virtual DateTime LastWriteTime { get; set; }
         public virtual DateTime LastWriteTimeUtc { get; set; }
 
-        [Description("User owning the file, if any, or the user who created the object File.")]
-        public virtual Human Owner { get; set; }
-
+        [Description("User owning the file/directory, if any, or the user who created it.")]
+        public virtual string Owner { get; set; }
 
         [Description(@"Root folder, such as '\', 'C:', or * '\\server\share'.")]
         public Info Root { get; }
-
 
         /***************************************************/
         /**** Explicit cast                             ****/

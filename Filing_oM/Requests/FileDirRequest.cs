@@ -65,6 +65,11 @@ namespace BH.oM.Filing
         {
             return new FileDirRequest() {
                 FullPath = fr.FullPath,
+                IncludeDirectories = false,
+                IncludeFiles = true,
+                IncludeSubdirectories = fr.SearchSubdirectories,
+                MaxFiles = fr.MaxFiles,
+                MaxNesting = fr.MaxNesting,
                 IncludeFileContents = fr.IncludeFileContents
             };
         }
@@ -75,7 +80,9 @@ namespace BH.oM.Filing
             {
                 FullPath = dr.FullPath,
                 IncludeDirectories = true,
+                IncludeFiles = false,
                 IncludeSubdirectories = dr.IncludeSubdirectories,
+                MaxDirectories = dr.MaxDirectories,
                 MaxNesting = dr.MaxNesting,
                 Exclusions = dr.Exclusions
             };

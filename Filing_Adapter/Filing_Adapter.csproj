@@ -95,6 +95,8 @@
     <Compile Include="CRUD\Delete\Delete.cs" />
     <Compile Include="CRUD\Read\Read.cs" />
     <Compile Include="CRUD\Read\ReadFileContent.cs" />
+    <Compile Include="CRUD\Read\ReadFile.cs" />
+    <Compile Include="Methods\AddExtraData.cs" />
     <Compile Include="Methods\WalkDirectories.cs" />
     <Compile Include="FilingAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

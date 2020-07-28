@@ -23,10 +23,41 @@ namespace BH.Adapter.Filing
 
         public override int Remove(IRequest request, ActionConfig actionConfig = null)
         {
-            return Delete(request as dynamic);
+            oM.Filing.RemoveConfig removeConfig = actionConfig as oM.Filing.RemoveConfig ?? new RemoveConfig();
+
+            if (m_Remove_enableDeleteWarning && !removeConfig.DisableWarnings)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning($"This Action can delete files and folders with their contents." +
+                    $"\nMake sure that you know what you are doing. Re-enable the component to continue.");
+
+                m_Remove_enableDeleteWarning = false;
+
+                return 0;
+            }
+
+            if (m_Remove_enableDeleteAlert && (removeConfig.IncludeHiddenFiles))
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Your {nameof(removeConfig)} is set to {nameof(removeConfig.IncludeHiddenFiles)}" +
+                    $"\nMake sure you know what you are doing. To continue, re-enable the component.");
+
+                m_Remove_enableDeleteAlert = false;
+
+                return 0;
+            }
+
+
+            int deletedCount = Delete(request as dynamic, removeConfig);
+
+            if (deletedCount > 0)
+            {
+                m_Remove_enableDeleteWarning = true; // re-enable the warning if any object was successfully deleted.
+            }
+
+            m_Remove_enableDeleteAlert = true; // always re-enable the alert for hidden files.
+
+            return deletedCount;
         }
 
         /***************************************************/
-
     }
 }

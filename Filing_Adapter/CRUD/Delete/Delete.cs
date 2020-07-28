@@ -29,17 +29,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BH.Engine.Filing;
-using BH.oM.Filing;
-
 
 namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
-        protected int Delete(FileDirRequest fdr)
+        protected int Delete(FileDirRequest fdr, RemoveConfig removeConfig)
         {
             List<IContent> queried = new List<IContent>();
-            WalkDirectories(queried, fdr);
+            int retrievedFiles = 0, retrievedDirs = 0;
+            WalkDirectories(queried, fdr, ref retrievedFiles, ref retrievedDirs, removeConfig.IncludeHiddenFiles, false);
 
             int deletedCount = 0;
 
@@ -92,7 +91,6 @@ namespace BH.Adapter.Filing
 
             return false;
         }
-
 
         private bool Delete(oM.Filing.Directory directory, bool recordNote = false)
         {

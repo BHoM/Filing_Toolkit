@@ -34,60 +34,36 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
-        protected IEnumerable<object> Read(FileDirRequest fdr)
+        protected IEnumerable<object> Read(FileDirRequest fdr, PullConfig pullConfig)
         {
             // Recursively walk the directories to retrieve File and Directory Info.
             List<oM.Filing.IContent> output = new List<IContent>();
 
-            string fullPath = fdr.FullPath.IFullPath();
-            if (Query.IsFile(fullPath))
-                output.Add(RetrieveFile(fullPath, fdr.IncludeFileContents));
+            if (Query.IsExistingFile(fdr.FullPath.IFullPath()))
+            {
+                // The FileDirRequest actually points to a single file;
+                // convert to a FileRequest.
+                output.Add(ReadFile(fdr.ToFileRequest(), pullConfig));
+            }
             else
-                WalkDirectories(output, fdr);
+            {
+                int retrievedFiles = 0, retrievedDirs = 0;
+                WalkDirectories(output, fdr, ref retrievedFiles, ref retrievedDirs, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
+            }
 
             return output;
         }
 
-        protected IEnumerable<object> Read(FileRequest fr)
+        protected IEnumerable<object> Read(FileRequest fr, PullConfig pullConfig)
         {
-            return Read((FileDirRequest)fr);
+            // Convert to the most generic type of Request.
+            return Read((FileDirRequest)fr, pullConfig);
         }
 
-        protected IEnumerable<object> Read(DirectoryRequest dr)
+        protected IEnumerable<object> Read(DirectoryRequest dr, PullConfig pullConfig)
         {
-            return Read((FileDirRequest)dr);
-        }
-
-        /***************************************************/
-
-        private oM.Filing.File RetrieveFile(string fullPath, bool readContent)
-        {
-            return RetrieveFile(new FileInfo(fullPath), readContent);
-        }
-
-        private oM.Filing.File RetrieveFile(FileInfo fi, bool readContent)
-        {
-            oM.Filing.File retrievedFile = new oM.Filing.File();
-
-            retrievedFile = (oM.Filing.File)fi;
-
-            if (readContent)
-            {
-                var content = ReadContent(fi.FullName);
-                retrievedFile.Content.AddRange(content);
-            }
-
-            return retrievedFile;
-        }
-
-        private bool MaxItemsReached(int maxItems, int retrievedItemsCount)
-        {
-            return maxItems != -1 && retrievedItemsCount >= maxItems;
-        }
-
-        private bool MaxItemsReached(int maxFiles, int retrievedFilesCount, int maxDirs, int retrivedDirsCount)
-        {
-            return !MaxItemsReached(maxFiles, retrievedFilesCount) && !MaxItemsReached(maxDirs, retrivedDirsCount);
+            // Convert to the most generic type of Request.
+            return Read((FileDirRequest)dr, pullConfig);
         }
     }
 }

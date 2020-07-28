@@ -64,6 +64,9 @@
     <Compile Include="Commands\MoveCommand.cs" />
     <Compile Include="Commands\IMRCCommand.cs" />
     <Compile Include="Commands\RenameCommand.cs" />
+    <Compile Include="Config\ExecuteConfig.cs" />
+    <Compile Include="Config\PullConfig.cs" />
+    <Compile Include="Config\RemoveConfig.cs" />
     <Compile Include="Config\PushConfig.cs" />
     <Compile Include="Directory.cs" />
     <Compile Include="Info.cs" />

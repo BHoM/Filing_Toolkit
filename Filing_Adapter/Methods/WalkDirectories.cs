@@ -14,7 +14,9 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        private void WalkDirectories(List<oM.Filing.IContent> output, FileDirRequest fdr, int retrievedFiles = 0, int retrievedDirs = 0)
+        private void WalkDirectories(List<oM.Filing.IContent> output, FileDirRequest fdr, 
+            ref int retrievedFiles, ref int retrievedDirs, 
+            bool inclHidFiles = false, bool inclSysFiles = false)
         {
             // Recursion stop condition.
             if (fdr.MaxNesting == 0)
@@ -50,17 +52,17 @@ namespace BH.Adapter.Filing
                     fdrRecurse.FullPath = bhomDir.IFullPath();
                     fdrRecurse.MaxNesting -= 1;
 
-                    WalkDirectories(output, fdrRecurse, retrievedFiles, retrievedDirs);
+                    WalkDirectories(output, fdrRecurse, ref retrievedFiles, ref retrievedDirs, inclHidFiles, inclSysFiles);
                 }
             }
 
             if (fdr.IncludeFiles)
             {
-                System.IO.FileInfo[] files = new System.IO.FileInfo[] { };
+                System.IO.FileInfo[] fileInfos = new System.IO.FileInfo[] { };
 
                 try
                 {
-                    files = currentDir.GetFiles("*.*");
+                    fileInfos = currentDir.GetFiles("*.*");
                 }
                 // This is thrown if one of the files requires permissions greater than the application provides.
                 catch (UnauthorizedAccessException e)
@@ -69,23 +71,38 @@ namespace BH.Adapter.Filing
                     BH.Engine.Reflection.Compute.RecordNote(e.Message);
                 }
 
-                foreach (var f in files)
+                foreach (var fi in fileInfos)
                 {
                     if (!MaxItemsReached(fdr.MaxFiles, retrievedFiles))
                     {
                         // Check exclusions
-                        if (fdr.Exclusions != null && fdr.Exclusions.Contains((BH.oM.Filing.File)f))
+                        if (fdr.Exclusions != null && fdr.Exclusions.Contains((BH.oM.Filing.File)fi))
                             continue;
 
-                        oM.Filing.File omFile = RetrieveFile(f, fdr.IncludeFileContents);
+                        oM.Filing.File omFile = ReadFile(fi.FullName, fdr.IncludeFileContents, inclHidFiles, inclSysFiles);
 
-                        output.Add(omFile);
-                        retrievedFiles += 1;
+                        if (omFile != null)
+                        {
+                            output.Add(omFile);
+                            retrievedFiles += 1;
+                        }
                     }
                     else
                         break;
                 }
             }
+        }
+
+        /***************************************************/
+
+        private bool MaxItemsReached(int maxItems, int retrievedItemsCount)
+        {
+            return maxItems != -1 && retrievedItemsCount >= maxItems;
+        }
+
+        private bool MaxItemsReached(int maxFiles, int retrievedFilesCount, int maxDirs, int retrivedDirsCount)
+        {
+            return !MaxItemsReached(maxFiles, retrievedFilesCount) && !MaxItemsReached(maxDirs, retrivedDirsCount);
         }
     }
 }
