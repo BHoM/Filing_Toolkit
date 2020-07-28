@@ -34,28 +34,33 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
-        protected int Delete(FileDirRequest fdr, RemoveConfig removeConfig)
+        protected int Delete(RemoveRequest rr, RemoveConfig removeConfig)
         {
             int deletedCount = 0;
 
-            // Check if the request points to a single file.
-            if (Query.IsExistingFile(fdr.ParentDirectory.IFullPath()))
+            if (!rr.ToRemove.Any())
+                return deletedCount;
+
+            foreach (string fullPath in rr.ToRemove)
             {
-                // The FileDirRequest actually points to a single file.
-                BH.oM.Filing.File file = (BH.oM.Filing.File)new FileInfo(fdr.ParentDirectory.IFullPath());
+                BH.oM.Filing.Directory dir = null;
+                if (fullPath.IsExistingDir())
+                    dir = ReadDirectory(fullPath);
 
-                // Delete the single file.
-                if (Delete(file))
-                    return 1;
-            }
+                BH.oM.Filing.File file = null;
+                if (fullPath.IsExistingFile())
+                    file = ReadFile(fullPath);
 
-            List<IContent> queried = new List<IContent>();
-            int retrievedFiles = 0, retrievedDirs = 0;
-            WalkDirectories(queried, fdr, ref retrievedFiles, ref retrievedDirs, removeConfig.IncludeHiddenFiles, false);
+                bool success = false;
 
-            foreach (var item in queried)
-            {
-                if (Delete(item as dynamic, true))
+                if (dir != null && rr.FoldersMustBeEmtpy == false || !dir.Content.Any()) 
+                    success |= DeleteDirectory(fullPath);
+
+
+                if (file != null)
+                    success = DeleteFile(fullPath);
+
+                if (success)
                     deletedCount++;
             }
 
@@ -74,23 +79,22 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private bool Delete(oM.Filing.File file, bool recordNote = false)
+        private bool DeleteFile(string filePath, bool recordNote = false)
         {
-            string fullPath = file.IFullPath();
             try
             {
-                if (System.IO.File.Exists(fullPath))
+                if (System.IO.File.Exists(filePath))
                 {
-                    System.IO.File.Delete(fullPath);
+                    System.IO.File.Delete(filePath);
 
                     if (recordNote)
-                        BH.Engine.Reflection.Compute.RecordNote($"File deleted: {fullPath}");
+                        BH.Engine.Reflection.Compute.RecordNote($"File deleted: {filePath}");
 
                     return true;
                 }
                 else
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning($"File not found: {fullPath}");
+                    BH.Engine.Reflection.Compute.RecordWarning($"File not found: {filePath}");
                     return false;
                 }
 
@@ -103,23 +107,22 @@ namespace BH.Adapter.Filing
             return false;
         }
 
-        private bool Delete(oM.Filing.Directory directory, bool recordNote = false)
+        private bool DeleteDirectory(string directoryPath, bool recordNote = false)
         {
-            string fullPath = directory.IFullPath();
             try
             {
-                if (System.IO.Directory.Exists(fullPath))
+                if (System.IO.Directory.Exists(directoryPath))
                 {
-                    System.IO.Directory.Delete(fullPath);
+                    System.IO.Directory.Delete(directoryPath);
 
                     if (recordNote)
-                        BH.Engine.Reflection.Compute.RecordNote($"Directory deleted: {fullPath}");
+                        BH.Engine.Reflection.Compute.RecordNote($"Directory deleted: {directoryPath}");
 
                     return true;
                 }
                 else
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning($"Directory not found: {fullPath}");
+                    BH.Engine.Reflection.Compute.RecordWarning($"Directory not found: {directoryPath}");
                     return false;
                 }
             }

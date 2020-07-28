@@ -21,7 +21,7 @@ namespace BH.Adapter.Filing
             return ReadFile(fullPath, fr.IncludeFileContents, pc.IncludeHiddenFiles, pc.IncludeSystemFiles);
         }
 
-        private oM.Filing.File ReadFile(string fullPath, bool inclFileContent = false, bool inclHidFiles =false, bool inclSysFiles = false)
+        private oM.Filing.File ReadFile(string fullPath, bool inclFileContent = false, bool inclHidFiles = false, bool inclSysFiles = false)
         {
             // Perform the "Read" = get the System.FileInfo, which will be the basis for our om.Filing.File
             FileInfo fi = new FileInfo(fullPath);
@@ -34,7 +34,7 @@ namespace BH.Adapter.Filing
                 return null;
 
             // Checks on FileInfo
-            if (!fi.Exists)
+            if ((fi.Attributes & FileAttributes.Directory) <= 0 && !fi.Exists)
                 return null;
 
             // Convert the FileInfo to our om.Filing.File
@@ -49,5 +49,35 @@ namespace BH.Adapter.Filing
 
             return file;
         }
+
+        private oM.Filing.Directory ReadDirectory(string fullPath, bool inclHidDirs = false, bool inclSysDirs = false, bool includeFolderContent = false)
+        {
+            // Perform the "Read" = get the System.DirectoryInfo, which will be the basis for our om.Filing.Directory
+            DirectoryInfo di = new DirectoryInfo(fullPath);
+
+            // Checks on config
+            if (!inclHidDirs && (di.Attributes & FileAttributes.Hidden) > 0)
+                return null;
+
+            if (!inclSysDirs && (di.Attributes & FileAttributes.System) > 0)
+                return null;
+
+            // Checks on FileInfo
+            if ((di.Attributes & FileAttributes.Directory) <= 0 && !di.Exists)
+                return null;
+
+            // Convert the FileInfo to our om.Filing.File
+            oM.Filing.Directory dir = (oM.Filing.Directory)di;
+
+            // Add author data if possible
+            AddAuthor(dir);
+
+            if (includeFolderContent)
+                AddContent(dir);
+
+            return dir;
+        }
+
     }
+
 }
