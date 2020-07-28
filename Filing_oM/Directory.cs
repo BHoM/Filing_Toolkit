@@ -99,5 +99,14 @@ namespace BH.oM.Filing
             else
                 return null;
         }
+
+        /***************************************************/
+        /**** ToString                                  ****/
+        /***************************************************/
+
+        public override string ToString()
+        {
+            return Path.Combine(this.ParentDirectory?.ToString() ?? "", this.Name);
+        }
     }
 }

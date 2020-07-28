@@ -19,7 +19,7 @@ namespace BH.oM.Filing
         [Description("Parent Directory of the File or Directory.")]
         Info ParentDirectory { get; set; }
 
-        [Description("Name of the file (WITHOUT Extension) or of the Directory.")]
+        [Description("Name of the file (WITH Extension) or of the Directory.")]
         string Name { get; set; }
 
         bool Exists { get; set; }

@@ -14,7 +14,7 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        private void AddAuthor(oM.Filing.File retrievedFile)
+        private void AddAuthor(oM.Filing.IContent retrievedFile)
         {
             string fullPath = retrievedFile.IFullPath();
 
@@ -30,7 +30,7 @@ namespace BH.Adapter.Filing
                 }
                 catch
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning($"Cannot retrieve Author/Owner for file: `{fullPath}`");
+                    BH.Engine.Reflection.Compute.RecordWarning($"Cannot retrieve Author/Owner for: `{fullPath}`");
                 }
             }
         }
@@ -41,6 +41,15 @@ namespace BH.Adapter.Filing
 
             var content = ReadContent(fullPath);
             retrievedFile.Content.AddRange(content);
+        }
+
+        private void AddContent(oM.Filing.Directory retrievedDir)
+        {
+            string fullPath = retrievedDir.IFullPath();
+
+            var content = new DirectoryInfo(fullPath).GetFiles("*.*");
+
+            retrievedDir.Content.AddRange(content.Cast<Info>());
         }
 
     }

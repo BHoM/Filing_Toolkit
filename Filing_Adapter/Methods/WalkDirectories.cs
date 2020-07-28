@@ -30,10 +30,13 @@ namespace BH.Adapter.Filing
             if (!Path.HasExtension(currentDir.FullName))
                 dirArray = currentDir.GetDirectories();
 
-            foreach (System.IO.DirectoryInfo dir in dirArray)
+            foreach (System.IO.DirectoryInfo di in dirArray)
             {
-                oM.Filing.Directory bhomDir = (oM.Filing.Directory)dir;
-                bhomDir.ParentDirectory = (oM.Filing.Info)dir.Parent;
+                oM.Filing.Directory bhomDir = ReadDirectory(di.FullName, inclHidFiles, inclSysFiles);
+                if (bhomDir == null)
+                    continue;
+
+                bhomDir.ParentDirectory = (oM.Filing.Info)di.Parent;
 
                 if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
                     continue;

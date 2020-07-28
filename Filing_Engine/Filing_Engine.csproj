@@ -79,6 +79,7 @@
     <Compile Include="Modify\Rename.cs" />
     <Compile Include="Objects\EqualityComparers\PathComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\IsExistingDir.cs" />
     <Compile Include="Query\IsExistingFile.cs" />
     <Compile Include="Query\IsAcyclic.cs" />
     <Compile Include="Query\FullPath.cs" />

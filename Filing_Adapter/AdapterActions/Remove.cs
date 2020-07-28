@@ -23,8 +23,12 @@ namespace BH.Adapter.Filing
 
         public override int Remove(IRequest request, ActionConfig actionConfig = null)
         {
-            if (request == null)
+            RemoveRequest removeRequest = request as RemoveRequest;
+            if (removeRequest == null)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning($"Please specify a valid {nameof(RemoveRequest)}.");
                 return 0;
+            }
 
             oM.Filing.RemoveConfig removeConfig = actionConfig as oM.Filing.RemoveConfig ?? new RemoveConfig();
 

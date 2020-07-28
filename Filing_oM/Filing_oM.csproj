@@ -73,6 +73,7 @@
     <Compile Include="enums\Encodings.cs" />
     <Compile Include="Interfaces\IInfo.cs" />
     <Compile Include="Interfaces\IContent.cs" />
+    <Compile Include="Requests\Interfaces\IRemoveRequest.cs" />
     <Compile Include="Requests\Interfaces\IFileRequest.cs" />
     <Compile Include="Requests\Interfaces\IFilingRequest.cs" />
     <Compile Include="Requests\Interfaces\IDirectoryRequest.cs" />
