@@ -33,7 +33,7 @@ namespace BH.oM.Filing
         DateTime LastWriteTime { get; set; }
         DateTime LastWriteTimeUtc { get; set; }
 
-        Human Owner { get; set; }
+        string Owner { get; set; }
 
         /***************************************************/
     }

@@ -31,9 +31,5 @@ namespace BH.oM.Filing
 
         [Description("Only BHoMObjects that own a Fragment of one of these Types will be returned.")]
         public virtual List<Type> FragmentTypes { get; set; } = new List<Type>();
-
-        [Description("Maximum number of objects to be retrieved from each file." +
-            "Defaults to -1 which corresponds to no limit.")]
-        public virtual int MaxObjects { get; set; } = -1;
     }
 }

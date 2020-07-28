@@ -37,10 +37,10 @@ namespace BH.oM.Filing
         public virtual DateTime LastWriteTime { get; set; }
         public virtual DateTime LastWriteTimeUtc { get; set; }
 
-        [Description("User owning the file, if any, or the user who created the object File.")]
-        public virtual Human Owner { get; set; }
+        [Description("User owning the Directory, if any, or the user who created the Directory.")]
+        public virtual string Owner { get; set; }
 
-        [Description("The content of the file.")]
+        [Description("The content of the Directory.")]
         public virtual List<object> Content { get; set; }
 
 

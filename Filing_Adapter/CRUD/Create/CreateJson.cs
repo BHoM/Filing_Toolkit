@@ -51,7 +51,7 @@ namespace BH.Adapter.Filing
 
                 // All of the file content.
                 List<string> allLines = new List<string>();
-                allLines.AddRange(file.Content.Select(obj => "\"" + obj.GetType().FullName + "\":" + obj.ToJson()));
+                allLines.AddRange(file.Content.Select(obj => "\"" + JsonKey(obj) + "\":" + obj.ToJson()));
                 string content = string.Join(",", allLines);
 
                 content = "{" + content;
@@ -114,6 +114,19 @@ namespace BH.Adapter.Filing
         }
 
         /***************************************************/
+
+        private string JsonKey(object obj)
+        {
+            IBHoMObject ibhomObj = obj as IBHoMObject;
+            if (ibhomObj != null)
+                return ibhomObj.GetType().FullName.Replace("BH.oM.", "") + "_" + ibhomObj.BHoM_Guid;
+
+            IObject iObject = obj as IObject;
+            if (iObject != null)
+                return iObject.GetType().FullName.Replace("BH.oM.", "") + "_" + Guid.NewGuid();
+
+            return iObject.GetType().FullName + "_" + Guid.NewGuid();
+        }
     }
 }
 

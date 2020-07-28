@@ -16,5 +16,8 @@ namespace BH.oM.Filing
 
         [Description("The new Full paths of the Files. Files will be Renamed.")]
         public string TargetFullPath { get; set; }
+
+        [Description("Whether to override the target.")]
+        public bool OverwriteTarget { get; set; } = false;
     }
 }

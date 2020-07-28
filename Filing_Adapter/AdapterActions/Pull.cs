@@ -23,13 +23,15 @@ namespace BH.Adapter.Filing
 
         public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
         {
+            PullConfig pullConfig = actionConfig as PullConfig ?? new PullConfig();
+
             if (request == null)
             {
                 BH.Engine.Reflection.Compute.RecordWarning("Please specify a valid request.");
                 return new List<object>();
             }
 
-            return Read(request as dynamic);
+            return Read(request as dynamic, pullConfig);
         }
 
         /***************************************************/

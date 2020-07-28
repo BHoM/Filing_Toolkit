@@ -27,7 +27,22 @@ namespace BH.Adapter.Filing
         [MultiOutput(1, "GlobalSuccess", "Bool indicating whether the command succeded for all the provided inputs.")]
         public override oM.Reflection.Output<List<object>, bool> Execute(IExecuteCommand command, ActionConfig actionConfig = null)
         {
-            return RunCommand(command as dynamic);
+            oM.Filing.ExecuteConfig executeConfig = actionConfig as oM.Filing.ExecuteConfig ?? new ExecuteConfig();
+
+            if (m_Execute_enableWarning && !executeConfig.DisableWarnings)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning($"This Action can move, rename and copy files and folders with their contents." +
+                    $"\nMake sure that you know what you are doing. This warning will not be repeated." +
+                    $"\nRe-enable the component to continue.");
+
+                m_Execute_enableWarning = false;
+
+                return new Output<List<object>, bool>();
+            }
+
+            var output = RunCommand(command as dynamic);
+
+            return output;
         }
 
         /***************************************************/
@@ -36,6 +51,7 @@ namespace BH.Adapter.Filing
         {
             string source = command.FullPath?.NormalisePath();
             string target = command.TargetFullPath?.NormalisePath();
+            bool overwriteTarget = command.OverwriteTarget;
 
             if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(target))
             {
@@ -44,17 +60,17 @@ namespace BH.Adapter.Filing
             }
             RenameCommand renameCommand = command as RenameCommand;
             if (renameCommand != null)
-                return Move(source, target, true);
+                return Move(source, target, true, overwriteTarget);
 
             MoveCommand moveCommand = command as MoveCommand;
             if (moveCommand != null)
-                return Move(source, target, false, moveCommand.OverwriteTarget, moveCommand.CreateDirectoryIfNotExist);
+                return Move(source, target, false, overwriteTarget, moveCommand.CreateDirectoryIfNotExist);
 
             CopyCommand copyCommand = command as CopyCommand;
             if (copyCommand != null)
-                return Copy(source, target, copyCommand.OverwriteTarget, copyCommand.CreateDirectoryIfNotExist);
+                return Copy(source, target, overwriteTarget, copyCommand.CreateDirectoryIfNotExist);
 
-            return new Output<List<object>, bool>() { Item1 = null, Item2 = false };
+            return new Output<List<object>, bool>() { Item1 = new List<object>(), Item2 = false };
         }
 
         private Output<List<object>, bool> Move(string source, string target, bool renameOnlyWithinFolder, bool overwriteTarget = false, bool createDir = true)

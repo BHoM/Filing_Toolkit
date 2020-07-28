@@ -16,19 +16,17 @@ namespace BH.Engine.Filing
         /*** Methods                                     ***/
         /***************************************************/
 
-        [Description("Whether the oM.Filing.FileInfo points to a File or a Directory.")]
-        [Output("True if points to a File, false if it points to a Directory.")]
-        public static bool IsFile(this oM.Filing.Info fi)
-        {
-            return IsFile(fi.IFullPath());
-        }
-
         [Description("Whether the string fullPath points to a File or a Directory.")]
-        [Output("True if points to a File, false if it points to a Directory.")]
-        public static bool IsFile(this string fullPath)
+        [Output("True if points to a File, false if it points to a Directory or if the file doesn't exist.")]
+        public static bool IsExistingFile(this string fullPath)
         {
-            FileAttributes attr = System.IO.File.GetAttributes(fullPath);
-            return !((attr & FileAttributes.Directory) == FileAttributes.Directory);
+            if (System.IO.File.Exists(fullPath))
+            {
+                FileAttributes attr = System.IO.File.GetAttributes(fullPath);
+                return !((attr & FileAttributes.Directory) == FileAttributes.Directory);
+            }
+
+            return false;
         }
 
         /***************************************************/

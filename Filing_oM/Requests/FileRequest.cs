@@ -22,6 +22,17 @@ namespace BH.oM.Filing
         [Description("Files from this FullPath will be queried. You can also specify a string path.")]
         public virtual Info FullPath { get; set; } = "";
 
+        [Description("If enabled, look also in subdirectories.")]
+        public virtual bool SearchSubdirectories { get; set; } = false;
+
+        [Description("If SearchSubdirectories is true, this sets the maximum subdirectiory nesting level to look in." +
+            "\nDefaults to -1 which corresponds to no limit.")]
+        public virtual int MaxNesting { get; set; } = -1;
+
+        [Description("Sets the maximum number of Files to retrieve, useful when using SearchSubdirectories." +
+            "\nDefaults to -1 which corresponds to no limit.")]
+        public virtual int MaxFiles { get; set; } = -1;
+
         [Description("Whether to include the contents of the Files.")]
         public virtual bool IncludeFileContents { get; set; } = false;
 

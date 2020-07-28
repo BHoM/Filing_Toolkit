@@ -38,27 +38,31 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
-        protected IEnumerable<object> Read(FileContentRequest fcr)
+        protected IEnumerable<object> Read(FileContentRequest fcr, PullConfig pullConfig)
         {
             List<object> output = new List<object>();
 
-            oM.Filing.File fileInfo = fcr.File;
+            string fileFullPath = fcr.File.IFullPath();
 
-            string fileFullPath = fileInfo.IFullPath();
+            oM.Filing.File readFile = ReadFile(fileFullPath, true, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
 
-            var retrievedObjects = ReadContent(fileFullPath);
+            if (readFile == null)
+                return output;
 
-            output.AddRange(
-              retrievedObjects
+            output = readFile.Content ?? new List<object>();
+
+            if (!output.Any())
+                BH.Engine.Reflection.Compute.RecordWarning($"No content could be pulled for {fileFullPath}. Make sure it's not protected or empty.");
+
+            return output
                   .Where(o => fcr.Types.Count > 0 ? fcr.Types.Any(t => t == o.GetType()) : true)
                   .Where(o => fcr.FragmentTypes.Count > 0 ? (o as BHoMObject)?.Fragments.Select(f => f.GetType()).Intersect(fcr.FragmentTypes).Any() ?? false : true)
-                  .Where(o => fcr.CustomDataKeys.Count > 0 ? (o as BHoMObject)?.CustomData.Keys.Intersect(fcr.CustomDataKeys).Any() ?? false : true)
-             );
-
-            return output;
+                  .Where(o => fcr.CustomDataKeys.Count > 0 ? (o as BHoMObject)?.CustomData.Keys.Intersect(fcr.CustomDataKeys).Any() ?? false : true);
         }
 
-        protected IEnumerable<object> ReadContent(string fileFullPath)
+        /***************************************************/
+
+        private IEnumerable<object> ReadContent(string fileFullPath)
         {
             List<object> retrievedObjects = new List<object>();
 

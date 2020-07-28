@@ -15,5 +15,7 @@ namespace BH.oM.Filing
         string FullPath { get; set; }
 
         string TargetFullPath { get; set; }
+
+        bool OverwriteTarget { get; set; }
     }
 }
