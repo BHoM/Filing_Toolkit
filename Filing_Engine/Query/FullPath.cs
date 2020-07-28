@@ -32,7 +32,7 @@ namespace BH.Engine.Filing
 
         private static string FullPath(this FileDirRequest fdr)
         {
-            return FullPath(fdr.FullPath);
+            return FullPath(fdr.ParentDirectory);
         }
 
         private static string FullPath(this IInfo baseInfo)

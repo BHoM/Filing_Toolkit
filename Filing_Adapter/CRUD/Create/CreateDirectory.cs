@@ -42,12 +42,6 @@ namespace BH.Adapter.Filing
 
         private List<BH.oM.Filing.IContent> CreateDirectory(IEnumerable<BH.oM.Filing.Directory> directory, PushType pushType, PushConfig pushConfig)
         {
-            if (pushType != PushType.DeleteThenCreate && pushType != PushType.UpdateOnly)
-            {
-                BH.Engine.Reflection.Compute.RecordWarning($"The specified Pushtype of {pushType.ToString()} is not supported for .bson files." +
-                    $"\nValid options: {PushType.DeleteThenCreate} or {PushType.UpdateOnly}.");
-            }
-
             List<BH.oM.Filing.IContent> createdDirs = new List<oM.Filing.IContent>();
 
             bool clearfile = pushType == PushType.DeleteThenCreate ? true : false;
@@ -68,7 +62,7 @@ namespace BH.Adapter.Filing
 
                         System.IO.Directory.CreateDirectory(fullPath);
                     }
-                    else if (pushType == PushType.CreateOnly || pushType == PushType.UpdateOnly) // Create only directories that didn't exist.
+                    else if (pushType == PushType.CreateOnly) // Create only directories that didn't exist.
                     {
                         if (!exists)
                             System.IO.Directory.CreateDirectory(fullPath);
@@ -80,7 +74,7 @@ namespace BH.Adapter.Filing
                     }
                     else
                     {
-                        BH.Engine.Reflection.Compute.RecordWarning($"The specified Pushtype of {pushType.ToString()} is not supported for .json files.");
+                        BH.Engine.Reflection.Compute.RecordWarning($"The specified Pushtype of {pushType.ToString()} is not supported for {nameof(BH.oM.Filing.Directory)} objects.");
                         directoryCreated = false;
                     }
                 }

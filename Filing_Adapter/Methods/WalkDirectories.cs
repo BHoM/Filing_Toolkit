@@ -23,7 +23,7 @@ namespace BH.Adapter.Filing
                 return;
 
             // Look in directory and, if requested, recursively in subdirectories.
-            System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.FullPath.IFullPath());
+            System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.ParentDirectory.IFullPath());
 
             System.IO.DirectoryInfo[] dirArray = new System.IO.DirectoryInfo[] { };
 
@@ -49,7 +49,7 @@ namespace BH.Adapter.Filing
                 if (fdr.IncludeSubdirectories == true && MaxItemsReached(fdr.MaxFiles, retrievedFiles, fdr.MaxDirectories, retrievedDirs))
                 {
                     FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
-                    fdrRecurse.FullPath = bhomDir.IFullPath();
+                    fdrRecurse.ParentDirectory = bhomDir.IFullPath();
                     fdrRecurse.MaxNesting -= 1;
 
                     WalkDirectories(output, fdrRecurse, ref retrievedFiles, ref retrievedDirs, inclHidFiles, inclSysFiles);

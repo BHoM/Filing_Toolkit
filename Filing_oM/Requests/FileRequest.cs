@@ -12,7 +12,7 @@ using BH.oM.Data.Requests;
 
 namespace BH.oM.Filing
 {
-    [Description("Used to query Directories or Files.")]
+    [Description("Used to query Files from a Parent directory.")]
     public class FileRequest : IFileRequest
     {
         /***************************************************/
@@ -20,7 +20,7 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Files from this FullPath will be queried. You can also specify a string path.")]
-        public virtual Info FullPath { get; set; } = "";
+        public virtual Info ParentDirectory { get; set; } = "";
 
         [Description("If enabled, look also in subdirectories.")]
         public virtual bool SearchSubdirectories { get; set; } = false;
@@ -43,7 +43,7 @@ namespace BH.oM.Filing
         public static implicit operator FileRequest(string fullPath)
         {
             if (!String.IsNullOrWhiteSpace(fullPath))
-                return new FileRequest() { FullPath = fullPath };
+                return new FileRequest() { ParentDirectory = fullPath };
             else
                 return null;
         }

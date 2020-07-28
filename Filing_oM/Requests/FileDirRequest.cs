@@ -20,7 +20,7 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Directory and/or Files from this FullPath will be queried. You can also specify a string path.")]
-        public virtual Info FullPath { get; set; } = "";
+        public virtual Info ParentDirectory { get; set; } = "";
 
         [Description("Whether to include Files.")]
         public virtual bool IncludeFiles { get; set; } = true;
@@ -56,7 +56,7 @@ namespace BH.oM.Filing
         public static implicit operator FileDirRequest(string fullPath)
         {
             if (!String.IsNullOrWhiteSpace(fullPath))
-                return new FileDirRequest() { FullPath = fullPath };
+                return new FileDirRequest() { ParentDirectory = fullPath };
             else
                 return null;
         }
@@ -64,7 +64,7 @@ namespace BH.oM.Filing
         public static implicit operator FileDirRequest(FileRequest fr)
         {
             return new FileDirRequest() {
-                FullPath = fr.FullPath,
+                ParentDirectory = fr.ParentDirectory,
                 IncludeDirectories = false,
                 IncludeFiles = true,
                 IncludeSubdirectories = fr.SearchSubdirectories,
@@ -78,7 +78,7 @@ namespace BH.oM.Filing
         {
             return new FileDirRequest()
             {
-                FullPath = dr.FullPath,
+                ParentDirectory = dr.ParentDirectory,
                 IncludeDirectories = true,
                 IncludeFiles = false,
                 IncludeSubdirectories = dr.IncludeSubdirectories,

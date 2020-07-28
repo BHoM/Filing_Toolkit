@@ -39,7 +39,8 @@ namespace BH.Adapter.Filing
             // Recursively walk the directories to retrieve File and Directory Info.
             List<oM.Filing.IContent> output = new List<IContent>();
 
-            if (Query.IsExistingFile(fdr.FullPath.IFullPath()))
+            // Check if the request points to a single file.
+            if (Query.IsExistingFile(fdr.ParentDirectory.IFullPath()))
             {
                 // The FileDirRequest actually points to a single file;
                 // convert to a FileRequest.

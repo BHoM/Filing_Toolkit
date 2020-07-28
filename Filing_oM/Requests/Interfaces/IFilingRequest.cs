@@ -14,6 +14,6 @@ namespace BH.oM.Filing
 {
     public interface IFilingRequest : IRequest
     {
-        Info FullPath { get; set; }
+        Info ParentDirectory { get; set; }
     }
 }

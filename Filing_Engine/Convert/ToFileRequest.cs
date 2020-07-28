@@ -20,7 +20,7 @@ namespace BH.Engine.Filing
         {
             return new FileRequest()
             {
-                FullPath = fdr.FullPath,
+                ParentDirectory = fdr.ParentDirectory,
                 IncludeFileContents = fdr.IncludeFileContents,
                 SearchSubdirectories = fdr.IncludeSubdirectories,
                 MaxFiles = fdr.MaxFiles,

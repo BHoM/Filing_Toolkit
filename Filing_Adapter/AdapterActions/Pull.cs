@@ -23,6 +23,9 @@ namespace BH.Adapter.Filing
 
         public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
         {
+            if (request == null)
+                return new List<object>();
+
             PullConfig pullConfig = actionConfig as PullConfig ?? new PullConfig();
 
             if (request == null)

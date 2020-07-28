@@ -36,16 +36,27 @@ namespace BH.Adapter.Filing
     {
         protected int Delete(FileDirRequest fdr, RemoveConfig removeConfig)
         {
+            int deletedCount = 0;
+
+            // Check if the request points to a single file.
+            if (Query.IsExistingFile(fdr.ParentDirectory.IFullPath()))
+            {
+                // The FileDirRequest actually points to a single file.
+                BH.oM.Filing.File file = (BH.oM.Filing.File)new FileInfo(fdr.ParentDirectory.IFullPath());
+
+                // Delete the single file.
+                if (Delete(file))
+                    return 1;
+            }
+
             List<IContent> queried = new List<IContent>();
             int retrievedFiles = 0, retrievedDirs = 0;
             WalkDirectories(queried, fdr, ref retrievedFiles, ref retrievedDirs, removeConfig.IncludeHiddenFiles, false);
 
-            int deletedCount = 0;
-
             foreach (var item in queried)
             {
                 if (Delete(item as dynamic, true))
-                    deletedCount ++;
+                    deletedCount++;
             }
 
             return deletedCount;
