@@ -80,7 +80,7 @@ namespace BH.Adapter.Filing
                             System.IO.File.WriteAllText(fullPath, content);
                         }
                     }
-                    else if (pushType == PushType.CreateOnly)
+                    else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting)
                     {
                         // Create only if file didn't exist. Do not touch existing ones.
                         if (!fileExisted)
