@@ -23,6 +23,9 @@ namespace BH.Adapter.Filing
 
         public override int Remove(IRequest request, ActionConfig actionConfig = null)
         {
+            if (request == null)
+                return 0;
+
             oM.Filing.RemoveConfig removeConfig = actionConfig as oM.Filing.RemoveConfig ?? new RemoveConfig();
 
             if (m_Remove_enableDeleteWarning && !removeConfig.DisableWarnings)

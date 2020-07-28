@@ -16,7 +16,7 @@ namespace BH.Adapter.Filing
     {
         protected oM.Filing.File ReadFile(FileRequest fr, PullConfig pc)
         {
-            string fullPath = fr.FullPath.IFullPath();
+            string fullPath = fr.ParentDirectory.IFullPath();
 
             return ReadFile(fullPath, fr.IncludeFileContents, pc.IncludeHiddenFiles, pc.IncludeSystemFiles);
         }

@@ -27,6 +27,9 @@ namespace BH.Adapter.Filing
         [MultiOutput(1, "GlobalSuccess", "Bool indicating whether the command succeded for all the provided inputs.")]
         public override oM.Reflection.Output<List<object>, bool> Execute(IExecuteCommand command, ActionConfig actionConfig = null)
         {
+            if (command == null)
+                return new Output<List<object>, bool>();
+
             oM.Filing.ExecuteConfig executeConfig = actionConfig as oM.Filing.ExecuteConfig ?? new ExecuteConfig();
 
             if (m_Execute_enableWarning && !executeConfig.DisableWarnings)
