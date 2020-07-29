@@ -52,8 +52,8 @@ namespace BH.Adapter.Filing
 
         private oM.Reflection.Output<List<object>, bool> RunCommand(IMRCCommand command)
         {
-            string source = command.FullPath?.NormalisePath();
-            string target = command.TargetFullPath?.NormalisePath();
+            string source = command.FullPath?.NormalisePath(false);
+            string target = command.TargetFullPath?.NormalisePath(false);
             bool overwriteTarget = command.OverwriteTarget;
 
             if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(target))
