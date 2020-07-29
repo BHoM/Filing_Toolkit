@@ -16,11 +16,21 @@ namespace BH.Engine.Filing
         /*** Methods                                     ***/
         /***************************************************/
 
-        [Description("Normalises a string Path. Removes things like ")]
-        public static string NormalisePath(this string path)
+        [Description("Attempts to normalise a string Path.")]
+        public static string NormalisePath(this string path, bool enableWarning = true)
         {
-            return Path.GetFullPath(new Uri(path).LocalPath)
-                           .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string normalisedPath = path;
+
+            try
+            {
+                normalisedPath = Path.GetFullPath(new Uri(path).LocalPath)
+                               .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            } catch
+            {
+                BH.Engine.Reflection.Compute.RecordWarning("It was not possible to normalise the path.");
+            }
+
+            return normalisedPath;
         }
 
         /***************************************************/
