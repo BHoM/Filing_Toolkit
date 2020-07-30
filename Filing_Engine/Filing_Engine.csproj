@@ -42,7 +42,7 @@
     </Reference>
     <Reference Include="Data_oM, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
       <Private>False</Private>
-      <HintPath>..\..\BHoM\Build\Data_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_Engine.dll</HintPath>
