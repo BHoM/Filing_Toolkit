@@ -23,8 +23,8 @@
 using BH.oM.Adapter;
 using BH.oM.Base;
 using MongoDB.Bson;
-using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.IO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
