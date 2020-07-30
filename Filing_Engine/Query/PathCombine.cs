@@ -25,7 +25,7 @@ namespace BH.Engine.Filing
 
         /***************************************************/
 
-        [Description("Combines two paths.")]
+        [Description("Combines multiple string paths.")]
         public static string PathCombine(List<string> paths)
         {
             return Path.Combine(paths.ToArray());
