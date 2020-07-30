@@ -46,7 +46,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Humans_oM">
-      <HintPath>..\..\BHoM\Build\Humans_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Humans_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
