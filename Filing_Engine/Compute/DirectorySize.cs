@@ -13,7 +13,7 @@ namespace BH.Engine.Filing
         [Description("Returns the size of the directory. The calculation might take some time.")]
         public static long DirectorySize(BH.oM.Filing.Directory directory)
         {
-            return DirectorySize(directory.ToSystem());
+            return DirectorySize(directory.FromFiling());
         }
 
         private static long DirectorySize(DirectoryInfo d)

@@ -102,7 +102,7 @@ namespace BH.Adapter.Filing
                 if (filecreated)
                 {
                     System.IO.FileInfo fileinfo = new System.IO.FileInfo(fullPath);
-                    oM.Filing.File createdFile = (oM.Filing.File)fileinfo;
+                    oM.Filing.File createdFile = fileinfo.ToFiling();
                     createdFile.Content = file.Content;
 
                     createdFiles.Add(createdFile);

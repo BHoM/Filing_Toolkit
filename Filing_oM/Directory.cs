@@ -11,20 +11,20 @@ using System.ComponentModel;
 namespace BH.oM.Filing
 {
     [Description("A Directory. It can include the content of the Directory.")]
-    public class Directory : IContent 
+    public class Directory : IContent
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
         [Description("Full path of parent Directory. You can also specify a string path.")]
-        public virtual Info ParentDirectory { get; set; }
+        public virtual Directory ParentDirectory { get; set; }
 
         [Description("Name of the directory.")]
         public virtual string Name { get; set; }
 
         [Description("Gets a value indicating whether a file exists.")]
-        public virtual bool Exists { get; set; } = false;
+        public virtual bool? Exists { get; set; } = null;
 
         [Description("Whether the folder is read only.")]
         public virtual bool IsReadOnly { get; set; } = false;
@@ -45,7 +45,7 @@ namespace BH.oM.Filing
         [Description("User owning the Directory, if any, or the user who created the Directory.")]
         public virtual string Owner { get; set; }
 
-        [Description("The content of the Directory.")]
+        [Description("The content of the Directory. This is populated only once Pulled.")]
         public virtual List<object> Content { get; set; } = new List<object>();
 
 
@@ -53,33 +53,11 @@ namespace BH.oM.Filing
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator Directory(Info bi)
-        {
-            return bi != null ? new Directory()
-            {
-                ParentDirectory = bi.ParentDirectory,
-
-                Name = bi.Name,
-
-                Exists = bi.Exists,
-                IsReadOnly = bi.IsReadOnly,
-                Length = (int)(bi.Length & 0xFFFFFFFF),
-
-                Attributes = bi.Attributes,
-                CreationTime = bi.CreationTime,
-                CreationTimeUtc = bi.CreationTimeUtc,
-                LastAccessTime = bi.LastAccessTime,
-                LastAccessTimeUtc = bi.LastAccessTimeUtc,
-                LastWriteTime = bi.LastWriteTime,
-                LastWriteTimeUtc = bi.LastWriteTimeUtc,
-            } : null;
-        }
-
         public static explicit operator Directory(System.IO.DirectoryInfo di)
         {
             return di != null ? new Directory()
             {
-                ParentDirectory = (Info)System.IO.Directory.GetParent(di.FullName),
+                ParentDirectory = (Directory)System.IO.Directory.GetParent(di.FullName),
 
                 Name = di.Name,
 
@@ -102,10 +80,58 @@ namespace BH.oM.Filing
 
         public static implicit operator Directory(string fileFullPath)
         {
-            if (!String.IsNullOrWhiteSpace(fileFullPath))
-                return (Directory)new System.IO.DirectoryInfo(fileFullPath);
-            else
+            if (String.IsNullOrWhiteSpace(fileFullPath))
                 return null;
+
+            Uri uri = new Uri(fileFullPath);
+
+            string parent = "";
+            string name = uri.AbsoluteUri;
+
+            if (uri.IsFile)
+            {
+                string root = new Uri(Path.GetPathRoot(uri.LocalPath)).AbsoluteUri;
+
+                parent = name != root ? new Uri(uri, "..").LocalPath : "";
+                name = name != root ? new Uri(name).Segments.Last().TrimEnd('/') : new Uri(name).LocalPath;
+            }
+            else
+            {
+                string root = uri.GetComponents(UriComponents.SchemeAndServer,
+                                      UriFormat.SafeUnescaped);
+
+                parent = string.Format("{0}://{1}", uri.Scheme, uri.Authority);
+
+                for (int i = 0; i < uri.Segments.Length - 1; i++)
+                {
+                    parent += uri.Segments[i];
+                }
+
+                parent = parent != root ? parent.Trim("/".ToCharArray()) : ""; // remove trailing `/`
+                name = parent != root ? uri.Segments.Last().TrimEnd('/') : root;
+
+            }
+
+            Directory dir = new Directory()
+            {
+                ParentDirectory = parent,
+                Name = name,
+            };
+
+            //Exists = di.Exists,
+            //    IsReadOnly = di.Attributes.HasFlag(FileAttributes.ReadOnly),
+
+            //    Attributes = di.Attributes,
+            //    CreationTime = di.CreationTime,
+            //    CreationTimeUtc = di.CreationTimeUtc,
+            //    LastAccessTime = di.LastAccessTime,
+            //    LastAccessTimeUtc = di.LastAccessTimeUtc,
+            //    LastWriteTime = di.LastWriteTime,
+            //    LastWriteTimeUtc = di.LastWriteTimeUtc,
+
+            return dir;
+
+
         }
 
         /***************************************************/
@@ -114,7 +140,19 @@ namespace BH.oM.Filing
 
         public override string ToString()
         {
-            return Path.Combine(this.ParentDirectory?.ToString() ?? "", this.Name);
+            //string path = Path.GetFullPath(this.ParentDirectory?.ToString() ?? "");
+
+            Uri parentUri = null;
+
+            Uri res = null;
+
+            Uri.TryCreate(this.ParentDirectory?.ToString() ?? "", UriKind.RelativeOrAbsolute, out parentUri);
+
+            Uri.TryCreate(parentUri, this.Name, out res);
+
+            return res?.AbsolutePath ?? "";
+
+            return Path.Combine(Path.GetFullPath(this.ParentDirectory?.ToString() ?? ""), this.Name ?? "");
         }
     }
 }

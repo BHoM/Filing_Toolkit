@@ -23,29 +23,23 @@ namespace BH.Engine.Filing
         [Input("directoryName", "Name of the directory.")]
         [Input("content", "The content of the file.")]
         [Description("Creates a oM.Filing.File object.")]
-        public static oM.Filing.Directory Directory(oM.Filing.Info directoryFullPath)
+        public static oM.Filing.Directory Directory(string dirFullPath)
         {
-            string dirFullPath = directoryFullPath.IFullPath();
             if (Path.HasExtension(dirFullPath))
             {
-                BH.Engine.Reflection.Compute.RecordError($"{nameof(directoryFullPath)} must identify a Directory. Do not include an extension.");
+                BH.Engine.Reflection.Compute.RecordError($"{nameof(dirFullPath)} must identify a Directory. Do not include an extension.");
                 return null;
             }
 
-            var di = new DirectoryInfo(dirFullPath);
-
-            return new oM.Filing.Directory()
-            {
-                ParentDirectory = di.Parent.FullName,
-                Name = di.Name,
-            };
+            return (oM.Filing.Directory)(dirFullPath);
+            
         }
 
         [Input("parentDirectory","Path of parent Directory of the directory. You can also specify a string path.")]
         [Input("directoryName", "Name of the directory.")]
         [Input("content", "The content of the file.")]
         [Description("Creates a oM.Filing.File object.")]
-        public static oM.Filing.Directory Directory(oM.Filing.Info parentDirectory, string directoryName)
+        public static oM.Filing.Directory Directory(oM.Filing.Directory parentDirectory, string directoryName)
         {
             if (Path.HasExtension(directoryName))
             {

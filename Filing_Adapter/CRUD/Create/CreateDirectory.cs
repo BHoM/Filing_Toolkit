@@ -87,7 +87,7 @@ namespace BH.Adapter.Filing
                 if (directoryCreated)
                 {
                     System.IO.DirectoryInfo dirInfo = new System.IO.DirectoryInfo(fullPath);
-                    oM.Filing.Directory createdDir = (oM.Filing.Directory)dirInfo;
+                    oM.Filing.Directory createdDir = dirInfo.ToFiling();
                     createdDirs.Add(createdDir);
                 }
             }

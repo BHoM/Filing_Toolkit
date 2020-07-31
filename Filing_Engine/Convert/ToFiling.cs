@@ -18,7 +18,7 @@ namespace BH.Engine.Filing
 
         [Description("Converts the provided FileInfo into a BH.oM.Filing.File." +
             "\nTo populate its `Content` property you need to pull the file.")]
-        public static oM.Filing.File ToFiling(FileInfo fileInfo)
+        public static oM.Filing.File ToFiling(this FileInfo fileInfo)
         {
             return (oM.Filing.File)fileInfo;
         }
@@ -27,7 +27,7 @@ namespace BH.Engine.Filing
 
         [Description("Converts the provided DirectoryInfo into a BH.oM.Filing.Directory." +
             "\nTo populate its `Content` property you need to pull the Directory.")]
-        public static oM.Filing.Directory ToFiling(DirectoryInfo directoryInfo)
+        public static oM.Filing.Directory ToFiling(this DirectoryInfo directoryInfo)
         {
             return (oM.Filing.Directory)directoryInfo;
         }

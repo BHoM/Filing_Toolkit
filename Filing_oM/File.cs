@@ -18,13 +18,13 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Full path of parent Directory of the File. You can also specify a string path.")]
-        public virtual Info ParentDirectory { get; set; }
+        public virtual Directory ParentDirectory { get; set; }
 
         [Description("Name of the file, INCLUDING Extension.")]
         public virtual string Name { get; set; }
 
         [Description("Gets a value indicating whether a file exists.")]
-        public virtual bool Exists { get; set; } = false;
+        public virtual bool? Exists { get; set; } = null;
 
         [Description("Gets or sets a value that determines if the current file is read only.")]
         public virtual bool IsReadOnly { get; set; } = false;
@@ -52,31 +52,11 @@ namespace BH.oM.Filing
         /**** Explicit cast                             ****/
         /***************************************************/
 
-        public static explicit operator File(Info bi)
-        {
-            return bi != null ? new File()
-            {
-                ParentDirectory = bi.ParentDirectory,
-
-                Name = bi.Name,
-
-                Exists = bi.Exists,
-
-                Attributes = bi.Attributes,
-                CreationTime = bi.CreationTime,
-                CreationTimeUtc = bi.CreationTimeUtc,
-                LastAccessTime = bi.LastAccessTime,
-                LastAccessTimeUtc = bi.LastAccessTimeUtc,
-                LastWriteTime = bi.LastWriteTime,
-                LastWriteTimeUtc = bi.LastWriteTimeUtc,
-            } : null;
-        }
-
         public static explicit operator File(System.IO.FileInfo fi)
         {
             return fi != null ? new File()
             {
-                ParentDirectory = (Info)fi.Directory,
+                ParentDirectory = (Directory)fi.Directory,
 
                 Name = fi.Name,
 
