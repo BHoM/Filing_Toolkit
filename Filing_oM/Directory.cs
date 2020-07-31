@@ -57,7 +57,7 @@ namespace BH.oM.Filing
         {
             return di != null ? new Directory()
             {
-                ParentDirectory = (Directory)System.IO.Directory.GetParent(di.FullName),
+                ParentDirectory = (Directory)di.Parent,
 
                 Name = di.Name,
 
@@ -80,58 +80,13 @@ namespace BH.oM.Filing
 
         public static implicit operator Directory(string fileFullPath)
         {
-            if (String.IsNullOrWhiteSpace(fileFullPath))
-                return null;
-
-            Uri uri = new Uri(fileFullPath);
-
-            string parent = "";
-            string name = uri.AbsoluteUri;
-
-            if (uri.IsFile)
+            if (!String.IsNullOrWhiteSpace(fileFullPath))
             {
-                string root = new Uri(Path.GetPathRoot(uri.LocalPath)).AbsoluteUri;
-
-                parent = name != root ? new Uri(uri, "..").LocalPath : "";
-                name = name != root ? new Uri(name).Segments.Last().TrimEnd('/') : new Uri(name).LocalPath;
+                var di = new System.IO.DirectoryInfo(fileFullPath);
+                return (Directory)di;
             }
             else
-            {
-                string root = uri.GetComponents(UriComponents.SchemeAndServer,
-                                      UriFormat.SafeUnescaped);
-
-                parent = string.Format("{0}://{1}", uri.Scheme, uri.Authority);
-
-                for (int i = 0; i < uri.Segments.Length - 1; i++)
-                {
-                    parent += uri.Segments[i];
-                }
-
-                parent = parent != root ? parent.Trim("/".ToCharArray()) : ""; // remove trailing `/`
-                name = parent != root ? uri.Segments.Last().TrimEnd('/') : root;
-
-            }
-
-            Directory dir = new Directory()
-            {
-                ParentDirectory = parent,
-                Name = name,
-            };
-
-            //Exists = di.Exists,
-            //    IsReadOnly = di.Attributes.HasFlag(FileAttributes.ReadOnly),
-
-            //    Attributes = di.Attributes,
-            //    CreationTime = di.CreationTime,
-            //    CreationTimeUtc = di.CreationTimeUtc,
-            //    LastAccessTime = di.LastAccessTime,
-            //    LastAccessTimeUtc = di.LastAccessTimeUtc,
-            //    LastWriteTime = di.LastWriteTime,
-            //    LastWriteTimeUtc = di.LastWriteTimeUtc,
-
-            return dir;
-
-
+                return null;
         }
 
         /***************************************************/
@@ -140,19 +95,7 @@ namespace BH.oM.Filing
 
         public override string ToString()
         {
-            //string path = Path.GetFullPath(this.ParentDirectory?.ToString() ?? "");
-
-            Uri parentUri = null;
-
-            Uri res = null;
-
-            Uri.TryCreate(this.ParentDirectory?.ToString() ?? "", UriKind.RelativeOrAbsolute, out parentUri);
-
-            Uri.TryCreate(parentUri, this.Name, out res);
-
-            return res?.AbsolutePath ?? "";
-
-            return Path.Combine(Path.GetFullPath(this.ParentDirectory?.ToString() ?? ""), this.Name ?? "");
+            return Path.Combine(this.ParentDirectory?.ToString() ?? "", this.Name);
         }
     }
 }
