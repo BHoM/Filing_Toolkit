@@ -68,7 +68,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\DirectorySize.cs" />
     <Compile Include="Convert\ToFileRequest.cs" />
+    <Compile Include="Convert\ToSystem.cs" />
     <Compile Include="Convert\ToFiling.cs" />
     <Compile Include="Create\Directory.cs" />
     <Compile Include="Create\File.cs" />

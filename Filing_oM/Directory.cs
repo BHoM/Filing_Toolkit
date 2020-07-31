@@ -26,6 +26,12 @@ namespace BH.oM.Filing
         [Description("Gets a value indicating whether a file exists.")]
         public virtual bool Exists { get; set; } = false;
 
+        [Description("Whether the folder is read only.")]
+        public virtual bool IsReadOnly { get; set; } = false;
+
+        [Description("Size of the folder. This is never automatically computed.")]
+        public virtual int Length { get; set; } = 0;
+
         [Description("Attributes indicating if ReadOnly, Hidden, System File, etc.")]
         public virtual FileAttributes Attributes { get; set; }
 
@@ -40,7 +46,7 @@ namespace BH.oM.Filing
         public virtual string Owner { get; set; }
 
         [Description("The content of the Directory.")]
-        public virtual List<object> Content { get; set; }
+        public virtual List<object> Content { get; set; } = new List<object>();
 
 
         /***************************************************/
@@ -56,6 +62,8 @@ namespace BH.oM.Filing
                 Name = bi.Name,
 
                 Exists = bi.Exists,
+                IsReadOnly = bi.IsReadOnly,
+                Length = (int)(bi.Length & 0xFFFFFFFF),
 
                 Attributes = bi.Attributes,
                 CreationTime = bi.CreationTime,
@@ -76,6 +84,7 @@ namespace BH.oM.Filing
                 Name = di.Name,
 
                 Exists = di.Exists,
+                IsReadOnly = di.Attributes.HasFlag(FileAttributes.ReadOnly),
 
                 Attributes = di.Attributes,
                 CreationTime = di.CreationTime,
