@@ -30,7 +30,7 @@ namespace BH.oM.Filing
         public virtual bool IsReadOnly { get; set; } = false;
 
         [Description("Gets the size, in bytes, of the current file.")]
-        public virtual long Length { get; set; } = 0;
+        public virtual int Length { get; set; } = 0;
 
         [Description("Attributes indicating if ReadOnly, Hidden, System File, etc.")]
         public virtual FileAttributes Attributes { get; set; }
@@ -64,7 +64,7 @@ namespace BH.oM.Filing
 
                 IsReadOnly = fi.IsReadOnly,
 
-                Length = fi.Length,
+                Length = (int)(fi.Length & 0xFFFFFFFF),
 
                 Attributes = fi.Attributes,
                 CreationTime = fi.CreationTime,
@@ -85,6 +85,7 @@ namespace BH.oM.Filing
                 Name = di.Name,
 
                 Exists = di.Exists,
+                IsReadOnly = di.Attributes.HasFlag(FileAttributes.ReadOnly),
 
                 Attributes = di.Attributes,
                 CreationTime = di.CreationTime,
