@@ -47,7 +47,7 @@ namespace BH.Adapter.Filing
 
             var content = new DirectoryInfo(fullPath).GetFiles("*.*");
 
-            retrievedDir.Content.AddRange(content.Cast<Info>());
+            retrievedDir.Content.AddRange(content.Cast<IInfo>());
         }
 
     }

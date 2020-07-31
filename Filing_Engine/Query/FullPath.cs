@@ -18,21 +18,9 @@ namespace BH.Engine.Filing
         /***************************************************/
 
         [Description("Get the full path.")]
-        public static string IFullPath(this IObject iObject)
+        public static string IFullPath(this IObject obj)
         {
-            return iObject != null ? FullPath(iObject as dynamic) : null;
-        }
-
-        private static string FullPath(this IContent fileOrDir)
-        {
-            if (!IsAcyclic(fileOrDir)) throw new ArgumentException("Circular directory hierarchy");
-
-            return Path.Combine(fileOrDir.ParentDirectory.FullPath(), fileOrDir.Name);
-        }
-
-        private static string FullPath(this FileDirRequest fdr)
-        {
-            return FullPath(fdr.ParentDirectory);
+            return obj != null ? FullPath(obj as dynamic) ?? "" : "";
         }
 
         private static string FullPath(this IInfo baseInfo)
@@ -40,7 +28,15 @@ namespace BH.Engine.Filing
             if (baseInfo.ParentDirectory == null)
                 return baseInfo.Name;
 
-            return Path.Combine(baseInfo.ParentDirectory.FullPath(), baseInfo.Name);
+            if (!IsAcyclic(baseInfo))
+                BH.Engine.Reflection.Compute.RecordError("Circular directory hierarchy found.");
+
+            return Path.Combine(baseInfo.ParentDirectory.IFullPath(), baseInfo.Name);
+        }
+
+        private static string FullPath(this IFilingRequest fdr)
+        {
+            return IFullPath(fdr.ParentDirectory);
         }
 
         //Fallback

@@ -19,7 +19,7 @@ namespace BH.oM.Filing
         /***************************************************/
 
         [Description("Directory and/or Files from this FullPath will be queried. You can also specify a string path.")]
-        public virtual Info ParentDirectory { get; set; } = "";
+        public virtual Directory ParentDirectory { get; set; } = "";
 
         [Description("Whether to include Files.")]
         public virtual bool IncludeFiles { get; set; } = true;

@@ -37,7 +37,7 @@ namespace BH.Adapter.Filing
                 return null;
 
             // Convert the FileInfo to our om.Filing.File
-            oM.Filing.File file = (oM.Filing.File)fi;
+            oM.Filing.File file = fi.ToFiling();
 
             // Add author data if possible
             AddAuthor(file);
@@ -66,7 +66,7 @@ namespace BH.Adapter.Filing
                 return null;
 
             // Convert the FileInfo to our om.Filing.File
-            oM.Filing.Directory dir = (oM.Filing.Directory)di;
+            oM.Filing.Directory dir = di.ToFiling();
 
             // Add author data if possible
             AddAuthor(dir);

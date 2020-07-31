@@ -34,7 +34,7 @@ namespace BH.Adapter.Filing
                 if (bhomDir == null)
                     continue;
 
-                bhomDir.ParentDirectory = (oM.Filing.Info)di.Parent;
+                bhomDir.ParentDirectory = (oM.Filing.Directory)di.Parent;
 
                 if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
                     continue;

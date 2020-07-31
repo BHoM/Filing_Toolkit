@@ -68,7 +68,6 @@
     <Compile Include="Config\RemoveConfig.cs" />
     <Compile Include="Config\PushConfig.cs" />
     <Compile Include="Directory.cs" />
-    <Compile Include="Info.cs" />
     <Compile Include="enums\Encodings.cs" />
     <Compile Include="Interfaces\IInfo.cs" />
     <Compile Include="Interfaces\IContent.cs" />
