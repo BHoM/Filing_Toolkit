@@ -60,7 +60,7 @@ namespace BH.Adapter.Filing
 
                         WriteBsonWithStream(file, fullPath, FileMode.CreateNew);
                     }
-                    else if ((pushType == PushType.UpdateOnly && fileExisted) || pushType == PushType.UpdateOrCreate)
+                    else if ((pushType == PushType.UpdateOnly && fileExisted) || pushType == PushType.UpdateOrCreateOnly)
                     {
                         if (fileExisted && pushConfig.AppendContent)
                         {

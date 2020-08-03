@@ -61,7 +61,7 @@ namespace BH.Adapter.Filing
 
                         System.IO.Directory.CreateDirectory(fullPath);
                     }
-                    else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting || pushType == PushType.UpdateOrCreate) 
+                    else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting || pushType == PushType.UpdateOrCreateOnly) 
                     {
                         // Create only directories that didn't exist.
                         if (!exists)
