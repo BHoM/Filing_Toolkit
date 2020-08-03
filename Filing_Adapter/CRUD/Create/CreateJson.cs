@@ -66,7 +66,7 @@ namespace BH.Adapter.Filing
 
                         System.IO.File.WriteAllText(fullPath, content);
                     }
-                    else if ((pushType == PushType.UpdateOnly && fileExisted) || pushType == PushType.UpdateOrCreate)
+                    else if ((pushType == PushType.UpdateOnly && fileExisted) || pushType == PushType.UpdateOrCreateOnly)
                     {
                         if (fileExisted && pushConfig.AppendContent)
                         {

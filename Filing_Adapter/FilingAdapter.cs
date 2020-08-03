@@ -12,7 +12,7 @@ namespace BH.Adapter.Filing
         public FilingAdapter()
         {
             // By default, if they exist already, the files to be created are wiped out and then re-created.
-            this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.UpdateOrCreate;
+            this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.UpdateOrCreateOnly;
         }
 
         private bool m_Push_enableDeleteWarning = true;
