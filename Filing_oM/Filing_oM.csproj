@@ -35,7 +35,7 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Adapter_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BHoM, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="BHoM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
