@@ -51,7 +51,6 @@ namespace BH.oM.Adapters.Filing
         [Description("If hosted on a File System that supports it, this contains the id on that system")]
         public object SystemId { get; set; }
 
-
         /***************************************************/
         /**** Explicit cast                             ****/
         /***************************************************/
@@ -98,7 +97,7 @@ namespace BH.oM.Adapters.Filing
 
         public override string ToString()
         {
-            return Path.Combine(this.ParentDirectory?.ToString() ?? "", this.Name);
+            return Path.Combine(this.ParentDirectory?.ToString() ?? "", this.Name ?? "");
         }
     }
 }
