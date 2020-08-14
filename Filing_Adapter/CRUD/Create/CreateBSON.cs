@@ -30,7 +30,7 @@ using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Filing;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 
 namespace BH.Adapter.Filing
 {
@@ -40,9 +40,9 @@ namespace BH.Adapter.Filing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private List<BH.oM.Filing.IContent> CreateBson(IEnumerable<BH.oM.Filing.File> files, PushType pushType, PushConfig pushConfig)
+        private List<BH.oM.Adapters.Filing.IContent> CreateBson(IEnumerable<BH.oM.Adapters.Filing.File> files, PushType pushType, PushConfig pushConfig)
         {
-            List<BH.oM.Filing.IContent> createdFiles = new List<oM.Filing.IContent>();
+            List<BH.oM.Adapters.Filing.IContent> createdFiles = new List<oM.Adapters.Filing.IContent>();
 
             foreach (var file in files)
             {
@@ -97,7 +97,7 @@ namespace BH.Adapter.Filing
                 if (filecreated)
                 {
                     System.IO.FileInfo fileinfo = new System.IO.FileInfo(fullPath);
-                    oM.Filing.File createdFile = fileinfo.ToFiling();
+                    oM.Adapters.Filing.File createdFile = fileinfo.ToFiling();
                     createdFile.Content = file.Content;
 
                     createdFiles.Add(createdFile);
@@ -107,7 +107,7 @@ namespace BH.Adapter.Filing
             return createdFiles;
         }
 
-        public void WriteBsonWithStream(oM.Filing.File file, string fullPath, FileMode fileMode)
+        public void WriteBsonWithStream(oM.Adapters.Filing.File file, string fullPath, FileMode fileMode)
         {
             FileStream stream = new FileStream(fullPath, FileMode.CreateNew);
             var writer = new BsonBinaryWriter(stream);

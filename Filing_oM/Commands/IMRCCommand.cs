@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.oM.Filing
+namespace BH.oM.Adapters.Filing
 {
     [Description("Interface for Move, Rename and Copy commands.")]
     public interface IMRCCommand : IExecuteCommand

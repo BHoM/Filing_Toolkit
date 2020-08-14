@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.ComponentModel;
 
-namespace BH.oM.Filing
+namespace BH.oM.Adapters.Filing
 {
     [Description("A Directory. It can include the content of the Directory.")]
     public class Directory : IContent
@@ -47,6 +47,9 @@ namespace BH.oM.Filing
 
         [Description("The content of the Directory. This is populated only once Pulled.")]
         public virtual List<object> Content { get; set; } = new List<object>();
+
+        [Description("If hosted on a File System that supports it, this contains the id on that system")]
+        public object SystemId { get; set; }
 
 
         /***************************************************/

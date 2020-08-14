@@ -1,4 +1,4 @@
-﻿using BH.oM.Filing;
+﻿using BH.oM.Adapters.Filing;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace BH.Engine.Filing
         /*** Methods                                     ***/
         /***************************************************/
 
-        public static oM.Filing.FileRequest ToFileRequest(this FileDirRequest fdr)
+        public static oM.Adapters.Filing.FileRequest ToFileRequest(this FileDirRequest fdr)
         {
             return new FileRequest()
             {

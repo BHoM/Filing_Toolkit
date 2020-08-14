@@ -30,7 +30,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 using BH.Engine.Filing;
 
 
@@ -44,7 +44,7 @@ namespace BH.Adapter.Filing
 
             string fileFullPath = fcr.File.IFullPath();
 
-            oM.Filing.File readFile = ReadFile(fileFullPath, true, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
+            oM.Adapters.Filing.File readFile = ReadFile(fileFullPath, true, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
 
             if (readFile == null)
                 return output;

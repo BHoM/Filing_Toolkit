@@ -6,13 +6,13 @@ using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Filing;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 
 namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        private void WalkDirectories(List<oM.Filing.IContent> output, FileDirRequest fdr, 
+        private void WalkDirectories(List<oM.Adapters.Filing.IContent> output, FileDirRequest fdr, 
             ref int retrievedFiles, ref int retrievedDirs, 
             bool inclHidFiles = false, bool inclSysFiles = false)
         {
@@ -30,11 +30,11 @@ namespace BH.Adapter.Filing
 
             foreach (System.IO.DirectoryInfo di in dirArray)
             {
-                oM.Filing.Directory bhomDir = ReadDirectory(di.FullName, inclHidFiles, inclSysFiles);
+                oM.Adapters.Filing.Directory bhomDir = ReadDirectory(di.FullName, inclHidFiles, inclSysFiles);
                 if (bhomDir == null)
                     continue;
 
-                bhomDir.ParentDirectory = (oM.Filing.Directory)di.Parent;
+                bhomDir.ParentDirectory = (oM.Adapters.Filing.Directory)di.Parent;
 
                 if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
                     continue;
@@ -77,10 +77,10 @@ namespace BH.Adapter.Filing
                     if (!MaxItemsReached(fdr.MaxFiles, retrievedFiles))
                     {
                         // Check exclusions
-                        if (fdr.Exclusions != null && fdr.Exclusions.Contains((BH.oM.Filing.File)fi))
+                        if (fdr.Exclusions != null && fdr.Exclusions.Contains((BH.oM.Adapters.Filing.File)fi))
                             continue;
 
-                        oM.Filing.File omFile = ReadFile(fi.FullName, fdr.IncludeFileContents, inclHidFiles, inclSysFiles);
+                        oM.Adapters.Filing.File omFile = ReadFile(fi.FullName, fdr.IncludeFileContents, inclHidFiles, inclSysFiles);
 
                         if (omFile != null)
                         {

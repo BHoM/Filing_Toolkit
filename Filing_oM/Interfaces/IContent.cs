@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.oM.Filing
+namespace BH.oM.Adapters.Filing
 {
     public interface IContent  : IInfo
     {

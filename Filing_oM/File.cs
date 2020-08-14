@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.ComponentModel;
 
-namespace BH.oM.Filing
+namespace BH.oM.Adapters.Filing
 {
     [Description("A File. It can include the content of the File.")]
     public class File : IContent 
@@ -47,6 +47,9 @@ namespace BH.oM.Filing
 
         [Description("The content of the file.")]
         public virtual List<object> Content { get; set; } = new List<object>();
+
+        [Description("If hosted on a File System that supports it, this contains the id on that system")]
+        public object SystemId { get; set; }
 
         /***************************************************/
         /**** Explicit cast                             ****/

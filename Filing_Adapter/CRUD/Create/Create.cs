@@ -29,7 +29,7 @@ using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Filing;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 
 namespace BH.Adapter.Filing
 {
@@ -39,26 +39,26 @@ namespace BH.Adapter.Filing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        protected List<BH.oM.Filing.IContent> Create(IEnumerable<IContent> filesOrDirs, PushType pushType, PushConfig pushConfig)
+        protected List<BH.oM.Adapters.Filing.IContent> Create(IEnumerable<IContent> filesOrDirs, PushType pushType, PushConfig pushConfig)
         {
             pushConfig = pushConfig ?? new PushConfig();
 
-            List<BH.oM.Filing.IContent> createdFiles = new List<oM.Filing.IContent>();
+            List<BH.oM.Adapters.Filing.IContent> createdFiles = new List<oM.Adapters.Filing.IContent>();
 
             var groupedPerExtension = filesOrDirs.GroupBy(f => Path.GetExtension(f.IFullPath())).ToDictionary(g => g.Key, g => g.ToList());
 
             List<IContent> jsons = new List<IContent>();
             if (groupedPerExtension.TryGetValue(".json", out jsons))
-                createdFiles.AddRange(CreateJson(jsons.OfType<oM.Filing.File>(), pushType, pushConfig).Cast<IContent>());
+                createdFiles.AddRange(CreateJson(jsons.OfType<oM.Adapters.Filing.File>(), pushType, pushConfig).Cast<IContent>());
 
             List<IContent> bsons = new List<IContent>();
             if (groupedPerExtension.TryGetValue(".bson", out bsons))
-                createdFiles.AddRange(CreateBson(bsons.OfType<oM.Filing.File>(), pushType, pushConfig).Cast<IContent>());
+                createdFiles.AddRange(CreateBson(bsons.OfType<oM.Adapters.Filing.File>(), pushType, pushConfig).Cast<IContent>());
 
             List<IContent> remaining = new List<IContent>();
             if (groupedPerExtension.TryGetValue("", out remaining))
             {
-                createdFiles.AddRange(CreateDirectory(remaining.OfType<oM.Filing.Directory>(), pushType, pushConfig).Cast<IContent>());
+                createdFiles.AddRange(CreateDirectory(remaining.OfType<oM.Adapters.Filing.Directory>(), pushType, pushConfig).Cast<IContent>());
             }
 
             return createdFiles;

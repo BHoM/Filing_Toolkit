@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 
@@ -22,8 +22,8 @@ namespace BH.Engine.Filing
         [Input("parentDirectory","Path of parent Directory of the file. You can also specify a string path.")]
         [Input("fullFileName", "Name of the file, INCLUDING Extension.")]
         [Input("content", "The content of the file.")]
-        [Description("Creates a oM.Filing.File object.")]
-        public static oM.Filing.File File(oM.Filing.Directory parentDirectory, string fullFileName, List<object> content = null)
+        [Description("Creates a oM.Adapters.Filing.File object.")]
+        public static oM.Adapters.Filing.File File(oM.Adapters.Filing.Directory parentDirectory, string fullFileName, List<object> content = null)
         {
             if (!Path.HasExtension(fullFileName))
             {
@@ -31,7 +31,7 @@ namespace BH.Engine.Filing
                 return null;
             }
 
-            return new oM.Filing.File()
+            return new oM.Adapters.Filing.File()
             {
                 ParentDirectory = parentDirectory,
                 Name = fullFileName,
