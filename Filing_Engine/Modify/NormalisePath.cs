@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Filing
+namespace BH.Engine.Adapters.Filing
 {
     public static partial class Modify
     {

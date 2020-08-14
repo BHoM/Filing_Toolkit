@@ -10,7 +10,7 @@ using System.IO;
 using BH.oM.Adapters.Filing;
 using System.ComponentModel;
 
-namespace BH.Engine.Filing
+namespace BH.Engine.Adapters.Filing
 {
     public static partial class Create
     {

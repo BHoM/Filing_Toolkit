@@ -10,7 +10,7 @@ using BH.Engine.Base;
 using BH.Engine.Reflection;
 using System.IO;
 
-namespace BH.Engine.Filing
+namespace BH.Engine.Adapters.Filing
 {
     public static partial class Modify
     {
