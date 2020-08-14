@@ -1,4 +1,4 @@
-﻿using BH.oM.Filing;
+﻿using BH.oM.Adapters.Filing;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace BH.Engine.Filing
 
         [Description("Converts the provided File into a System.IO.FileInfo." +
             "\nAny `Content` property is lost in this conversion.")]
-        public static FileInfo FromFiling(this oM.Filing.File file)
+        public static FileInfo FromFiling(this oM.Adapters.Filing.File file)
         {
             return new FileInfo(file.IFullPath());
         }
@@ -27,7 +27,7 @@ namespace BH.Engine.Filing
 
         [Description("Converts the provided Directory into a System.IO.DirectoryInfo." +
             "\nAny `Content` property is lost in this conversion.")]
-        public static DirectoryInfo FromFiling(this oM.Filing.Directory directory)
+        public static DirectoryInfo FromFiling(this oM.Adapters.Filing.Directory directory)
         {
             return new DirectoryInfo(directory.IFullPath());
         }

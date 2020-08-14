@@ -23,7 +23,7 @@
 using BH.oM.Adapter;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,11 +43,11 @@ namespace BH.Adapter.Filing
 
             foreach (string fullPath in rr.ToRemove)
             {
-                BH.oM.Filing.Directory dir = null;
+                BH.oM.Adapters.Filing.Directory dir = null;
                 if (fullPath.IsExistingDir())
                     dir = ReadDirectory(fullPath);
 
-                BH.oM.Filing.File file = null;
+                BH.oM.Adapters.Filing.File file = null;
                 if (fullPath.IsExistingFile())
                     file = ReadFile(fullPath);
 

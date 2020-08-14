@@ -7,22 +7,22 @@ using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Filing;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 
 namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        protected oM.Filing.File ReadFile(FileRequest fr, PullConfig pc)
+        protected oM.Adapters.Filing.File ReadFile(FileRequest fr, PullConfig pc)
         {
             string fullPath = fr.ParentDirectory.IFullPath();
 
             return ReadFile(fullPath, fr.IncludeFileContents, pc.IncludeHiddenFiles, pc.IncludeSystemFiles);
         }
 
-        private oM.Filing.File ReadFile(string fullPath, bool inclFileContent = false, bool inclHidFiles = false, bool inclSysFiles = false)
+        private oM.Adapters.Filing.File ReadFile(string fullPath, bool inclFileContent = false, bool inclHidFiles = false, bool inclSysFiles = false)
         {
-            // Perform the "Read" = get the System.FileInfo, which will be the basis for our om.Filing.File
+            // Perform the "Read" = get the System.FileInfo, which will be the basis for our oM.Adapters.Filing.File
             FileInfo fi = new FileInfo(fullPath);
 
             // Checks on config
@@ -36,8 +36,8 @@ namespace BH.Adapter.Filing
             if ((fi.Attributes & FileAttributes.Directory) <= 0 && !fi.Exists)
                 return null;
 
-            // Convert the FileInfo to our om.Filing.File
-            oM.Filing.File file = fi.ToFiling();
+            // Convert the FileInfo to our oM.Adapters.Filing.File
+            oM.Adapters.Filing.File file = fi.ToFiling();
 
             // Add author data if possible
             AddAuthor(file);
@@ -49,9 +49,9 @@ namespace BH.Adapter.Filing
             return file;
         }
 
-        private oM.Filing.Directory ReadDirectory(string fullPath, bool inclHidDirs = false, bool inclSysDirs = false, bool includeFolderContent = false)
+        private oM.Adapters.Filing.Directory ReadDirectory(string fullPath, bool inclHidDirs = false, bool inclSysDirs = false, bool includeFolderContent = false)
         {
-            // Perform the "Read" = get the System.DirectoryInfo, which will be the basis for our om.Filing.Directory
+            // Perform the "Read" = get the System.DirectoryInfo, which will be the basis for our oM.Adapters.Filing.Directory
             DirectoryInfo di = new DirectoryInfo(fullPath);
 
             // Checks on config
@@ -65,8 +65,8 @@ namespace BH.Adapter.Filing
             if ((di.Attributes & FileAttributes.Directory) <= 0 && !di.Exists)
                 return null;
 
-            // Convert the FileInfo to our om.Filing.File
-            oM.Filing.Directory dir = di.ToFiling();
+            // Convert the FileInfo to our oM.Adapters.Filing.File
+            oM.Adapters.Filing.Directory dir = di.ToFiling();
 
             // Add author data if possible
             AddAuthor(dir);

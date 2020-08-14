@@ -2,7 +2,7 @@
 using BH.Engine.Reflection;
 using BH.oM.Adapter;
 using BH.oM.Data.Requests;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,7 +23,7 @@ namespace BH.Adapter.Filing
 
         public override List<object> Push(IEnumerable<object> objects, string tag = "", PushType pushType = PushType.AdapterDefault, ActionConfig actionConfig = null)
         {
-            oM.Filing.PushConfig pushConfig = actionConfig as oM.Filing.PushConfig ?? new PushConfig();
+            oM.Adapters.Filing.PushConfig pushConfig = actionConfig as oM.Adapters.Filing.PushConfig ?? new PushConfig();
 
             if (pushType == PushType.AdapterDefault)
                 pushType = m_AdapterSettings.DefaultPushType;
@@ -48,12 +48,12 @@ namespace BH.Adapter.Filing
                     return new List<object>();
                 }
 
-            IEnumerable<oM.Filing.IContent> files = objects.OfType<oM.Filing.IContent>();
+            IEnumerable<oM.Adapters.Filing.IContent> files = objects.OfType<oM.Adapters.Filing.IContent>();
             if (objects.Where(o => o != null).Count() != files.Count())
-                BH.Engine.Reflection.Compute.RecordWarning($"File Adapter can only push objects of type {nameof(oM.Filing.File)}." +
-                    $"\nYou can append BHoMObjects to be pushed in its {nameof(oM.Filing.IContent.Content)} property.");
+                BH.Engine.Reflection.Compute.RecordWarning($"File Adapter can only push objects of type {nameof(oM.Adapters.Filing.File)}." +
+                    $"\nYou can append BHoMObjects to be pushed in its {nameof(oM.Adapters.Filing.IContent.Content)} property.");
 
-            List<BH.oM.Filing.IContent> createdFiles = new List<oM.Filing.IContent>();
+            List<BH.oM.Adapters.Filing.IContent> createdFiles = new List<oM.Adapters.Filing.IContent>();
             createdFiles = Create(files, pushType, pushConfig);
 
             return createdFiles.OfType<object>().ToList();

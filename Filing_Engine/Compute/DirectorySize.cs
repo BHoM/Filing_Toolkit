@@ -11,7 +11,7 @@ namespace BH.Engine.Filing
     public static class Compute
     {
         [Description("Returns the size of the directory. The calculation might take some time.")]
-        public static long DirectorySize(BH.oM.Filing.Directory directory)
+        public static long DirectorySize(BH.oM.Adapters.Filing.Directory directory)
         {
             return DirectorySize(directory.FromFiling());
         }

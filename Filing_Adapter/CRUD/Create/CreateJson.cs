@@ -29,7 +29,7 @@ using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Filing;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 
 namespace BH.Adapter.Filing
 {
@@ -39,9 +39,9 @@ namespace BH.Adapter.Filing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private List<oM.Filing.File> CreateJson(IEnumerable<BH.oM.Filing.File> files, PushType pushType, PushConfig pushConfig)
+        private List<oM.Adapters.Filing.File> CreateJson(IEnumerable<BH.oM.Adapters.Filing.File> files, PushType pushType, PushConfig pushConfig)
         {
-            List<oM.Filing.File> createdFiles = new List<oM.Filing.File>();
+            List<oM.Adapters.Filing.File> createdFiles = new List<oM.Adapters.Filing.File>();
 
             foreach (var file in files)
             {
@@ -102,7 +102,7 @@ namespace BH.Adapter.Filing
                 if (filecreated)
                 {
                     System.IO.FileInfo fileinfo = new System.IO.FileInfo(fullPath);
-                    oM.Filing.File createdFile = fileinfo.ToFiling();
+                    oM.Adapters.Filing.File createdFile = fileinfo.ToFiling();
                     createdFile.Content = file.Content;
 
                     createdFiles.Add(createdFile);

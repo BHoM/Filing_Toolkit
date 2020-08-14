@@ -2,7 +2,7 @@
 using BH.Engine.Reflection;
 using BH.oM.Adapter;
 using BH.oM.Data.Requests;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace BH.Adapter.Filing
                 return 0;
             }
 
-            oM.Filing.RemoveConfig removeConfig = actionConfig as oM.Filing.RemoveConfig ?? new RemoveConfig();
+            oM.Adapters.Filing.RemoveConfig removeConfig = actionConfig as oM.Adapters.Filing.RemoveConfig ?? new RemoveConfig();
 
             if (m_Remove_enableDeleteWarning && !removeConfig.DisableWarnings)
             {

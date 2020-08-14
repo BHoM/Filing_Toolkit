@@ -6,13 +6,13 @@ using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Filing;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 
 namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        private void AddAuthor(oM.Filing.IContent retrievedFile)
+        private void AddAuthor(oM.Adapters.Filing.IContent retrievedFile)
         {
             string fullPath = retrievedFile.IFullPath();
 
@@ -33,7 +33,7 @@ namespace BH.Adapter.Filing
             }
         }
 
-        private void AddContent(oM.Filing.File retrievedFile)
+        private void AddContent(oM.Adapters.Filing.File retrievedFile)
         {
             string fullPath = retrievedFile.IFullPath();
 
@@ -41,7 +41,7 @@ namespace BH.Adapter.Filing
             retrievedFile.Content.AddRange(content);
         }
 
-        private void AddContent(oM.Filing.Directory retrievedDir)
+        private void AddContent(oM.Adapters.Filing.Directory retrievedDir)
         {
             string fullPath = retrievedDir.IFullPath();
 

@@ -1,4 +1,4 @@
-﻿using BH.oM.Filing;
+﻿using BH.oM.Adapters.Filing;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace BH.Engine.Filing
         /**** Methods                                   ****/
         /***************************************************/
 
-        [Description("Add the input content to the specified oM.Filing.File.")]
+        [Description("Add the input content to the specified oM.Adapters.Filing.File.")]
         public static File AddContent(this File file, List<object> content)
         {
             File cloned = file.DeepClone();

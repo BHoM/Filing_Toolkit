@@ -9,7 +9,7 @@ using System.IO;
 using System.ComponentModel;
 using BH.oM.Data.Requests;
 
-namespace BH.oM.Filing
+namespace BH.oM.Adapters.Filing
 {
     [Description("Used to query Directories or Files.")]
     public class DirectoryRequest : IDirectoryRequest

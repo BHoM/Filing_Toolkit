@@ -23,7 +23,7 @@
 using BH.Engine.Filing;
 using BH.oM.Adapter;
 using BH.oM.Base;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,7 +37,7 @@ namespace BH.Adapter.Filing
         protected IEnumerable<object> Read(FileDirRequest fdr, PullConfig pullConfig)
         {
             // Recursively walk the directories to retrieve File and Directory Info.
-            List<oM.Filing.IContent> output = new List<IContent>();
+            List<oM.Adapters.Filing.IContent> output = new List<IContent>();
 
             // Check if the request points to a single file.
             if (Query.IsExistingFile(fdr.ParentDirectory.IFullPath()))

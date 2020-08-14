@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 
@@ -22,8 +22,8 @@ namespace BH.Engine.Filing
         [Input("parentDirectory", "Path of parent Directory of the directory. You can also specify a string path.")]
         [Input("directoryName", "Name of the directory.")]
         [Input("content", "The content of the file.")]
-        [Description("Creates a oM.Filing.File object.")]
-        public static oM.Filing.Directory Directory(string dirFullPath)
+        [Description("Creates a oM.Adapters.Filing.File object.")]
+        public static oM.Adapters.Filing.Directory Directory(string dirFullPath)
         {
             if (Path.HasExtension(dirFullPath))
             {
@@ -31,15 +31,15 @@ namespace BH.Engine.Filing
                 return null;
             }
 
-            return (oM.Filing.Directory)(dirFullPath);
+            return (oM.Adapters.Filing.Directory)(dirFullPath);
             
         }
 
         [Input("parentDirectory","Path of parent Directory of the directory. You can also specify a string path.")]
         [Input("directoryName", "Name of the directory.")]
         [Input("content", "The content of the file.")]
-        [Description("Creates a oM.Filing.File object.")]
-        public static oM.Filing.Directory Directory(oM.Filing.Directory parentDirectory, string directoryName)
+        [Description("Creates a oM.Adapters.Filing.File object.")]
+        public static oM.Adapters.Filing.Directory Directory(oM.Adapters.Filing.Directory parentDirectory, string directoryName)
         {
             if (Path.HasExtension(directoryName))
             {
@@ -47,7 +47,7 @@ namespace BH.Engine.Filing
                 return null;
             }
 
-            return new oM.Filing.Directory()
+            return new oM.Adapters.Filing.Directory()
             {
                 ParentDirectory = parentDirectory,
                 Name = directoryName,

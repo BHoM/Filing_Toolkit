@@ -2,7 +2,7 @@
 using BH.Engine.Reflection;
 using BH.oM.Adapter;
 using BH.oM.Data.Requests;
-using BH.oM.Filing;
+using BH.oM.Adapters.Filing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace BH.Adapter.Filing
             if (command == null)
                 return new Output<List<object>, bool>();
 
-            oM.Filing.ExecuteConfig executeConfig = actionConfig as oM.Filing.ExecuteConfig ?? new ExecuteConfig();
+            oM.Adapters.Filing.ExecuteConfig executeConfig = actionConfig as oM.Adapters.Filing.ExecuteConfig ?? new ExecuteConfig();
 
             if (m_Execute_enableWarning && !executeConfig.DisableWarnings)
             {
@@ -58,7 +58,7 @@ namespace BH.Adapter.Filing
 
             if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(target))
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Please specify a valid oM.Filing.Command.");
+                BH.Engine.Reflection.Compute.RecordWarning("Please specify a valid oM.Adapters.Filing.Command.");
                 return null;
             }
             RenameCommand renameCommand = command as RenameCommand;
