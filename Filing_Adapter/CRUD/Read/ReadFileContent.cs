@@ -31,7 +31,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BH.oM.Adapters.Filing;
-using BH.Engine.Filing;
+using BH.Engine.Adapters.Filing;
 
 
 namespace BH.Adapter.Filing

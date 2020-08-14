@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
-using BH.Engine.Filing;
+using BH.Engine.Adapters.Filing;
 using BH.oM.Adapters.Filing;
 
 namespace BH.Adapter.Filing
