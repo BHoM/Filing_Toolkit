@@ -97,7 +97,7 @@ namespace BH.oM.Adapters.Filing
 
         public override string ToString()
         {
-            return Path.Combine(this.ParentDirectory?.ToString() ?? "", this.Name);
+            return Path.Combine(this.ParentDirectory?.ToString() ?? "", this.Name ?? "");
         }
     }
 }
