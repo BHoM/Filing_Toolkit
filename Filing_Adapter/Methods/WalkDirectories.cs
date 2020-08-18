@@ -21,6 +21,12 @@ namespace BH.Adapter.Filing
                 return;
 
             // Look in directory and, if requested, recursively in subdirectories.
+            if (string.IsNullOrWhiteSpace(fdr.Location))
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Missing parameter {nameof(fdr.Location)} from the request.");
+                return;
+            }
+
             System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.Location.IFullPath());
 
             System.IO.DirectoryInfo[] dirArray = new System.IO.DirectoryInfo[] { };

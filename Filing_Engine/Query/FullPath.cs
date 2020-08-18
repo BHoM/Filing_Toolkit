@@ -43,6 +43,9 @@ namespace BH.Engine.Adapters.Filing
         {
             string fullpath = null;
 
+            if (string.IsNullOrWhiteSpace(path))
+                return null;
+
             try
             {
                 fullpath = new FileInfo(path).FullName;
