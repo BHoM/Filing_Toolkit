@@ -54,13 +54,20 @@ namespace BH.oM.Adapters.Filing
             if (String.IsNullOrWhiteSpace(fileFullPath))
                 return null;
 
-            File bhomfile = new File();
-            FileInfo fi = new System.IO.FileInfo(fileFullPath);
+            Uri uri = new Uri(fileFullPath);
 
-            bhomfile.Name = fi.Name;
-            bhomfile.ParentDirectory = fi.Directory.FullName;
+            string parent = "";
+            string name = uri.AbsoluteUri;
 
-            return bhomfile;
+            if (!uri.IsFile)
+                return null;
+
+            string root = new Uri(Path.GetPathRoot(uri.LocalPath)).AbsoluteUri;
+
+            parent = name != root ? new Uri(uri, "..").LocalPath : "";
+            name = name != root ? new Uri(name).Segments.Last().TrimEnd('/') : new Uri(name).LocalPath;
+
+            return new File() { Name = name, ParentDirectory = parent };
         }
 
         /***************************************************/
@@ -69,7 +76,7 @@ namespace BH.oM.Adapters.Filing
 
         public override string ToString()
         {
-            return Path.Combine(this.ParentDirectory?.ToString() ?? "", this.Name ?? "");
+            return this.ParentDirectory?.ToString() ?? "" + "/" + this.Name ?? "";
         }
     }
 }

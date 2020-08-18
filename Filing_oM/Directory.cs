@@ -57,13 +57,38 @@ namespace BH.oM.Adapters.Filing
             if (String.IsNullOrWhiteSpace(dirFullPath))
                 return null;
 
-            Directory bhomDir = new Directory();
-            DirectoryInfo fi = new System.IO.DirectoryInfo(dirFullPath);
+            Uri uri = new Uri(dirFullPath);
 
-            bhomDir.Name = fi.Name;
-            bhomDir.ParentDirectory = fi.Parent.FullName;
+            string parent = "";
+            string name = "";
 
-            return bhomDir;
+            name = uri.Segments.Last();
+
+            string root = "";
+            if (uri.IsFile)
+                root = uri.Segments[1];
+            else
+                root = uri.GetComponents(UriComponents.SchemeAndServer,
+                                                    UriFormat.SafeUnescaped);
+            int i = 0;
+            if (uri.IsFile)
+                i = 1;
+
+            for (; i < uri.Segments.Length - 1; i++)
+            {
+                parent += uri.Segments[i];
+            }
+
+            if (uri.IsFile)
+                parent = parent.Replace("file:///", "");
+
+            if (parent != root)
+                name = uri.Segments.Last().TrimEnd('/');
+            else
+                parent = "";
+
+
+            return new Directory() { ParentDirectory = parent, Name = name };
         }
 
         /***************************************************/
