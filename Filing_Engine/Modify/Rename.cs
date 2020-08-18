@@ -19,13 +19,24 @@ namespace BH.Engine.Adapters.Filing
         [Input("file", "The file (or directory) to rename.")]
         [Input("name", "The new name.")]
         [Output("The moved file object.")]
-        public static IContent  Rename(this IContent  fileOrDir, string name)
+        public static IContent IRename(this IContent fileOrDir, string name)
         {
             fileOrDir = BH.Engine.Base.Query.ShallowClone(fileOrDir);
-            fileOrDir.Name = name;
-            return fileOrDir;
+            return Rename(fileOrDir as dynamic, name);
         }
 
         /***************************************************/
+
+        public static IContent Rename(this File file, string name)
+        {
+            file.Name = name;
+            return file;
+        }
+
+        public static IContent Rename(this Directory directory, string name)
+        {
+            directory.Name = name;
+            return directory;
+        }
     }
 }

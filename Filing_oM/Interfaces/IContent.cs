@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Adapters.Filing
 {
-    public interface IContent  : IInfo
+    public interface IContent  : IInfo, IBHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/

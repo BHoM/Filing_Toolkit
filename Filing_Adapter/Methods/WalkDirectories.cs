@@ -21,7 +21,7 @@ namespace BH.Adapter.Filing
                 return;
 
             // Look in directory and, if requested, recursively in subdirectories.
-            System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.ParentDirectory.IFullPath());
+            System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.Location.IFullPath());
 
             System.IO.DirectoryInfo[] dirArray = new System.IO.DirectoryInfo[] { };
 
@@ -34,7 +34,7 @@ namespace BH.Adapter.Filing
                 if (bhomDir == null)
                     continue;
 
-                bhomDir.ParentDirectory = (oM.Adapters.Filing.Directory)di.Parent;
+                bhomDir.ParentDirectory = di.Parent.ToFiling();
 
                 if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
                     continue;
@@ -50,7 +50,7 @@ namespace BH.Adapter.Filing
                 if (fdr.IncludeSubdirectories == true && MaxItemsReached(fdr.MaxFiles, retrievedFiles, fdr.MaxDirectories, retrievedDirs))
                 {
                     FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
-                    fdrRecurse.ParentDirectory = bhomDir.IFullPath();
+                    fdrRecurse.Location = bhomDir.IFullPath();
                     fdrRecurse.MaxNesting -= 1;
 
                     WalkDirectories(output, fdrRecurse, ref retrievedFiles, ref retrievedDirs, inclHidFiles, inclSysFiles);
@@ -77,7 +77,7 @@ namespace BH.Adapter.Filing
                     if (!MaxItemsReached(fdr.MaxFiles, retrievedFiles))
                     {
                         // Check exclusions
-                        if (fdr.Exclusions != null && fdr.Exclusions.Contains((BH.oM.Adapters.Filing.File)fi))
+                        if (fdr.Exclusions != null && fdr.Exclusions.Contains(fi.ToFiling()))
                             continue;
 
                         oM.Adapters.Filing.File omFile = ReadFile(fi.FullName, fdr.IncludeFileContents, inclHidFiles, inclSysFiles);

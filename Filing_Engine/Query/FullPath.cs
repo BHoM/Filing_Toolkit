@@ -18,7 +18,7 @@ namespace BH.Engine.Adapters.Filing
         /***************************************************/
 
         [Description("Get the full path.")]
-        public static string IFullPath(this IObject obj)
+        public static string IFullPath(this object obj)
         {
             return obj != null ? FullPath(obj as dynamic) ?? "" : "";
         }
@@ -36,7 +36,22 @@ namespace BH.Engine.Adapters.Filing
 
         private static string FullPath(this IFilingRequest fdr)
         {
-            return IFullPath(fdr.ParentDirectory);
+            return FullPath(fdr.Location);
+        }
+
+        private static string FullPath(this string path)
+        {
+            string fullpath = null;
+
+            try
+            {
+                fullpath = new FileInfo(path).FullName;
+            }
+            catch
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Invalid path provided:\n{path}");
+            }
+            return fullpath;
         }
 
         //Fallback

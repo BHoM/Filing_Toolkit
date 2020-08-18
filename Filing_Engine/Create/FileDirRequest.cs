@@ -22,7 +22,7 @@ namespace BH.Engine.Adapters.Filing
         {
             return new FileDirRequest()
             {
-                ParentDirectory = fullPath,
+                Location = fullPath,
                 IncludeDirectories = includeDirectories,
                 IncludeFiles = includeFiles,
                 IncludeSubdirectories = includeSubDirectories,

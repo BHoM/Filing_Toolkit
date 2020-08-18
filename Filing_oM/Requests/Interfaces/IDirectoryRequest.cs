@@ -13,12 +13,6 @@ namespace BH.oM.Adapters.Filing
 {
     public interface IDirectoryRequest : IFilingRequest
     {
-        bool IncludeSubdirectories { get; set; }
-
-        int MaxNesting { get; set; }
-
         int MaxDirectories { get; set; }
-
-        List<IInfo> Exclusions { get; set; }
     }
 }

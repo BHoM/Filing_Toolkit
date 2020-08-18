@@ -18,9 +18,8 @@ namespace BH.oM.Adapters.Filing
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("Directory and/or Files from this FullPath will be queried." +
-            "\nYou can also specify a string path.")]
-        public virtual Directory ParentDirectory { get; set; } = "";
+        [Description("Directory and/or Files from this Location will be queried.")]
+        public virtual string Location { get; set; } = "";
 
         [Description("If enabled, look also in subdirectories.")]
         public virtual bool IncludeSubdirectories { get; set; } = false;
@@ -44,7 +43,7 @@ namespace BH.oM.Adapters.Filing
         public static implicit operator DirectoryRequest(string fullPath)
         {
             if (!String.IsNullOrWhiteSpace(fullPath))
-                return new DirectoryRequest() { ParentDirectory = fullPath };
+                return new DirectoryRequest() { Location = fullPath };
             else
                 return null;
         }
