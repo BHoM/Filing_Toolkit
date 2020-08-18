@@ -13,6 +13,8 @@ namespace BH.oM.Adapters.Filing
 {
     public interface IFileRequest : IFilingRequest
     {
+        int MaxFiles { get; set; } 
+
         bool IncludeFileContents { get; set; } 
     }
 }

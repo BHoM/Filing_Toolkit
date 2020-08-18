@@ -40,7 +40,7 @@ namespace BH.Adapter.Filing
             List<oM.Adapters.Filing.IContent> output = new List<IContent>();
 
             // Check if the request points to a single file.
-            if (Query.IsExistingFile(fdr.ParentDirectory.IFullPath()))
+            if (Query.IsExistingFile(fdr.Location.IFullPath()))
             {
                 // The FileDirRequest actually points to a single file;
                 // convert to a FileRequest.

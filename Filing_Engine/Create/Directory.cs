@@ -31,7 +31,7 @@ namespace BH.Engine.Adapters.Filing
                 return null;
             }
 
-            return (oM.Adapters.Filing.Directory)(dirFullPath);
+            return dirFullPath;
             
         }
 

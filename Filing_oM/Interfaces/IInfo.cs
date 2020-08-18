@@ -27,16 +27,12 @@ namespace BH.oM.Adapters.Filing
 
         FileAttributes Attributes { get; set; }
 
-        DateTime CreationTime { get; set; }
         DateTime CreationTimeUtc { get; set; }
-        DateTime LastAccessTime { get; set; }
-        DateTime LastAccessTimeUtc { get; set; }
-        DateTime LastWriteTime { get; set; }
-        DateTime LastWriteTimeUtc { get; set; }
+        DateTime ModifiedTimeUtc { get; set; }
+
+        int Size { get; set; }
 
         string Owner { get; set; }
-
-        object SystemId { get; set; }
 
         /***************************************************/
     }

@@ -13,6 +13,6 @@ namespace BH.oM.Adapters.Filing
 {
     public interface IFilingRequest : IRequest
     {
-        Directory ParentDirectory { get; set; }
+        string Location { get; set; }
     }
 }
