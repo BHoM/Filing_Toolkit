@@ -28,7 +28,7 @@ namespace BH.Adapter.Filing
                 }
                 catch
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning($"Cannot retrieve Author/Owner for: `{fullPath}`");
+                    BH.Engine.Reflection.Compute.RecordNote($"Cannot retrieve Owner of {retrievedFile.GetType().Name} `{fullPath}`");
                 }
             }
         }
