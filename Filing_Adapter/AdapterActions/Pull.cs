@@ -23,14 +23,12 @@ namespace BH.Adapter.Filing
 
         public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
         {
-            if (request == null)
-                return new List<object>();
-
             PullConfig pullConfig = actionConfig as PullConfig ?? new PullConfig();
 
-            if (request == null)
+            IFilingRequest iFr = request as IFilingRequest;
+            if (iFr == null)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Please specify a valid request.");
+                BH.Engine.Reflection.Compute.RecordWarning($"Filing_Adapter only supports request inheriting {nameof(IFilingRequest)}.");
                 return new List<object>();
             }
 
