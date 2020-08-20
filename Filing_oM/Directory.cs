@@ -61,7 +61,7 @@ namespace BH.oM.Adapters.Filing
             DirectoryInfo fi = new System.IO.DirectoryInfo(dirFullPath);
 
             bhomDir.Name = fi.Name;
-            bhomDir.ParentDirectory = fi.Parent.FullName;
+            bhomDir.ParentDirectory = fi.Parent?.FullName;
 
             return bhomDir;
         }
