@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\CreateFolders.cs" />
     <Compile Include="Compute\DirectorySize.cs" />
     <Compile Include="Convert\ToFileRequest.cs" />
     <Compile Include="Convert\FromFiling.cs" />
