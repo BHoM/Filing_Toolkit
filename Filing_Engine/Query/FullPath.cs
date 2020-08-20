@@ -31,7 +31,7 @@ namespace BH.Engine.Adapters.Filing
             if (!IsAcyclic(baseInfo))
                 BH.Engine.Reflection.Compute.RecordError("Circular directory hierarchy found.");
 
-            return Path.Combine(baseInfo.ParentDirectory.IFullPath(), baseInfo.Name);
+            return baseInfo.ToString();
         }
 
         private static string FullPath(this IFilingRequest fdr)
