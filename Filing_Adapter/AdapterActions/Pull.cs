@@ -25,7 +25,7 @@ namespace BH.Adapter.Filing
         {
             PullConfig pullConfig = actionConfig as PullConfig ?? new PullConfig();
 
-            IFilingRequest iFr = request as IFilingRequest;
+            IRequest iFr = request as IRequest;
             if (iFr == null)
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"Filing_Adapter only supports request inheriting {nameof(IFilingRequest)}.");
