@@ -19,7 +19,7 @@ namespace BH.Engine.Adapters.Filing
         [Input("file", "The file (or directory) to move.")]
         [Input("to", "The new parent Directory.")]
         [Output("The moved file object.")]
-        public static IContent ChangeDirectory(this IContent fileOrDir, oM.Adapters.Filing.Directory to)
+        public static IFileSystemContainer ChangeDirectory(this oM.Adapters.Filing.IFileSystemContainer fileOrDir, oM.Adapters.Filing.Directory to)
         {
             fileOrDir = BH.Engine.Base.Query.ShallowClone(fileOrDir);
             fileOrDir.ParentDirectory = to;

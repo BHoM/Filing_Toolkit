@@ -2,17 +2,16 @@ using BH.oM.Base;
 using BH.oM.Humans;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
-using System.ComponentModel;
-using BH.oM.Data.Requests;
 
 namespace BH.oM.Adapters.Filing
 {
-    public interface IDirectoryRequest : IResourceRequest
+    [Description("Identifies a Directory.")]
+    public interface IDirectory : IResource
     {
-        int MaxDirectories { get; set; }
     }
 }

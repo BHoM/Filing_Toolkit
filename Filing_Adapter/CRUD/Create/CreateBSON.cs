@@ -40,9 +40,9 @@ namespace BH.Adapter.Filing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private List<BH.oM.Adapters.Filing.IContent> CreateBson(IEnumerable<BH.oM.Adapters.Filing.File> files, PushType pushType, PushConfig pushConfig)
+        private List<BH.oM.Adapters.Filing.IFileSystemContainer> CreateBson(IEnumerable<BH.oM.Adapters.Filing.File> files, PushType pushType, PushConfig pushConfig)
         {
-            List<BH.oM.Adapters.Filing.IContent> createdFiles = new List<oM.Adapters.Filing.IContent>();
+            List<BH.oM.Adapters.Filing.IFileSystemContainer> createdFiles = new List<oM.Adapters.Filing.IFileSystemContainer>();
 
             foreach (var file in files)
             {

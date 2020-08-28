@@ -18,14 +18,14 @@ namespace BH.Engine.Adapters.Filing
         [Description("Test whether the file hierarchy is acyclic, i.e. has no loops in it.")]
         [Input("file", "The file to test.")]
         [Output("Whether the file hierachy is Acyclic.")]
-        public static bool IsAcyclic(this IInfo file)
+        public static bool IsAcyclic(this IFileSystemInfo file)
         {
-            return IsAcyclic(file as dynamic, new HashSet<IInfo>());
+            return IsAcyclic(file as dynamic, new HashSet<IFileSystemInfo>());
         }
 
         /***************************************************/
 
-        private static bool IsAcyclic(IInfo file, HashSet<IInfo> encountered)
+        private static bool IsAcyclic(IFileSystemInfo file, HashSet<IFileSystemInfo> encountered)
         {
             if (file?.ParentDirectory == null) return true;
 

@@ -34,7 +34,7 @@ namespace BH.oM.Adapters.Filing
 
         [Description("These files or directories will be excluded from the results, useful when using IncludeSubdirectories." +
             "\nYou can also specify string Full Paths.")]
-        public virtual List<IInfo> Exclusions { get; set; } = new List<IInfo>();
+        public virtual List<IFileSystemInfo> Exclusions { get; set; } = new List<IFileSystemInfo>();
 
         /***************************************************/
         /**** Implicit cast                             ****/

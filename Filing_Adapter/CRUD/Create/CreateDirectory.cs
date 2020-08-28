@@ -39,9 +39,9 @@ namespace BH.Adapter.Filing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private List<BH.oM.Adapters.Filing.IContent> CreateDirectory(IEnumerable<BH.oM.Adapters.Filing.Directory> directory, PushType pushType, PushConfig pushConfig)
+        private List<BH.oM.Adapters.Filing.IFileSystemContainer> CreateDirectory(IEnumerable<BH.oM.Adapters.Filing.Directory> directory, PushType pushType, PushConfig pushConfig)
         {
-            List<BH.oM.Adapters.Filing.IContent> createdDirs = new List<oM.Adapters.Filing.IContent>();
+            List<BH.oM.Adapters.Filing.IFileSystemContainer> createdDirs = new List<oM.Adapters.Filing.IFileSystemContainer>();
 
             bool clearfile = pushType == PushType.DeleteThenCreate ? true : false;
 

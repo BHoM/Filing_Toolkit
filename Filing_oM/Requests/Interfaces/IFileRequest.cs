@@ -11,7 +11,7 @@ using BH.oM.Data.Requests;
 
 namespace BH.oM.Adapters.Filing
 {
-    public interface IFileRequest : IFilingRequest
+    public interface IFileRequest : IResourceRequest
     {
         int MaxFiles { get; set; } 
 
