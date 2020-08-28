@@ -13,6 +13,5 @@ namespace BH.oM.Adapters.Filing
 {
     public interface IFilingRequest : IRequest
     {
-        string Location { get; set; }
     }
 }

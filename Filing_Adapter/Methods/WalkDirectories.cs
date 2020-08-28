@@ -12,7 +12,7 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        private void WalkDirectories(List<oM.Adapters.Filing.IContent> output, FileDirRequest fdr, 
+        private void WalkDirectories(List<oM.Adapters.Filing.IFileSystemContainer> output, FileDirRequest fdr, 
             ref int retrievedFiles, ref int retrievedDirs, 
             bool inclHidFiles = false, bool inclSysFiles = false)
         {

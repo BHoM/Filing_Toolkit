@@ -75,7 +75,7 @@ namespace BH.Adapter.Filing
                         }
                         else
                         {
-                            // Override existing file.
+                            // Overwrite existing file.
                             System.IO.File.WriteAllText(fullPath, content);
                         }
                     }

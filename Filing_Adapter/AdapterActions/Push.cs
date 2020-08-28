@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.Engine.Base;
+using BH.oM.Base;
 
 namespace BH.Adapter.Filing
 {
@@ -23,7 +24,8 @@ namespace BH.Adapter.Filing
 
         public override List<object> Push(IEnumerable<object> objects, string tag = "", PushType pushType = PushType.AdapterDefault, ActionConfig actionConfig = null)
         {
-            oM.Adapters.Filing.PushConfig pushConfig = actionConfig as oM.Adapters.Filing.PushConfig ?? new PushConfig();
+            PushConfig pushConfig = actionConfig as PushConfig ?? new PushConfig();
+            m_defaultFilePath = pushConfig.DefaultFilePath;
 
             if (pushType == PushType.AdapterDefault)
                 pushType = m_AdapterSettings.DefaultPushType;
@@ -34,7 +36,6 @@ namespace BH.Adapter.Filing
                 return new List<object>();
             }
                 
-
             if (pushType == PushType.DeleteThenCreate)
                 if (m_Push_enableDeleteWarning && !pushConfig.DisableWarnings)
                 {
@@ -48,13 +49,23 @@ namespace BH.Adapter.Filing
                     return new List<object>();
                 }
 
-            IEnumerable<oM.Adapters.Filing.IContent> files = objects.OfType<oM.Adapters.Filing.IContent>();
-            if (objects.Where(o => o != null).Count() != files.Count())
-                BH.Engine.Reflection.Compute.RecordWarning($"File Adapter can only push objects of type {nameof(oM.Adapters.Filing.File)}." +
-                    $"\nYou can append BHoMObjects to be pushed in its {nameof(oM.Adapters.Filing.IContent.Content)} property.");
+            List<IFileSystemContainer> createdFiles = new List<IFileSystemContainer>();
 
-            List<BH.oM.Adapters.Filing.IContent> createdFiles = new List<oM.Adapters.Filing.IContent>();
-            createdFiles = Create(files, pushType, pushConfig);
+            List<IFileSystemContainer> filesOrDirs = objects.OfType<IFileSystemContainer>().ToList();
+            List<object> remainder = objects.Except(filesOrDirs).ToList();
+
+            if (remainder.Any())
+            {
+                BH.Engine.Reflection.Compute.RecordNote($"Objects that are not either of type {typeof(oM.Adapters.Filing.File).FullName} or {typeof(oM.Adapters.Filing.Directory).FullName} " +
+                    $"\nwill be Pushed using the Filing Adapter default filePath: `{m_defaultFilePath}`." +
+                    $"\nUse the PushConfig to specify a different filePath for them.");
+                string defaultDirectory = Path.GetDirectoryName(m_defaultFilePath);
+                string defaultFileName = Path.GetFileName(m_defaultFilePath);
+                oM.Adapters.Filing.File file = BH.Engine.Adapters.Filing.Create.File(defaultDirectory, defaultFileName, remainder);
+                filesOrDirs.Add(file);
+            }
+
+            createdFiles = Create(filesOrDirs, pushType, pushConfig);
 
             return createdFiles.OfType<object>().ToList();
         }

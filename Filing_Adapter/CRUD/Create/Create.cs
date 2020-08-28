@@ -39,26 +39,26 @@ namespace BH.Adapter.Filing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        protected List<BH.oM.Adapters.Filing.IContent> Create(IEnumerable<IContent> filesOrDirs, PushType pushType, PushConfig pushConfig)
+        protected List<BH.oM.Adapters.Filing.IFileSystemContainer> Create(IEnumerable<IFileSystemContainer> filesOrDirs, PushType pushType, PushConfig pushConfig)
         {
             pushConfig = pushConfig ?? new PushConfig();
 
-            List<BH.oM.Adapters.Filing.IContent> createdFiles = new List<oM.Adapters.Filing.IContent>();
+            List<BH.oM.Adapters.Filing.IFileSystemContainer> createdFiles = new List<oM.Adapters.Filing.IFileSystemContainer>();
 
             var groupedPerExtension = filesOrDirs.GroupBy(f => Path.GetExtension(f.IFullPath())).ToDictionary(g => g.Key, g => g.ToList());
 
-            List<IContent> jsons = new List<IContent>();
+            List<IFileSystemContainer> jsons = new List<IFileSystemContainer>();
             if (groupedPerExtension.TryGetValue(".json", out jsons))
-                createdFiles.AddRange(CreateJson(jsons.OfType<oM.Adapters.Filing.File>(), pushType, pushConfig).Cast<IContent>());
+                createdFiles.AddRange(CreateJson(jsons.OfType<oM.Adapters.Filing.File>(), pushType, pushConfig).Cast<IFileSystemContainer>());
 
-            List<IContent> bsons = new List<IContent>();
+            List<IFileSystemContainer> bsons = new List<IFileSystemContainer>();
             if (groupedPerExtension.TryGetValue(".bson", out bsons))
-                createdFiles.AddRange(CreateBson(bsons.OfType<oM.Adapters.Filing.File>(), pushType, pushConfig).Cast<IContent>());
+                createdFiles.AddRange(CreateBson(bsons.OfType<oM.Adapters.Filing.File>(), pushType, pushConfig).Cast<IFileSystemContainer>());
 
-            List<IContent> remaining = new List<IContent>();
+            List<IFileSystemContainer> remaining = new List<IFileSystemContainer>();
             if (groupedPerExtension.TryGetValue("", out remaining))
             {
-                createdFiles.AddRange(CreateDirectory(remaining.OfType<oM.Adapters.Filing.Directory>(), pushType, pushConfig).Cast<IContent>());
+                createdFiles.AddRange(CreateDirectory(remaining.OfType<oM.Adapters.Filing.Directory>(), pushType, pushConfig).Cast<IFileSystemContainer>());
             }
 
             return createdFiles;

@@ -11,8 +11,8 @@ using BH.oM.Data.Requests;
 
 namespace BH.oM.Adapters.Filing
 {
-    public interface IDirectoryRequest : IResourceRequest
+    public interface IResourceRequest : IRequest
     {
-        int MaxDirectories { get; set; }
+        string Location { get; set; }
     }
 }

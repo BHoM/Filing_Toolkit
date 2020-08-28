@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Adapters.Filing
 {
-    public interface IContent  : IInfo, IBHoMObject
+    [Description("Identifies objects that store information on a File or Directory under a FileSystem, plus its contents.")]
+    public interface IFileSystemContainer : IFileSystemInfo, IBHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/

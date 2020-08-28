@@ -11,7 +11,7 @@ using System.ComponentModel;
 namespace BH.oM.Adapters.Filing
 {
     [Description("A Directory. It can include the content of the Directory.")]
-    public class Directory : BHoMObject, IContent
+    public class Directory : BHoMObject, IFileSystemContainer, IDirectory
     {
         /***************************************************/
         /**** Properties                                ****/

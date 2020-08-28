@@ -12,7 +12,7 @@ using BH.oM.Data.Requests;
 namespace BH.oM.Adapters.Filing
 {
     [Description("Used to read contents of one or more files.")]
-    public class FileContentRequest : IRequest
+    public class FileContentRequest : IFilingRequest
     {
         /***************************************************/
         /**** Properties                                ****/
