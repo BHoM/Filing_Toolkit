@@ -40,74 +40,69 @@ namespace BH.Adapter.Filing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private List<BH.oM.Adapters.Filing.IFSContainer> CreateBson(IEnumerable<BH.oM.Adapters.Filing.FSFile> files, PushType pushType, PushConfig pushConfig)
+        private IFSContainer CreateBson(FSFile file, PushType pushType, PushConfig pushConfig)
         {
-            List<BH.oM.Adapters.Filing.IFSContainer> createdFiles = new List<oM.Adapters.Filing.IFSContainer>();
+            string fullPath = file.IFullPath();
+            bool fileExisted = System.IO.File.Exists(fullPath);
 
-            foreach (var file in files)
+            bool filecreated = true;
+
+            try
             {
-                string fullPath = file.IFullPath();
-                bool fileExisted = System.IO.File.Exists(fullPath);
-
-                bool filecreated = true;
-
-                try
+                if (pushType == PushType.DeleteThenCreate)
                 {
-                    if (pushType == PushType.DeleteThenCreate)
-                    {
-                        if (fileExisted)
-                            System.IO.File.Delete(fullPath);
+                    if (fileExisted)
+                        System.IO.File.Delete(fullPath);
 
-                        WriteBsonWithStream(file, fullPath, FileMode.CreateNew);
-                    }
-                    else if ((pushType == PushType.UpdateOnly && fileExisted) || pushType == PushType.UpdateOrCreateOnly)
+                    WriteBsonWithStream(file, fullPath, FileMode.CreateNew);
+                }
+                else if ((pushType == PushType.UpdateOnly && fileExisted) || pushType == PushType.UpdateOrCreateOnly)
+                {
+                    if (fileExisted && pushConfig.AppendContent)
                     {
-                        if (fileExisted && pushConfig.AppendContent)
-                        {
-                            // Append the text to existing file.
-                            WriteBsonWithStream(file, fullPath, FileMode.Append);
-                        }
-                        else
-                        {
-                            // Override existing file.
-                            WriteBsonWithStream(file, fullPath, FileMode.Create);
-                        }
-                    }
-                    else if (pushType == PushType.CreateOnly)
-                    {
-                        // Create only if file didn't exist. Do not touch existing ones.
-                        if (!fileExisted)
-                            WriteBsonWithStream(file, fullPath, FileMode.CreateNew);
-                        else
-                            BH.Engine.Reflection.Compute.RecordNote($"File {fullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
+                        // Append the text to existing file.
+                        WriteBsonWithStream(file, fullPath, FileMode.Append);
                     }
                     else
                     {
-                        BH.Engine.Reflection.Compute.RecordWarning($"The specified Pushtype of {pushType.ToString()} is not supported for .bson files.");
-                        filecreated = false;
+                        // Override existing file.
+                        WriteBsonWithStream(file, fullPath, FileMode.Create);
                     }
-
                 }
-                catch (Exception e)
+                else if (pushType == PushType.CreateOnly)
                 {
-                    BH.Engine.Reflection.Compute.RecordError(e.Message);
-                    continue;
+                    // Create only if file didn't exist. Do not touch existing ones.
+                    if (!fileExisted)
+                        WriteBsonWithStream(file, fullPath, FileMode.CreateNew);
+                    else
+                        BH.Engine.Reflection.Compute.RecordNote($"File {fullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
                 }
-
-                if (filecreated)
+                else
                 {
-                    System.IO.FileInfo fileinfo = new System.IO.FileInfo(fullPath);
-                    oM.Adapters.Filing.FSFile createdFile = fileinfo.ToFiling();
-                    createdFile.Content = file.Content;
-
-                    createdFiles.Add(createdFile);
+                    BH.Engine.Reflection.Compute.RecordWarning($"The specified Pushtype of {pushType.ToString()} is not supported for .bson files.");
+                    filecreated = false;
                 }
+
+            }
+            catch (Exception e)
+            {
+                BH.Engine.Reflection.Compute.RecordError(e.Message);
             }
 
-            return createdFiles;
+            if (filecreated)
+            {
+                System.IO.FileInfo fileinfo = new System.IO.FileInfo(fullPath);
+                oM.Adapters.Filing.FSFile createdFile = fileinfo.ToFiling();
+                createdFile.Content = file.Content;
+
+                return createdFile;
+            }
+
+            BH.Engine.Reflection.Compute.RecordError($"Could not create {file.ToString()}");
+            return null;
         }
 
-        public void WriteBsonWithStream(oM.Adapters.Filing.FSFile file, string fullPath, FileMode fileMode)
+            public void WriteBsonWithStream(oM.Adapters.Filing.FSFile file, string fullPath, FileMode fileMode)
         {
             FileStream stream = new FileStream(fullPath, FileMode.CreateNew);
             var writer = new BsonBinaryWriter(stream);

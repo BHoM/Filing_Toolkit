@@ -70,9 +70,12 @@
   <ItemGroup>
     <Compile Include="Compute\CreateFolders.cs" />
     <Compile Include="Compute\DirectorySize.cs" />
+    <Compile Include="Convert\FromFiling\FSDirectory.cs" />
+    <Compile Include="Convert\FromFiling\FSFile.cs" />
     <Compile Include="Convert\ToFileRequest.cs" />
-    <Compile Include="Convert\FromFiling.cs" />
-    <Compile Include="Convert\ToFiling.cs" />
+    <Compile Include="Convert\ToFiling\FSDirectory.cs" />
+    <Compile Include="Convert\ToFiling\FSFile.cs" />
+    <Compile Include="Convert\ToFiling\LocatableResource.cs" />
     <Compile Include="Create\Directory.cs" />
     <Compile Include="Create\File.cs" />
     <Compile Include="Create\FileDirRequest.cs" />

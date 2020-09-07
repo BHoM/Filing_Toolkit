@@ -39,35 +39,29 @@ namespace BH.Adapter.Filing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        protected List<BH.oM.Adapters.Filing.IFSContainer> Create(IEnumerable<ILocatableResource> resources, PushType pushType, PushConfig pushConfig)
+        protected IFSContainer Create(ILocatableResource resources, PushType pushType, PushConfig pushConfig)
         {
-            IEnumerable<IFSContainer> filesOrDirs = resources.Select(r => r.ToFiling());
-            return Create(filesOrDirs,  pushType,  pushConfig);
+            IFSContainer fileOrDir = resources.ToFiling();
+            return Create(fileOrDir,  pushType,  pushConfig);
         }
 
-        protected List<BH.oM.Adapters.Filing.IFSContainer> Create(IEnumerable<IFSContainer> filesOrDirs, PushType pushType, PushConfig pushConfig)
+        protected IFSContainer Create(IFSContainer fileOrDir, PushType pushType, PushConfig pushConfig)
         {
             pushConfig = pushConfig ?? new PushConfig();
 
-            List<BH.oM.Adapters.Filing.IFSContainer> createdFiles = new List<oM.Adapters.Filing.IFSContainer>();
+            string extension = Path.GetExtension(fileOrDir.IFullPath());
 
-            var groupedPerExtension = filesOrDirs.GroupBy(f => Path.GetExtension(f.IFullPath())).ToDictionary(g => g.Key, g => g.ToList());
+            if (extension == ".json")
+                return CreateJson((FSFile)fileOrDir, pushType, pushConfig) as IFSContainer;
 
-            List<IFSContainer> jsons = new List<IFSContainer>();
-            if (groupedPerExtension.TryGetValue(".json", out jsons))
-                createdFiles.AddRange(CreateJson(jsons.OfType<oM.Adapters.Filing.FSFile>(), pushType, pushConfig).Cast<IFSContainer>());
+            if (extension == ".bson")
+                return CreateJson((FSFile)fileOrDir, pushType, pushConfig) as IFSContainer;
 
-            List<IFSContainer> bsons = new List<IFSContainer>();
-            if (groupedPerExtension.TryGetValue(".bson", out bsons))
-                createdFiles.AddRange(CreateBson(bsons.OfType<oM.Adapters.Filing.FSFile>(), pushType, pushConfig).Cast<IFSContainer>());
+            if (extension == ".json")
+                return CreateDirectory((FSDirectory)fileOrDir, pushType, pushConfig) as IFSContainer;
 
-            List<IFSContainer> remaining = new List<IFSContainer>();
-            if (groupedPerExtension.TryGetValue("", out remaining))
-            {
-                createdFiles.AddRange(CreateDirectory(remaining.OfType<oM.Adapters.Filing.FSDirectory>(), pushType, pushConfig).Cast<IFSContainer>());
-            }
-
-            return createdFiles;
+            BH.Engine.Reflection.Compute.RecordError($"Could not create {fileOrDir.ToString()}");
+            return null;
         }
 
         /***************************************************/
