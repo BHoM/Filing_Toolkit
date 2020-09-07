@@ -56,7 +56,7 @@ namespace BH.Adapter.Filing
 
             if (remainder.Any())
             {
-                BH.Engine.Reflection.Compute.RecordNote($"Objects that are not either of type {typeof(oM.Adapters.Filing.FSFile).FullName} or {typeof(oM.Adapters.Filing.FSDirectory).FullName} " +
+                BH.Engine.Reflection.Compute.RecordNote($"Objects that are not Files or Directories " +
                     $"\nwill be Pushed using the Filing Adapter default filePath: `{m_defaultFilePath}`." +
                     $"\nUse the PushConfig to specify a different filePath for them.");
                 string defaultDirectory = Path.GetDirectoryName(m_defaultFilePath);
@@ -65,10 +65,9 @@ namespace BH.Adapter.Filing
                 filesOrDirs.Add(file);
             }
 
-
-            foreach (var fileOrDir in filesOrDirs)
+            foreach (IResource fileOrDir in filesOrDirs)
             {
-                object created = Create(fileOrDir, pushType, pushConfig);
+                IResource created = Create(fileOrDir as dynamic, pushType, pushConfig);
                 createdFiles.Add(created);
             }
 

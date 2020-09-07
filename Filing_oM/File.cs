@@ -11,7 +11,7 @@ using System.ComponentModel;
 namespace BH.oM.Adapters.Filing
 {
     [Description("A File. It can include the content of the File.")]
-    public class File : BHoMObject, IFile
+    public class File : BHoMObject, IFile, ILocatableResource, IContainableResource
     {
         /***************************************************/
         /**** Properties                                ****/

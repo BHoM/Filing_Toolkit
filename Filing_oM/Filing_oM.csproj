@@ -71,12 +71,14 @@
     <Compile Include="FSDirectory.cs" />
     <Compile Include="enums\Encodings.cs" />
     <Compile Include="File.cs" />
+    <Compile Include="Interfaces\IContainableResource.cs" />
+    <Compile Include="Interfaces\IContainer.cs" />
     <Compile Include="Interfaces\IDirectory.cs" />
+    <Compile Include="Interfaces\IFSContainer.cs" />
+    <Compile Include="Interfaces\IFSInfo.cs" />
     <Compile Include="Interfaces\ILocatableResource.cs" />
     <Compile Include="Interfaces\IResource.cs" />
     <Compile Include="Interfaces\IFile.cs" />
-    <Compile Include="Interfaces\IFileSystemInfo.cs" />
-    <Compile Include="Interfaces\IFileSystemContainer.cs" />
     <Compile Include="Requests\Interfaces\IFilingRequest.cs" />
     <Compile Include="Requests\IRemoveRequest.cs" />
     <Compile Include="Requests\Interfaces\IFileRequest.cs" />
