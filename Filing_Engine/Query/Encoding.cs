@@ -18,7 +18,7 @@ namespace BH.Engine.Adapters.Filing
         [Description("Try to get the encoding of the file.")]
         [Input("file", "The file to get the encoding of.")]
         [Output("The encoding of the file if it can be discovered, null if unknown.")]
-        public static Encoding Encoding(this File file)
+        public static Encoding Encoding(this FSFile file)
         {
             byte[] contents = file.ContentsAsByteArray();
             if (contents == null) return null;

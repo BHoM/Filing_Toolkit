@@ -37,7 +37,7 @@ namespace BH.Adapter.Filing
         protected IEnumerable<object> Read(FileDirRequest fdr, PullConfig pullConfig)
         {
             // Recursively walk the directories to retrieve File and Directory Info.
-            List<oM.Adapters.Filing.IFileSystemContainer> output = new List<IFileSystemContainer>();
+            List<oM.Adapters.Filing.IFSContainer> output = new List<IFSContainer>();
 
             // Check if the request points to a single file.
             if (Query.IsExistingFile(fdr.Location.IFullPath()))

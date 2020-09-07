@@ -39,9 +39,9 @@ namespace BH.Adapter.Filing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private List<oM.Adapters.Filing.File> CreateJson(IEnumerable<BH.oM.Adapters.Filing.File> files, PushType pushType, PushConfig pushConfig)
+        private List<oM.Adapters.Filing.FSFile> CreateJson(IEnumerable<BH.oM.Adapters.Filing.FSFile> files, PushType pushType, PushConfig pushConfig)
         {
-            List<oM.Adapters.Filing.File> createdFiles = new List<oM.Adapters.Filing.File>();
+            List<oM.Adapters.Filing.FSFile> createdFiles = new List<oM.Adapters.Filing.FSFile>();
 
             foreach (var file in files)
             {
@@ -102,7 +102,7 @@ namespace BH.Adapter.Filing
                 if (filecreated)
                 {
                     System.IO.FileInfo fileinfo = new System.IO.FileInfo(fullPath);
-                    oM.Adapters.Filing.File createdFile = fileinfo.ToFiling();
+                    oM.Adapters.Filing.FSFile createdFile = fileinfo.ToFiling();
                     createdFile.Content = file.Content;
 
                     createdFiles.Add(createdFile);

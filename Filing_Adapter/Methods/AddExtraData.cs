@@ -12,7 +12,7 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        private void AddAuthor(oM.Adapters.Filing.IFileSystemContainer retrievedFile)
+        private void AddAuthor(oM.Adapters.Filing.IFSContainer retrievedFile)
         {
             string fullPath = retrievedFile.IFullPath();
 
@@ -33,7 +33,7 @@ namespace BH.Adapter.Filing
             }
         }
 
-        private void AddContent(oM.Adapters.Filing.File retrievedFile)
+        private void AddContent(oM.Adapters.Filing.FSFile retrievedFile)
         {
             string fullPath = retrievedFile.IFullPath();
 
@@ -41,13 +41,13 @@ namespace BH.Adapter.Filing
             retrievedFile.Content.AddRange(content);
         }
 
-        private void AddContent(oM.Adapters.Filing.Directory retrievedDir)
+        private void AddContent(oM.Adapters.Filing.FSDirectory retrievedDir)
         {
             string fullPath = retrievedDir.IFullPath();
 
             var content = new DirectoryInfo(fullPath).GetFiles("*.*");
 
-            retrievedDir.Content.AddRange(content.Cast<IFileSystemInfo>());
+            retrievedDir.Content.AddRange(content.Cast<IFSInfo>());
         }
 
     }

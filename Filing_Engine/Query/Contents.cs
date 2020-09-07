@@ -19,7 +19,7 @@ namespace BH.Engine.Adapters.Filing
         [Input("file", "The file to get the contents of.")]
         [Input("encoding", "The encoding to use to decode the data. If null (default) discovery will be attempted; defaults to UTF-8 if it can't be discovered.")]
         [Output("The contents of the file.")]
-        public static string ContentsAsString(this File file, Encodings encoding = Encodings.FromFile)
+        public static string ContentsAsString(this FSFile file, Encodings encoding = Encodings.FromFile)
         {
             byte[] contents = file.ContentsAsByteArray();
 
@@ -43,7 +43,7 @@ namespace BH.Engine.Adapters.Filing
         [Description("Get the contents of the file as a byteArray, reading from its location.")]
         [Input("file", "The file to get the contents of.")]
         [Output("The contents of the file.")]
-        public static byte[] ContentsAsByteArray(this File bhomFile)
+        public static byte[] ContentsAsByteArray(this FSFile bhomFile)
         {
             byte[] contents = null;
 

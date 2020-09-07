@@ -3,29 +3,26 @@ using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BH.Engine.Base;
-using BH.Engine.Reflection;
 
 namespace BH.Engine.Adapters.Filing
 {
-    public static partial class Modify
+    public static partial class Convert
     {
         /***************************************************/
-        /**** Methods                                   ****/
+        /*** Methods                                     ***/
         /***************************************************/
 
-        [Description("Remove content from a file.")]
-        public static FSFile RemoveContent(this FSFile file)
+        [Description("Converts the provided File into a System.IO.FileInfo." +
+            "\nAny `Content` property is lost in this conversion.")]
+        public static FileInfo FromFiling(this oM.Adapters.Filing.FSFile file)
         {
-            FSFile cloned = file.DeepClone();
-            cloned.Content = new List<object>();
-
-            return cloned;
+            return new FileInfo(file.IFullPath());
         }
-        
+
         /***************************************************/
     }
 }

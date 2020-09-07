@@ -40,9 +40,9 @@ namespace BH.Adapter.Filing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private List<BH.oM.Adapters.Filing.IFileSystemContainer> CreateBson(IEnumerable<BH.oM.Adapters.Filing.File> files, PushType pushType, PushConfig pushConfig)
+        private List<BH.oM.Adapters.Filing.IFSContainer> CreateBson(IEnumerable<BH.oM.Adapters.Filing.FSFile> files, PushType pushType, PushConfig pushConfig)
         {
-            List<BH.oM.Adapters.Filing.IFileSystemContainer> createdFiles = new List<oM.Adapters.Filing.IFileSystemContainer>();
+            List<BH.oM.Adapters.Filing.IFSContainer> createdFiles = new List<oM.Adapters.Filing.IFSContainer>();
 
             foreach (var file in files)
             {
@@ -97,7 +97,7 @@ namespace BH.Adapter.Filing
                 if (filecreated)
                 {
                     System.IO.FileInfo fileinfo = new System.IO.FileInfo(fullPath);
-                    oM.Adapters.Filing.File createdFile = fileinfo.ToFiling();
+                    oM.Adapters.Filing.FSFile createdFile = fileinfo.ToFiling();
                     createdFile.Content = file.Content;
 
                     createdFiles.Add(createdFile);
@@ -107,7 +107,7 @@ namespace BH.Adapter.Filing
             return createdFiles;
         }
 
-        public void WriteBsonWithStream(oM.Adapters.Filing.File file, string fullPath, FileMode fileMode)
+        public void WriteBsonWithStream(oM.Adapters.Filing.FSFile file, string fullPath, FileMode fileMode)
         {
             FileStream stream = new FileStream(fullPath, FileMode.CreateNew);
             var writer = new BsonBinaryWriter(stream);

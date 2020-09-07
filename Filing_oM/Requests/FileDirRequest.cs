@@ -46,7 +46,7 @@ namespace BH.oM.Adapters.Filing
         public virtual int MaxDirectories { get; set; } = -1;
 
         [Description("These files or directories will be excluded from the results. You can also specify string Full Paths.")]
-        public virtual List<IFileSystemInfo> Exclusions { get; set; } = new List<IFileSystemInfo>();
+        public virtual List<IFSInfo> Exclusions { get; set; } = new List<IFSInfo>();
 
         /***************************************************/
         /**** Implicit cast                             ****/
