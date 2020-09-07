@@ -39,26 +39,32 @@ namespace BH.Adapter.Filing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        protected List<BH.oM.Adapters.Filing.IFileSystemContainer> Create(IEnumerable<IFileSystemContainer> filesOrDirs, PushType pushType, PushConfig pushConfig)
+        protected List<BH.oM.Adapters.Filing.IFSContainer> Create(IEnumerable<ILocatableResource> resources, PushType pushType, PushConfig pushConfig)
+        {
+            IEnumerable<IFSContainer> filesOrDirs = resources.Select(r => r.ToFiling());
+            return Create(filesOrDirs,  pushType,  pushConfig);
+        }
+
+        protected List<BH.oM.Adapters.Filing.IFSContainer> Create(IEnumerable<IFSContainer> filesOrDirs, PushType pushType, PushConfig pushConfig)
         {
             pushConfig = pushConfig ?? new PushConfig();
 
-            List<BH.oM.Adapters.Filing.IFileSystemContainer> createdFiles = new List<oM.Adapters.Filing.IFileSystemContainer>();
+            List<BH.oM.Adapters.Filing.IFSContainer> createdFiles = new List<oM.Adapters.Filing.IFSContainer>();
 
             var groupedPerExtension = filesOrDirs.GroupBy(f => Path.GetExtension(f.IFullPath())).ToDictionary(g => g.Key, g => g.ToList());
 
-            List<IFileSystemContainer> jsons = new List<IFileSystemContainer>();
+            List<IFSContainer> jsons = new List<IFSContainer>();
             if (groupedPerExtension.TryGetValue(".json", out jsons))
-                createdFiles.AddRange(CreateJson(jsons.OfType<oM.Adapters.Filing.File>(), pushType, pushConfig).Cast<IFileSystemContainer>());
+                createdFiles.AddRange(CreateJson(jsons.OfType<oM.Adapters.Filing.FSFile>(), pushType, pushConfig).Cast<IFSContainer>());
 
-            List<IFileSystemContainer> bsons = new List<IFileSystemContainer>();
+            List<IFSContainer> bsons = new List<IFSContainer>();
             if (groupedPerExtension.TryGetValue(".bson", out bsons))
-                createdFiles.AddRange(CreateBson(bsons.OfType<oM.Adapters.Filing.File>(), pushType, pushConfig).Cast<IFileSystemContainer>());
+                createdFiles.AddRange(CreateBson(bsons.OfType<oM.Adapters.Filing.FSFile>(), pushType, pushConfig).Cast<IFSContainer>());
 
-            List<IFileSystemContainer> remaining = new List<IFileSystemContainer>();
+            List<IFSContainer> remaining = new List<IFSContainer>();
             if (groupedPerExtension.TryGetValue("", out remaining))
             {
-                createdFiles.AddRange(CreateDirectory(remaining.OfType<oM.Adapters.Filing.Directory>(), pushType, pushConfig).Cast<IFileSystemContainer>());
+                createdFiles.AddRange(CreateDirectory(remaining.OfType<oM.Adapters.Filing.FSDirectory>(), pushType, pushConfig).Cast<IFSContainer>());
             }
 
             return createdFiles;

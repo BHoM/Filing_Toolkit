@@ -16,18 +16,9 @@ namespace BH.Engine.Adapters.Filing
         /*** Methods                                     ***/
         /***************************************************/
 
-        [Description("Converts the provided File into a System.IO.FileInfo." +
-            "\nAny `Content` property is lost in this conversion.")]
-        public static FileInfo FromFiling(this oM.Adapters.Filing.File file)
-        {
-            return new FileInfo(file.IFullPath());
-        }
-
-        /***************************************************/
-
         [Description("Converts the provided Directory into a System.IO.DirectoryInfo." +
             "\nAny `Content` property is lost in this conversion.")]
-        public static DirectoryInfo FromFiling(this oM.Adapters.Filing.Directory directory)
+        public static DirectoryInfo FromFiling(this oM.Adapters.Filing.FSDirectory directory)
         {
             return new DirectoryInfo(directory.IFullPath());
         }

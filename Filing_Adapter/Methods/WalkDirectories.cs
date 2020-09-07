@@ -12,7 +12,7 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        private void WalkDirectories(List<oM.Adapters.Filing.IFileSystemContainer> output, FileDirRequest fdr, 
+        private void WalkDirectories(List<oM.Adapters.Filing.IFSContainer> output, FileDirRequest fdr, 
             ref int retrievedFiles, ref int retrievedDirs, 
             bool inclHidFiles = false, bool inclSysFiles = false)
         {
@@ -36,7 +36,7 @@ namespace BH.Adapter.Filing
 
             foreach (System.IO.DirectoryInfo di in dirArray)
             {
-                oM.Adapters.Filing.Directory bhomDir = ReadDirectory(di.FullName, inclHidFiles, inclSysFiles);
+                oM.Adapters.Filing.FSDirectory bhomDir = ReadDirectory(di.FullName, inclHidFiles, inclSysFiles);
                 if (bhomDir == null)
                     continue;
 
@@ -86,7 +86,7 @@ namespace BH.Adapter.Filing
                         if (fdr.Exclusions != null && fdr.Exclusions.Contains(fi.ToFiling()))
                             continue;
 
-                        oM.Adapters.Filing.File omFile = ReadFile(fi.FullName, fdr.IncludeFileContents, inclHidFiles, inclSysFiles);
+                        oM.Adapters.Filing.FSFile omFile = ReadFile(fi.FullName, fdr.IncludeFileContents, inclHidFiles, inclSysFiles);
 
                         if (omFile != null)
                         {

@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Adapters.Filing
 {
-    [Description("Identifies a general data Resource, whether a File or a Directory or other.")]
-    public interface IResource : IBHoMObject
+    [Description("Identifies a Resource (a File or Directory or other) that holds some content.")]
+    public interface IContainer : ILocatableResource, IContainableResource, IBHoMObject
     {
     }
 }

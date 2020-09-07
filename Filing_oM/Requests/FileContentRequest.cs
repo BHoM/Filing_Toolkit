@@ -20,7 +20,7 @@ namespace BH.oM.Adapters.Filing
 
         [Description("The content from this File will be queried.\n" +
             "You can also specify the file with a string Path. ")]
-        public virtual File File { get; set; }
+        public virtual FSFile File { get; set; }
 
         [Description("Only objects of a Type specified in this list will be returned.")]
         public virtual List<Type> Types { get; set; } = new List<Type>();

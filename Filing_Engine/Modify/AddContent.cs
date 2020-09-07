@@ -18,9 +18,9 @@ namespace BH.Engine.Adapters.Filing
         /***************************************************/
 
         [Description("Add the input content to the specified oM.Adapters.Filing.File.")]
-        public static File AddContent(this File file, List<object> content)
+        public static FSFile AddContent(this FSFile file, List<object> content)
         {
-            File cloned = file.DeepClone();
+            FSFile cloned = file.DeepClone();
             cloned.Content = content;
 
             return cloned;

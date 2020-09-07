@@ -49,23 +49,28 @@ namespace BH.Adapter.Filing
                     return new List<object>();
                 }
 
-            List<IFileSystemContainer> createdFiles = new List<IFileSystemContainer>();
+            List<IResource> createdFiles = new List<IResource>();
 
-            List<IFileSystemContainer> filesOrDirs = objects.OfType<IFileSystemContainer>().ToList();
+            List<IResource> filesOrDirs = objects.OfType<IResource>().ToList();
             List<object> remainder = objects.Except(filesOrDirs).ToList();
 
             if (remainder.Any())
             {
-                BH.Engine.Reflection.Compute.RecordNote($"Objects that are not either of type {typeof(oM.Adapters.Filing.File).FullName} or {typeof(oM.Adapters.Filing.Directory).FullName} " +
+                BH.Engine.Reflection.Compute.RecordNote($"Objects that are not either of type {typeof(oM.Adapters.Filing.FSFile).FullName} or {typeof(oM.Adapters.Filing.FSDirectory).FullName} " +
                     $"\nwill be Pushed using the Filing Adapter default filePath: `{m_defaultFilePath}`." +
                     $"\nUse the PushConfig to specify a different filePath for them.");
                 string defaultDirectory = Path.GetDirectoryName(m_defaultFilePath);
                 string defaultFileName = Path.GetFileName(m_defaultFilePath);
-                oM.Adapters.Filing.File file = BH.Engine.Adapters.Filing.Create.File(defaultDirectory, defaultFileName, remainder);
+                oM.Adapters.Filing.FSFile file = BH.Engine.Adapters.Filing.Create.File(defaultDirectory, defaultFileName, remainder);
                 filesOrDirs.Add(file);
             }
 
-            createdFiles = Create(filesOrDirs, pushType, pushConfig);
+
+            foreach (var fileOrDir in filesOrDirs)
+            {
+                object created = Create(fileOrDir, pushType, pushConfig);
+                createdFiles.Add(created);
+            }
 
             return createdFiles.OfType<object>().ToList();
         }

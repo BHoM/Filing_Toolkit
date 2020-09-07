@@ -23,7 +23,7 @@ namespace BH.Engine.Adapters.Filing
             return obj != null ? FullPath(obj as dynamic) ?? "" : "";
         }
 
-        private static string FullPath(this IFileSystemInfo baseInfo)
+        private static string FullPath(this IFSInfo baseInfo)
         {
             if (baseInfo.ParentDirectory == null)
                 return baseInfo.Name;

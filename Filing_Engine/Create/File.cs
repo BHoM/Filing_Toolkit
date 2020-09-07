@@ -23,7 +23,7 @@ namespace BH.Engine.Adapters.Filing
         [Input("fullFileName", "Name of the file, INCLUDING Extension.")]
         [Input("content", "The content of the file.")]
         [Description("Creates a oM.Adapters.Filing.File object.")]
-        public static oM.Adapters.Filing.File File(oM.Adapters.Filing.Directory parentDirectory, string fullFileName, List<object> content = null)
+        public static oM.Adapters.Filing.FSFile File(oM.Adapters.Filing.FSDirectory parentDirectory, string fullFileName, List<object> content = null)
         {
             if (!Path.HasExtension(fullFileName))
             {
@@ -31,7 +31,7 @@ namespace BH.Engine.Adapters.Filing
                 return null;
             }
 
-            return new oM.Adapters.Filing.File()
+            return new oM.Adapters.Filing.FSFile()
             {
                 ParentDirectory = parentDirectory,
                 Name = fullFileName,

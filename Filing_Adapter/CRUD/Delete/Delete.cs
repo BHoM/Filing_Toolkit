@@ -43,11 +43,11 @@ namespace BH.Adapter.Filing
 
             foreach (string fullPath in rr.ToRemove)
             {
-                BH.oM.Adapters.Filing.Directory dir = null;
+                BH.oM.Adapters.Filing.FSDirectory dir = null;
                 if (fullPath.IsExistingDir())
                     dir = ReadDirectory(fullPath);
 
-                BH.oM.Adapters.Filing.File file = null;
+                BH.oM.Adapters.Filing.FSFile file = null;
                 if (fullPath.IsExistingFile())
                     file = ReadFile(fullPath);
 

@@ -13,14 +13,14 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        protected oM.Adapters.Filing.File ReadFile(FileRequest fr, PullConfig pc)
+        protected oM.Adapters.Filing.FSFile ReadFile(FileRequest fr, PullConfig pc)
         {
             string fullPath = fr.Location.IFullPath();
 
             return ReadFile(fullPath, fr.IncludeFileContents, pc.IncludeHiddenFiles, pc.IncludeSystemFiles);
         }
 
-        private oM.Adapters.Filing.File ReadFile(string fullPath, bool inclFileContent = false, bool inclHidFiles = false, bool inclSysFiles = false)
+        private oM.Adapters.Filing.FSFile ReadFile(string fullPath, bool inclFileContent = false, bool inclHidFiles = false, bool inclSysFiles = false)
         {
             // Perform the "Read" = get the System.FileInfo, which will be the basis for our oM.Adapters.Filing.File
             FileInfo fi = new FileInfo(fullPath);
@@ -37,7 +37,7 @@ namespace BH.Adapter.Filing
                 return null;
 
             // Convert the FileInfo to our oM.Adapters.Filing.File
-            oM.Adapters.Filing.File file = fi.ToFiling();
+            oM.Adapters.Filing.FSFile file = fi.ToFiling();
 
             // Add author data if possible
             AddAuthor(file);
@@ -49,7 +49,7 @@ namespace BH.Adapter.Filing
             return file;
         }
 
-        private oM.Adapters.Filing.Directory ReadDirectory(string fullPath, bool inclHidDirs = false, bool inclSysDirs = false, bool includeFolderContent = false)
+        private oM.Adapters.Filing.FSDirectory ReadDirectory(string fullPath, bool inclHidDirs = false, bool inclSysDirs = false, bool includeFolderContent = false)
         {
             // Perform the "Read" = get the System.DirectoryInfo, which will be the basis for our oM.Adapters.Filing.Directory
             DirectoryInfo di = new DirectoryInfo(fullPath);
@@ -66,7 +66,7 @@ namespace BH.Adapter.Filing
                 return null;
 
             // Convert the FileInfo to our oM.Adapters.Filing.File
-            oM.Adapters.Filing.Directory dir = di.ToFiling();
+            oM.Adapters.Filing.FSDirectory dir = di.ToFiling();
 
             // Add author data if possible
             AddAuthor(dir);

@@ -44,7 +44,7 @@ namespace BH.Adapter.Filing
 
             string fileFullPath = fcr.File.IFullPath();
 
-            oM.Adapters.Filing.File readFile = ReadFile(fileFullPath, true, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
+            oM.Adapters.Filing.FSFile readFile = ReadFile(fileFullPath, true, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
 
             if (readFile == null)
                 return output;
