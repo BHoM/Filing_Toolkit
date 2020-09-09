@@ -61,7 +61,8 @@ namespace BH.Adapter.Filing
                     $"\nUse the PushConfig to specify a different filePath for them.");
                 string defaultDirectory = Path.GetDirectoryName(m_defaultFilePath);
                 string defaultFileName = Path.GetFileName(m_defaultFilePath);
-                oM.Adapters.Filing.FSFile file = BH.Engine.Adapters.Filing.Create.File(defaultDirectory, defaultFileName, remainder);
+
+                FSFile file = CreateFSFile(defaultDirectory, defaultFileName, remainder);
                 filesOrDirs.Add(file);
             }
 

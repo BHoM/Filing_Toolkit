@@ -2,7 +2,6 @@
 using System.Security.AccessControl;
 using System.Collections.Generic;
 using System.IO.Abstractions;
-using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +22,7 @@ namespace BH.Engine.Adapters.Filing
         [Input("directoryName", "Name of the directory.")]
         [Input("content", "The content of the file.")]
         [Description("Creates a oM.Adapters.Filing.File object.")]
-        public static oM.Adapters.Filing.FSDirectory Directory(string dirFullPath)
+        public static oM.Adapters.Filing.FSDirectory FSDirectory(string dirFullPath)
         {
             if (Path.HasExtension(dirFullPath))
             {
@@ -39,7 +38,7 @@ namespace BH.Engine.Adapters.Filing
         [Input("directoryName", "Name of the directory.")]
         [Input("content", "The content of the file.")]
         [Description("Creates a oM.Adapters.Filing.File object.")]
-        public static oM.Adapters.Filing.FSDirectory Directory(oM.Adapters.Filing.FSDirectory parentDirectory, string directoryName)
+        public static oM.Adapters.Filing.FSDirectory FSDirectory(oM.Adapters.Filing.FSDirectory parentDirectory, string directoryName)
         {
             if (Path.HasExtension(directoryName))
             {
