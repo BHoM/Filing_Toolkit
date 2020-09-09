@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Adapters.Filing
 {
-    [Description("Identifies a Resource (a File or Directory or other) that holds some content.")]
+    [Description("Identifies a Resource (a File or Directory or other) that is locatable and holds some content.")]
     public interface IContainer : ILocatableResource, IContainableResource, IBHoMObject
     {
     }

@@ -12,12 +12,8 @@ namespace BH.Engine.Adapters.Filing
 {
     public static partial class Convert
     {
-        /***************************************************/
-        /*** Methods                                     ***/
-        /***************************************************/
-
         [Description("Attempts conversion of a generic Resource to a File-system Resource.")]
-        public static oM.Adapters.Filing.IFSContainer ToFiling(this ILocatableResource iLocRes, List<object> content = null)
+        public static oM.Adapters.Filing.IFSContainer ToFiling(this ILocatableResource iLocRes)
         {
             try
             {
@@ -37,16 +33,5 @@ namespace BH.Engine.Adapters.Filing
 
             return null;
         }
-
-        public static oM.Adapters.Filing.IFSContainer ToFiling(this oM.Adapters.Filing.IContainer iContainer)
-        {
-            oM.Adapters.Filing.IFSContainer fscont = (iContainer as ILocatableResource).ToFiling();
-
-            fscont.Content = iContainer.Content;
-
-            return fscont;
-        }
-
-
     }
 }

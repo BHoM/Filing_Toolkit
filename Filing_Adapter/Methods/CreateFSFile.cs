@@ -2,7 +2,6 @@
 using System.Security.AccessControl;
 using System.Collections.Generic;
 using System.IO.Abstractions;
-using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +10,9 @@ using BH.oM.Adapters.Filing;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.Adapters.Filing
+namespace BH.Adapter.Filing
 {
-    public static partial class Create
+    public partial class FilingAdapter
     {
         /*******************************************/
         /**** Methods                           ****/
@@ -22,8 +21,8 @@ namespace BH.Engine.Adapters.Filing
         [Input("parentDirectory","Path of parent Directory of the file. You can also specify a string path.")]
         [Input("fullFileName", "Name of the file, INCLUDING Extension.")]
         [Input("content", "The content of the file.")]
-        [Description("Creates a oM.Adapters.Filing.File object.")]
-        public static oM.Adapters.Filing.FSFile File(oM.Adapters.Filing.FSDirectory parentDirectory, string fullFileName, List<object> content = null)
+        [Description("Creates a FileSystem-hosted object.")]
+        public static FSFile CreateFSFile(FSDirectory parentDirectory, string fullFileName, List<object> content = null)
         {
             if (!Path.HasExtension(fullFileName))
             {
