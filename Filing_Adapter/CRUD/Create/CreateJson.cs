@@ -44,15 +44,30 @@ namespace BH.Adapter.Filing
             string fullPath = file.IFullPath();
             bool fileExisted = System.IO.File.Exists(fullPath);
 
-            // All of the file content.
+            // Put together all of the file content.
             List<string> allLines = new List<string>();
+            string json = "";
+
             if (file.Content != null)
-                allLines.AddRange(file.Content.Where(c =>  c != null).Select(obj => "\"" + JsonKey(obj) + "\":" + obj.ToJson()));
 
-            string json = string.Join(",", allLines);
+            {
+                if (!pushConfig.UseDatasetSerialization)
+                {
+                    allLines.AddRange(file.Content.Where(c => c != null).Select(obj => "\"" + JsonKey(obj) + "\":" + obj.ToJson()));
 
-            json = "{" + json;
-            json += "}";
+                    json = string.Join(",", allLines);
+
+                    json = "{" + json;
+                    json += "}";
+                }
+                else
+                {
+                    // Use the non-JSON compliant "Dataset" serialization style.
+                    // This is a newline-separated concatenation of individual JSON-serialized objects.
+                    allLines.AddRange(file.Content.Where(c => c != null).Select(obj => obj.ToJson()));
+                    json = String.Join(Environment.NewLine, allLines);
+                }
+            }
 
             bool filecreated = true;
             try

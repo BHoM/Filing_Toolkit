@@ -30,6 +30,7 @@ using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Adapters.Filing;
 using BH.oM.Adapters.Filing;
+using BH.Engine.Base;
 
 namespace BH.Adapter.Filing
 {
@@ -46,8 +47,8 @@ namespace BH.Adapter.Filing
             bool clearfile = pushType == PushType.DeleteThenCreate ? true : false;
 
 
-            string fullPath = dir.IFullPath();
-            bool exists = System.IO.Directory.Exists(fullPath);
+            string dirFullPath = dir.IFullPath();
+            bool existed = System.IO.Directory.Exists(dirFullPath);
 
             bool directoryCreated = true;
 
@@ -55,21 +56,47 @@ namespace BH.Adapter.Filing
             {
                 if (pushType == PushType.DeleteThenCreate) // Deletes and recreates the directory.
                 {
-                    if (exists)
-                        System.IO.Directory.Delete(fullPath, true); // Deletes the directory and all contents. To make things safer, a Warning is exposed in the Push before proceeding.
+                    if (existed)
+                        System.IO.Directory.Delete(dirFullPath, true); // Deletes the directory and all contents. To make things safer, a Warning is exposed in the Push before proceeding.
 
-                    System.IO.Directory.CreateDirectory(fullPath);
+                    System.IO.Directory.CreateDirectory(dirFullPath);
                 }
-                else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting || pushType == PushType.UpdateOrCreateOnly)
+                else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting || pushType == PushType.UpdateOrCreateOnly || pushType == PushType.UpdateOnly)
                 {
                     // Create only directories that didn't exist.
-                    if (!exists)
-                        System.IO.Directory.CreateDirectory(fullPath);
-                    else
+                    if (pushType != PushType.UpdateOnly)
                     {
-                        BH.Engine.Reflection.Compute.RecordNote($"Directory {fullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
-                        directoryCreated = false;
+                        if (!existed)
+                            System.IO.Directory.CreateDirectory(dirFullPath);
+                        else
+                        {
+                            BH.Engine.Reflection.Compute.RecordNote($"Directory {dirFullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
+                            directoryCreated = false;
+                        }
                     }
+
+
+                    if (dir.Content != null && dir.Content.Any())
+                        for (int i = 0; i < dir.Content.Count; i++)
+                        {
+                            ILocatableResource item = (dir.Content[i] as ILocatableResource).DeepClone();
+                            if (item == null)
+                                BH.Engine.Reflection.Compute.RecordWarning($"Cannot push Directory content {dir.Content[i].GetType().Name}.");
+
+                            string itemFullPath = item.IFullPath();
+                            if (string.IsNullOrWhiteSpace(itemFullPath) && !string.IsNullOrWhiteSpace(item.Name))
+                            {
+                                itemFullPath = Path.Combine(dirFullPath, item.Name); // Default to Container Directory path.
+                                item.Location = Path.GetDirectoryName(itemFullPath);
+                            }
+
+                            if (item.Location == dirFullPath)
+                                Create(item, pushType, pushConfig);
+                            else
+                            {
+                                BH.Engine.Reflection.Compute.RecordWarning($"The content of the Directory {dirFullPath} can't be Pushed because the content Path {itemFullPath} does not match the container Directory path.");
+                            }
+                        }
                 }
                 else
                 {
@@ -82,15 +109,15 @@ namespace BH.Adapter.Filing
                 BH.Engine.Reflection.Compute.RecordError(e.Message);
             }
 
-            if (directoryCreated)
+            if (directoryCreated || existed)
             {
-                System.IO.DirectoryInfo dirInfo = new System.IO.DirectoryInfo(fullPath);
+                System.IO.DirectoryInfo dirInfo = new System.IO.DirectoryInfo(dirFullPath);
                 oM.Adapters.Filing.FSDirectory createdDir = dirInfo.ToFiling();
 
                 return createdDir;
             }
 
-            BH.Engine.Reflection.Compute.RecordError($"Could not create {dir.ToString()}");
+            BH.Engine.Reflection.Compute.RecordError($"Could not create the Directory {dir.ToString()}.");
             return null;
         }
     }

@@ -39,27 +39,42 @@ namespace BH.Engine.Adapters.Filing
             return FullPath(fdr.Location);
         }
 
+        private static string FullPath(this ILocatableResource fdr)
+        {
+            if (fdr?.Location == null)
+                return null;
+
+            return Path.Combine(fdr.Location, string.IsNullOrWhiteSpace(fdr.Name) ? "" : fdr.Name);
+        }
+
         private static string FullPath(this string path)
         {
-            string fullpath = null;
-
             if (string.IsNullOrWhiteSpace(path))
                 return null;
 
             try
             {
-                fullpath = new FileInfo(path).FullName;
+                FileInfo fi = new FileInfo(path);
+                DirectoryInfo di = new DirectoryInfo(path);
+
+                if (fi.Exists)
+                    return fi.FullName;
+
+                if (di.Exists)
+                    return di.FullName;
             }
             catch
             {
                 BH.Engine.Reflection.Compute.RecordError($"Invalid path provided:\n{path}");
             }
-            return fullpath;
+
+            return null;
         }
 
         //Fallback
         private static string FullPath(object fileOrDir)
         {
+            BH.Engine.Reflection.Compute.RecordError($"Can not compute the FullPath for an object of type {fileOrDir.GetType().Name}.");
             return null;
         }
 

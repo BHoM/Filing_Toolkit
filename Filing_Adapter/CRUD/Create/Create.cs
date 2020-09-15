@@ -39,15 +39,21 @@ namespace BH.Adapter.Filing
         /**** Public Methods                            ****/
         /***************************************************/
 
-        protected IFSContainer Create(ILocatableResource resources, PushType pushType, PushConfig pushConfig)
+        protected IFSContainer Create(ILocatableResource resource, PushType pushType, PushConfig pushConfig)
         {
-            IFSContainer fileOrDir = resources.ToFiling();
+            if (resource == null)
+                return null; 
+
+            IFSContainer fileOrDir = resource.ToFiling();
             return Create(fileOrDir,  pushType,  pushConfig);
         }
 
         protected IFSContainer Create(IFSContainer fileOrDir, PushType pushType, PushConfig pushConfig)
         {
             pushConfig = pushConfig ?? new PushConfig();
+
+            if (fileOrDir == null)
+                return null;
 
             string extension = Path.GetExtension(fileOrDir.IFullPath());
 
@@ -57,10 +63,10 @@ namespace BH.Adapter.Filing
             if (extension == ".bson")
                 return CreateJson((FSFile)fileOrDir, pushType, pushConfig) as IFSContainer;
 
-            if (extension == ".json")
+            if (fileOrDir is IDirectory)
                 return CreateDirectory((FSDirectory)fileOrDir, pushType, pushConfig) as IFSContainer;
 
-            BH.Engine.Reflection.Compute.RecordError($"Could not create {fileOrDir.ToString()}");
+            BH.Engine.Reflection.Compute.RecordError($"Could not create {fileOrDir.ToString()}.");
             return null;
         }
 
