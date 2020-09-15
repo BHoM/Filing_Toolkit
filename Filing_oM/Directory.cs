@@ -23,7 +23,7 @@ namespace BH.oM.Adapters.Filing
         [Description("Name of the directory.")]
         public new string Name { get; set; }
 
-        [Description("The content of the Directory. This is populated only once Pulled.")]
+        [Description("The content of the Directory.")]
         public virtual List<object> Content { get; set; } = new List<object>();
     }
 }

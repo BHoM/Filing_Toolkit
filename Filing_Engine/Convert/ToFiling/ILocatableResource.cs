@@ -17,8 +17,19 @@ namespace BH.Engine.Adapters.Filing
         {
             try
             {
-                FSFile file = (FSFile)Path.Combine(iLocRes.Location, iLocRes.Name);
-                return file;
+                IFSContainer fileOrDir = null;
+
+                if (iLocRes is IFile)
+                    fileOrDir = (FSFile)Path.Combine(iLocRes.Location, iLocRes.Name);
+
+                if (iLocRes is IDirectory)
+                    fileOrDir = (FSDirectory)Path.Combine(iLocRes.Location, iLocRes?.Name ?? "");
+
+                IContainableResource iContRes = iLocRes as IContainableResource;
+                if (iContRes != null && fileOrDir != null)
+                    fileOrDir.Content = iContRes.Content;
+
+                return fileOrDir;
             }
             catch { }
 
@@ -29,7 +40,7 @@ namespace BH.Engine.Adapters.Filing
             }
             catch { }
 
-            BH.Engine.Reflection.Compute.RecordError("The provided resource has an invalid path.");
+            BH.Engine.Reflection.Compute.RecordError($"The resource {iLocRes.IFullPath()} has an invalid path.");
 
             return null;
         }
