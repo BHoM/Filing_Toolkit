@@ -21,7 +21,7 @@ namespace BH.oM.Adapters.Filing
         public virtual string Location { get; set; }
 
         [Description("Name of the file, INCLUDING Extension.")]
-        public new string Name { get; set; }
+        public override string Name { get; set; }
 
         [Description("The content of the file.")]
         public virtual List<object> Content { get; set; } = new List<object>();

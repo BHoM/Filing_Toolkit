@@ -21,7 +21,7 @@ namespace BH.oM.Adapters.Filing
         public virtual string Location { get; set; }
 
         [Description("Name of the directory.")]
-        public new string Name { get; set; }
+        public override string Name { get; set; }
 
         [Description("The content of the Directory.")]
         public virtual List<object> Content { get; set; } = new List<object>();
