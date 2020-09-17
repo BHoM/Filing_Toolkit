@@ -71,6 +71,7 @@
     <Compile Include="FSDirectory.cs" />
     <Compile Include="enums\Encodings.cs" />
     <Compile Include="File.cs" />
+    <Compile Include="Interfaces\ISizeableResource.cs" />
     <Compile Include="Interfaces\IContainableResource.cs" />
     <Compile Include="Interfaces\IContainer.cs" />
     <Compile Include="Interfaces\IDirectory.cs" />

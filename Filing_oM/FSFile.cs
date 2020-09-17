@@ -11,7 +11,7 @@ using System.ComponentModel;
 namespace BH.oM.Adapters.Filing
 {
     [Description("A FileSystem-hosted File. It can include the content of the File.")]
-    public class FSFile : BHoMObject, IFSContainer, IFile
+    public class FSFile : BHoMObject, IFSContainer, IFile, ISizeableResource
     {
         /***************************************************/
         /**** Properties                                ****/
@@ -21,7 +21,7 @@ namespace BH.oM.Adapters.Filing
         public virtual FSDirectory ParentDirectory { get; set; }
 
         [Description("Name of the file, INCLUDING Extension.")]
-        public override string Name { get; set; }
+        public new string Name { get; set; }
 
         [Description("Gets a value indicating whether a file exists.")]
         public virtual bool? Exists { get; set; } = null;
@@ -29,7 +29,7 @@ namespace BH.oM.Adapters.Filing
         [Description("Gets or sets a value that determines if the current file is read only.")]
         public virtual bool? IsReadOnly { get; set; } = null;
 
-        [Description("Gets the size, in bytes, of the current file.")]
+        [Description("The size of the File in bytes.")]
         public virtual int Size { get; set; } = 0;
 
         [Description("Attributes indicating if ReadOnly, Hidden, System File, etc.")]
