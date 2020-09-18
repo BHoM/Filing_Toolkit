@@ -34,7 +34,7 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
-        protected IEnumerable<object> Read(FileDirRequest fdr, PullConfig pullConfig)
+        public IEnumerable<object> Read(FileDirRequest fdr, PullConfig pullConfig)
         {
             // Recursively walk the directories to retrieve File and Directory Info.
             List<oM.Adapters.Filing.IFSContainer> output = new List<IFSContainer>();

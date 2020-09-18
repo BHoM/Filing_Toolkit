@@ -38,7 +38,7 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
-        protected IEnumerable<object> Read(FileContentRequest fcr, PullConfig pullConfig)
+        public IEnumerable<object> Read(FileContentRequest fcr, PullConfig pullConfig)
         {
             List<object> output = new List<object>();
 
@@ -62,7 +62,7 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private IEnumerable<object> ReadContent(string fileFullPath)
+        public IEnumerable<object> ReadContent(string fileFullPath)
         {
             List<object> retrievedObjects = new List<object>();
 

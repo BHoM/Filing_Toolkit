@@ -13,7 +13,7 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        protected oM.Adapters.Filing.FSFile ReadFile(FileRequest fr, PullConfig pc)
+        public oM.Adapters.Filing.FSFile ReadFile(FileRequest fr, PullConfig pc)
         {
             string fullPath = fr.Location.IFullPath();
 
