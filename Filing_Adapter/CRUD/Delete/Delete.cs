@@ -79,7 +79,7 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private bool DeleteFile(string filePath, bool recordNote = false)
+        public bool DeleteFile(string filePath, bool recordNote = false)
         {
             try
             {
