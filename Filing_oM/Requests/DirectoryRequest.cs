@@ -22,7 +22,7 @@ namespace BH.oM.Adapters.Filing
         public virtual string Location { get; set; } = "";
 
         [Description("If enabled, look also in subdirectories.")]
-        public virtual bool IncludeSubdirectories { get; set; } = false;
+        public virtual bool SearchSubdirectories { get; set; } = false;
 
         [Description("If IncludeSubdirectories is true, this sets the maximum subdirectiory nesting level to look in." +
             "\nDefaults to -1 which corresponds to no limit.")]

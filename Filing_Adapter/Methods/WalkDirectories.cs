@@ -53,7 +53,7 @@ namespace BH.Adapter.Filing
                     }
 
                 // Recurse if requested, and if the limits are not exceeded.
-                if (fdr.IncludeSubdirectories == true && MaxItemsReached(fdr.MaxFiles, retrievedFiles, fdr.MaxDirectories, retrievedDirs))
+                if (fdr.SearchSubdirectories == true && MaxItemsReached(fdr.MaxFiles, retrievedFiles, fdr.MaxDirectories, retrievedDirs))
                 {
                     FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
                     fdrRecurse.Location = bhomDir.IFullPath();

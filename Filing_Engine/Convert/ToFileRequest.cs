@@ -22,7 +22,7 @@ namespace BH.Engine.Adapters.Filing
             {
                 Location = fdr.Location,
                 IncludeFileContents = fdr.IncludeFileContents,
-                SearchSubdirectories = fdr.IncludeSubdirectories,
+                SearchSubdirectories = fdr.SearchSubdirectories,
                 MaxFiles = fdr.MaxFiles,
                 MaxNesting = fdr.MaxNesting,
             };

@@ -18,14 +18,14 @@ namespace BH.Engine.Adapters.Filing
         /**** Methods                           ****/
         /*******************************************/
 
-        public static FileDirRequest FileDirRequest(string fullPath, bool includeDirectories = true, bool includeFiles = true, bool includeSubDirectories = true, bool includeFileContents = false)
+        public static FileDirRequest FileDirRequest(string fullPath, bool includeDirectories = true, bool includeFiles = true, bool searchSubdirectories = true, bool includeFileContents = false)
         {
             return new FileDirRequest()
             {
                 Location = fullPath,
                 IncludeDirectories = includeDirectories,
                 IncludeFiles = includeFiles,
-                IncludeSubdirectories = includeSubDirectories,
+                SearchSubdirectories = searchSubdirectories,
                 IncludeFileContents = includeFileContents
             };
         }

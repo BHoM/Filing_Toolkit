@@ -14,5 +14,7 @@ namespace BH.oM.Adapters.Filing
     public interface IResourceRequest : IRequest
     {
         string Location { get; set; }
+
+        bool SearchSubdirectories { get; set; }
     }
 }
