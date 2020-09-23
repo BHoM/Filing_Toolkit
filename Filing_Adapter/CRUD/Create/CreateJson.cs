@@ -30,6 +30,7 @@ using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Adapters.Filing;
 using BH.oM.Adapters.Filing;
+using System.Text.Json;
 
 namespace BH.Adapter.Filing
 {
@@ -39,7 +40,7 @@ namespace BH.Adapter.Filing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private FSFile CreateJson(FSFile file, PushType pushType, PushConfig pushConfig)
+        private static FSFile CreateJson(FSFile file, PushType pushType, PushConfig pushConfig)
         {
             string fullPath = file.IFullPath();
             bool fileExisted = System.IO.File.Exists(fullPath);
@@ -59,6 +60,9 @@ namespace BH.Adapter.Filing
 
                     json = "{" + json;
                     json += "}";
+
+                    if (pushConfig.BeautifyJson)
+                        json = BeautifyJson(json);
                 }
                 else
                 {
@@ -126,7 +130,7 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private string JsonKey(object obj)
+        private static string JsonKey(object obj)
         {
             IBHoMObject ibhomObj = obj as IBHoMObject;
             if (ibhomObj != null)
@@ -137,6 +141,34 @@ namespace BH.Adapter.Filing
                 return iObject.GetType().FullName.Replace("BH.oM.", "") + "_" + Guid.NewGuid();
 
             return iObject.GetType().FullName + "_" + Guid.NewGuid();
+        }
+
+        /***************************************************/
+
+        private static string BeautifyJson(string jsonString)
+        {
+            JsonDocument doc = JsonDocument.Parse(
+                jsonString,
+                new JsonDocumentOptions
+                {
+                    AllowTrailingCommas = true
+                }
+            );
+            MemoryStream memoryStream = new MemoryStream();
+            using (
+                var utf8JsonWriter = new Utf8JsonWriter(
+                    memoryStream,
+                    new JsonWriterOptions
+                    {
+                        Indented = true
+                    }
+                )
+            )
+            {
+                doc.WriteTo(utf8JsonWriter);
+            }
+            return new System.Text.UTF8Encoding()
+                .GetString(memoryStream.ToArray());
         }
     }
 }

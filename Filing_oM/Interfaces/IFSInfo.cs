@@ -10,10 +10,9 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Adapters.Filing
 {
-    [Description("Contains the information and attributes of a File or Directory under a FileSystem. " +
-        "It does not store any content." +
-        "Rehash of the .NET's base class 'FileSystemInfo' in BHoM flavour.")]
-    public interface IFSInfo  : IObject
+    [Description("Identifies a FileSystem Resource with basic information attached." +
+        "\nRehash of the .NET's base class 'FileSystemInfo' in BHoM flavour.")]
+    public interface IFSInfo : IObject
     {
         /***************************************************/
         /**** Properties                                ****/

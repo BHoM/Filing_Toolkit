@@ -24,6 +24,9 @@ namespace BH.oM.Adapters.Filing
             "\nThis is the current standard for Datasets.")]
         public bool UseDatasetSerialization { get; set; } = false;
 
+        [Description("If true, beautify Json files for web display. Works only if UseDatasetSerialization is set to false.")]
+        public bool BeautifyJson { get; set; } = true;
+
         [Description("Keeps the warnings about Deletion off.")]
         public bool DisableWarnings { get; set; } = false;
     }

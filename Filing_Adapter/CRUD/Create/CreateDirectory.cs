@@ -40,7 +40,7 @@ namespace BH.Adapter.Filing
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private IFSContainer CreateDirectory(FSDirectory dir, PushType pushType, PushConfig pushConfig)
+        private static IFSContainer CreateDirectory(FSDirectory dir, PushType pushType, PushConfig pushConfig)
         {
             List<BH.oM.Adapters.Filing.IFSContainer> createdDirs = new List<oM.Adapters.Filing.IFSContainer>();
 
