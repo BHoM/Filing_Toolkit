@@ -130,11 +130,13 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
+        private static Dictionary<string, int> m_JsonKeysCount = new Dictionary<string, int>();
+
         private static string JsonKey(object obj)
         {
             IBHoMObject ibhomObj = obj as IBHoMObject;
             if (ibhomObj != null)
-                return ibhomObj.GetType().FullName.Replace("BH.oM.", "") + "_" + ibhomObj.BHoM_Guid;
+                return ibhomObj.GetType().FullName.Replace("BH.oM.", "") + "_" + Guid.NewGuid();//ibhomObj.BHoM_Guid;
 
             IObject iObject = obj as IObject;
             if (iObject != null)
