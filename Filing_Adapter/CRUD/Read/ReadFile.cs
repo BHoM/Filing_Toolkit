@@ -1,5 +1,26 @@
-﻿using BH.oM.Base;
-using MongoDB.Bson.Serialization;
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using BH.oM.Base;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,14 +34,20 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        public oM.Adapters.Filing.FSFile ReadFile(FileRequest fr, PullConfig pc)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static oM.Adapters.Filing.FSFile ReadFile(FileRequest fr, PullConfig pc)
         {
             string fullPath = fr.Location.IFullPath();
 
             return ReadFile(fullPath, fr.IncludeFileContents, pc.IncludeHiddenFiles, pc.IncludeSystemFiles);
         }
 
-        private oM.Adapters.Filing.FSFile ReadFile(string fullPath, bool inclFileContent = false, bool inclHidFiles = false, bool inclSysFiles = false)
+        /***************************************************/
+
+        public static oM.Adapters.Filing.FSFile ReadFile(string fullPath, bool inclFileContent = false, bool inclHidFiles = false, bool inclSysFiles = false)
         {
             // Perform the "Read" = get the System.FileInfo, which will be the basis for our oM.Adapters.Filing.File
             FileInfo fi = new FileInfo(fullPath);
@@ -49,7 +76,9 @@ namespace BH.Adapter.Filing
             return file;
         }
 
-        private oM.Adapters.Filing.FSDirectory ReadDirectory(string fullPath, bool inclHidDirs = false, bool inclSysDirs = false, bool includeFolderContent = false)
+        /***************************************************/
+
+        public static oM.Adapters.Filing.FSDirectory ReadDirectory(string fullPath, bool inclHidDirs = false, bool inclSysDirs = false, bool includeFolderContent = false)
         {
             // Perform the "Read" = get the System.DirectoryInfo, which will be the basis for our oM.Adapters.Filing.Directory
             DirectoryInfo di = new DirectoryInfo(fullPath);
@@ -76,7 +105,5 @@ namespace BH.Adapter.Filing
 
             return dir;
         }
-
     }
-
 }

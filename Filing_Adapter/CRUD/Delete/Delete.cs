@@ -34,7 +34,11 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
-        protected int Delete(RemoveRequest rr, RemoveConfig removeConfig)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public static int Delete(RemoveRequest rr, RemoveConfig removeConfig)
         {
             int deletedCount = 0;
 
@@ -67,19 +71,10 @@ namespace BH.Adapter.Filing
             return deletedCount;
         }
 
-        protected IEnumerable<object> Delete(FileRequest fr)
-        {
-            return Read((FileDirRequest)fr);
-        }
-
-        protected IEnumerable<object> Delete(DirectoryRequest dr)
-        {
-            return Read((FileDirRequest)dr);
-        }
 
         /***************************************************/
 
-        public bool DeleteFile(string filePath, bool recordNote = false)
+        public static bool DeleteFile(string filePath, bool recordNote = false)
         {
             try
             {
@@ -107,7 +102,9 @@ namespace BH.Adapter.Filing
             return false;
         }
 
-        private bool DeleteDirectory(string directoryPath, bool recordNote = false)
+        /***************************************************/
+
+        public static bool DeleteDirectory(string directoryPath, bool recordNote = false)
         {
             try
             {
@@ -133,8 +130,6 @@ namespace BH.Adapter.Filing
 
             return false;
         }
-
-
     }
 }
 

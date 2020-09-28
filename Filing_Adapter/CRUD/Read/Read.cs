@@ -34,6 +34,10 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
         public IEnumerable<object> Read(FileDirRequest fdr, PullConfig pullConfig)
         {
             // Recursively walk the directories to retrieve File and Directory Info.
@@ -55,13 +59,17 @@ namespace BH.Adapter.Filing
             return output;
         }
 
-        protected IEnumerable<object> Read(FileRequest fr, PullConfig pullConfig)
+        /***************************************************/
+
+        public IEnumerable<object> Read(FileRequest fr, PullConfig pullConfig)
         {
             // Convert to the most generic type of Request.
             return Read((FileDirRequest)fr, pullConfig);
         }
 
-        protected IEnumerable<object> Read(DirectoryRequest dr, PullConfig pullConfig)
+        /***************************************************/
+
+        public IEnumerable<object> Read(DirectoryRequest dr, PullConfig pullConfig)
         {
             // Convert to the most generic type of Request.
             return Read((FileDirRequest)dr, pullConfig);

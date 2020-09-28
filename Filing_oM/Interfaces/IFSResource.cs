@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -19,7 +19,9 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
- 
+
+using BH.oM.Base;
+using BH.oM.Humans;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,16 +30,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Adapters.Filing
+namespace BH.oM.Adapters.Filing
 {
-    public static partial class Compute
+    [Description("Identifies a general data Resource, whether a File or a Directory or other, that resides on a File System.")]
+    public interface IFSResource : IResource
     {
-        [Description("Creates Directories and subdirectories for the specified path, if they do not exist. " +
-            "E.g. `C:\folder2\folder1` will create both folder2 and folder1 if they do not exist.")]
-        public static void CreateFolders(string parentFolder, bool active = false)
-        {
-            if (active)
-                System.IO.Directory.CreateDirectory(parentFolder);
-        }
     }
 }

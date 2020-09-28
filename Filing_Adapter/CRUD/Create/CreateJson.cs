@@ -30,16 +30,17 @@ using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Adapters.Filing;
 using BH.oM.Adapters.Filing;
+using System.Text.Json;
 
 namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
     {
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        private FSFile CreateJson(FSFile file, PushType pushType, PushConfig pushConfig)
+        public static FSFile CreateJson(FSFile file, PushType pushType, PushConfig pushConfig)
         {
             string fullPath = file.IFullPath();
             bool fileExisted = System.IO.File.Exists(fullPath);
@@ -59,6 +60,9 @@ namespace BH.Adapter.Filing
 
                     json = "{" + json;
                     json += "}";
+
+                    if (pushConfig.BeautifyJson)
+                        json = BeautifyJson(json);
                 }
                 else
                 {
@@ -126,17 +130,47 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private string JsonKey(object obj)
+        private static Dictionary<string, int> m_JsonKeysCount = new Dictionary<string, int>();
+
+        private static string JsonKey(object obj)
         {
             IBHoMObject ibhomObj = obj as IBHoMObject;
             if (ibhomObj != null)
-                return ibhomObj.GetType().FullName.Replace("BH.oM.", "") + "_" + ibhomObj.BHoM_Guid;
+                return ibhomObj.GetType().FullName.Replace("BH.oM.", "") + "_" + Guid.NewGuid();//ibhomObj.BHoM_Guid;
 
             IObject iObject = obj as IObject;
             if (iObject != null)
                 return iObject.GetType().FullName.Replace("BH.oM.", "") + "_" + Guid.NewGuid();
 
             return iObject.GetType().FullName + "_" + Guid.NewGuid();
+        }
+
+        /***************************************************/
+
+        private static string BeautifyJson(string jsonString)
+        {
+            JsonDocument doc = JsonDocument.Parse(
+                jsonString,
+                new JsonDocumentOptions
+                {
+                    AllowTrailingCommas = true
+                }
+            );
+            MemoryStream memoryStream = new MemoryStream();
+            using (
+                var utf8JsonWriter = new Utf8JsonWriter(
+                    memoryStream,
+                    new JsonWriterOptions
+                    {
+                        Indented = true
+                    }
+                )
+            )
+            {
+                doc.WriteTo(utf8JsonWriter);
+            }
+            return new System.Text.UTF8Encoding()
+                .GetString(memoryStream.ToArray());
         }
     }
 }
