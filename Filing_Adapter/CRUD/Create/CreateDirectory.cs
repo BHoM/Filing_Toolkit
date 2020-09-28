@@ -37,10 +37,10 @@ namespace BH.Adapter.Filing
     public partial class FilingAdapter : BHoMAdapter
     {
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        private IFSContainer CreateDirectory(FSDirectory dir, PushType pushType, PushConfig pushConfig)
+        public static IFSContainer CreateDirectory(FSDirectory dir, PushType pushType, PushConfig pushConfig)
         {
             List<BH.oM.Adapters.Filing.IFSContainer> createdDirs = new List<oM.Adapters.Filing.IFSContainer>();
 
@@ -74,7 +74,6 @@ namespace BH.Adapter.Filing
                             directoryCreated = false;
                         }
                     }
-
 
                     if (dir.Content != null && dir.Content.Any())
                         for (int i = 0; i < dir.Content.Count; i++)

@@ -37,10 +37,10 @@ namespace BH.Adapter.Filing
     public partial class FilingAdapter : BHoMAdapter
     {
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        private IFSContainer CreateBson(FSFile file, PushType pushType, PushConfig pushConfig)
+        public static IFSContainer CreateBson(FSFile file, PushType pushType, PushConfig pushConfig)
         {
             string fullPath = file.IFullPath();
             bool fileExisted = System.IO.File.Exists(fullPath);
@@ -102,7 +102,9 @@ namespace BH.Adapter.Filing
             return null;
         }
 
-            public void WriteBsonWithStream(oM.Adapters.Filing.FSFile file, string fullPath, FileMode fileMode)
+        /***************************************************/
+
+        public static void WriteBsonWithStream(oM.Adapters.Filing.FSFile file, string fullPath, FileMode fileMode)
         {
             FileStream stream = new FileStream(fullPath, FileMode.CreateNew);
             var writer = new BsonBinaryWriter(stream);
