@@ -36,6 +36,10 @@ using BH.Engine.Adapters.Filing;
 
 namespace BH.Adapter.Filing
 {
+    /***************************************************/
+    /**** Public Methods                            ****/
+    /***************************************************/
+
     public partial class FilingAdapter : BHoMAdapter
     {
         public IEnumerable<object> Read(FileContentRequest fcr, PullConfig pullConfig)
@@ -62,23 +66,25 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        public IEnumerable<object> ReadContent(string fileFullPath)
+        public static IEnumerable<object> ReadContent(string fileFullPath)
         {
             List<object> retrievedObjects = new List<object>();
 
             string extension = Path.GetExtension(fileFullPath);
 
             if (extension == ".json")
-                retrievedObjects.AddRange(ReadJson(fileFullPath));
+                retrievedObjects.AddRange(RetrieveJsonContent(fileFullPath));
             else if (extension == ".bson")
-                retrievedObjects.AddRange(ReadBson(fileFullPath));
+                retrievedObjects.AddRange(RetrieveBsonContent(fileFullPath));
             else
-                BH.Engine.Reflection.Compute.RecordWarning($"Only JSON and BSON file formats are currently supported by the {(this as dynamic).GetType().Name}.");
+                BH.Engine.Reflection.Compute.RecordWarning($"Only JSON and BSON file formats are currently supported by the {typeof(FilingAdapter).Name}.");
 
             return retrievedObjects;
         }
 
-        private IEnumerable<object> ReadJson(string fileFullPath)
+        /***************************************************/
+
+        public static IEnumerable<object> RetrieveJsonContent(string fileFullPath)
         {
             List<object> result = new List<object>();
 
@@ -123,7 +129,9 @@ namespace BH.Adapter.Filing
             return result;
         }
 
-        private IEnumerable<object> ReadBson(string filePath)
+        /***************************************************/
+
+        public static IEnumerable<object> RetrieveBsonContent(string filePath)
         {
             FileStream mongoReadStream = System.IO.File.OpenRead(filePath);
             var reader = new BsonBinaryReader(mongoReadStream);

@@ -37,10 +37,10 @@ namespace BH.Adapter.Filing
     public partial class FilingAdapter : BHoMAdapter
     {
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        private static FSFile CreateJson(FSFile file, PushType pushType, PushConfig pushConfig)
+        public static FSFile CreateJson(FSFile file, PushType pushType, PushConfig pushConfig)
         {
             string fullPath = file.IFullPath();
             bool fileExisted = System.IO.File.Exists(fullPath);
