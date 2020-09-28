@@ -48,7 +48,7 @@ namespace BH.Adapter.Filing
             return Create(fileOrDir,  pushType,  pushConfig);
         }
 
-        protected static IFSContainer Create(IFSContainer fileOrDir, PushType pushType, PushConfig pushConfig)
+        protected IFSContainer Create(IFSContainer fileOrDir, PushType pushType, PushConfig pushConfig)
         {
             pushConfig = pushConfig ?? new PushConfig();
 
