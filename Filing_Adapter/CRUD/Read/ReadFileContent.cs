@@ -109,7 +109,7 @@ namespace BH.Adapter.Filing
             char line2FirstChar = default(char);
             char line2LastChar = default(char);
 
-            if (jsonLines.Length > 0)
+            if (jsonLines.Length > 1)
             {
                 line2FirstChar = jsonLines[1].FirstOrDefault();
                 line2LastChar = jsonLines[1].LastOrDefault();
