@@ -33,7 +33,7 @@ using BH.oM.Data.Requests;
 
 namespace BH.oM.Adapters.Filing
 {
-    public interface IFileRequest : IResourceRequest
+    public interface IFileRequest : ISortableRequest
     {
         int MaxFiles { get; set; } 
 

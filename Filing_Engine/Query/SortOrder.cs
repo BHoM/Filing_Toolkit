@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,21 +20,41 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Humans;
+using BH.oM.Adapters.Filing;
+using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
-using System.ComponentModel;
-using BH.oM.Data.Requests;
 
-namespace BH.oM.Adapters.Filing
+namespace BH.Engine.Adapters.Filing
 {
-    public interface IDirectoryRequest : ISortableRequest
+    public static partial class Query
     {
-        int MaxDirectories { get; set; }
+        /***************************************************/
+        /*** Methods                                     ***/
+        /***************************************************/
+
+        [Description("Sorts the File-system resources following a given sorting order.")]
+        public static List<IFSInfo> SortOrder(this List<IFSInfo> resources, SortOrder sortOrder)
+        {
+            IEnumerable<IFSInfo> output = resources.ToList(); 
+
+            if (sortOrder == BH.oM.Adapters.Filing.SortOrder.ByName)
+                output = output.OrderBy(x => x.Name);
+
+            if (sortOrder == BH.oM.Adapters.Filing.SortOrder.BySize)
+                output = output.OrderBy(x => x.Size).Reverse();
+
+            if (sortOrder == BH.oM.Adapters.Filing.SortOrder.ByCreationTime)
+                output = output.OrderBy(x => x.CreationTimeUtc).Reverse();
+
+            if (sortOrder == BH.oM.Adapters.Filing.SortOrder.ByLastModifiedTime)
+                output = output.OrderBy(x => x.ModifiedTimeUtc).Reverse();
+
+            return output.ToList();
+        }
     }
 }

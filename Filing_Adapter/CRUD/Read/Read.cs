@@ -41,7 +41,10 @@ namespace BH.Adapter.Filing
         public IEnumerable<object> Read(FileDirRequest fdr, PullConfig pullConfig)
         {
             // Recursively walk the directories to retrieve File and Directory Info.
-            List<oM.Adapters.Filing.IFSContainer> output = new List<IFSContainer>();
+            List<IFSInfo> output = new List<IFSInfo>();
+
+            List<FSFile> files = new List<FSFile>();
+            List<FSDirectory> dirs = new List<FSDirectory>();
 
             // Check if the request points to a single file.
             if (Query.IsExistingFile(fdr.Location.IFullPath()))
@@ -53,7 +56,33 @@ namespace BH.Adapter.Filing
             else
             {
                 int retrievedFiles = 0, retrievedDirs = 0;
-                WalkDirectories(output, fdr, ref retrievedFiles, ref retrievedDirs, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
+                WalkDirectories(files, dirs, fdr, ref retrievedFiles, ref retrievedDirs, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
+            }
+
+            output.AddRange(dirs);
+            output.AddRange(files);
+
+            // If a sort order is applied, sort separately files and dirs,
+            // then return the maxItems of each of those.
+            if (fdr.SortOrder != SortOrder.Default)
+            {
+                output = Query.SortOrder(output, fdr.SortOrder);
+
+                files = output.OfType<FSFile>().Take(fdr.MaxFiles).ToList();
+                dirs = output.OfType<FSDirectory>().Take(fdr.MaxDirectories).ToList();
+
+                output = new List<IFSInfo>();
+
+                if (fdr.SortOrder != SortOrder.ByName)
+                {
+                    output.AddRange(files);
+                    output.AddRange(dirs);
+                }
+                else
+                {
+                    output.AddRange(dirs);
+                    output.AddRange(files);
+                }
             }
 
             return output;

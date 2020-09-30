@@ -57,6 +57,9 @@ namespace BH.oM.Adapters.Filing
         [Description("Whether to include the contents of the Files.")]
         public virtual bool IncludeFileContents { get; set; } = false;
 
+        [Description("Sorting order of the extracted Files.")]
+        public SortOrder SortOrder { get; set; }
+
         /***************************************************/
         /**** Implicit cast                             ****/
         /***************************************************/
