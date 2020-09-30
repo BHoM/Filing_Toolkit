@@ -71,7 +71,7 @@ namespace BH.Adapter.Filing
 
             // Add content data if requested and possible
             if (inclFileContent)
-                AddContent(file);
+                ReadAndAddContent(file);
 
             return file;
         }

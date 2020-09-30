@@ -50,6 +50,9 @@ namespace BH.oM.Adapters.Filing
             "\nDefaults to -1 which corresponds to no limit.")]
         public virtual int MaxNesting { get; set; } = -1;
 
+        [Description("Sorting order of the extracted Files.")]
+        public SortOrder SortOrder { get; set; }
+
         [Description("Sets the maximum number of Files to retrieve, useful when using SearchSubdirectories." +
             "\nDefaults to -1 which corresponds to no limit.")]
         public virtual int MaxFiles { get; set; } = -1;
@@ -57,8 +60,9 @@ namespace BH.oM.Adapters.Filing
         [Description("Whether to include the contents of the Files.")]
         public virtual bool IncludeFileContents { get; set; } = false;
 
-        [Description("Sorting order of the extracted Files.")]
-        public SortOrder SortOrder { get; set; }
+        [Description("These files will be excluded from the results." +
+         "\nYou can also specify string Full Paths.")]
+        public virtual List<IFSInfo> Exclusions { get; set; } = new List<IFSInfo>();
 
         /***************************************************/
         /**** Implicit cast                             ****/
