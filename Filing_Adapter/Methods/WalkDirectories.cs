@@ -61,6 +61,8 @@ namespace BH.Adapter.Filing
 
             if (!Path.HasExtension(currentDir.FullName))
                 dirArray = currentDir.GetDirectories();
+            else
+                currentDir = new System.IO.DirectoryInfo(Path.GetDirectoryName(currentDir.FullName));
 
             foreach (System.IO.DirectoryInfo di in dirArray)
             {
