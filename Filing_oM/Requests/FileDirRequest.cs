@@ -70,6 +70,9 @@ namespace BH.oM.Adapters.Filing
         [Description("These files or directories will be excluded from the results. You can also specify string Full Paths.")]
         public virtual List<IFSInfo> Exclusions { get; set; } = new List<IFSInfo>();
 
+        [Description("Sorting order of the extracted Resources.")]
+        public SortOrder SortOrder { get; set; }
+
         /***************************************************/
         /**** Implicit cast                             ****/
         /***************************************************/
@@ -91,7 +94,8 @@ namespace BH.oM.Adapters.Filing
                 SearchSubdirectories = fr.SearchSubdirectories,
                 MaxFiles = fr.MaxFiles,
                 MaxNesting = fr.MaxNesting,
-                IncludeFileContents = fr.IncludeFileContents
+                IncludeFileContents = fr.IncludeFileContents,
+                SortOrder = fr.SortOrder
             };
         }
 
@@ -105,7 +109,8 @@ namespace BH.oM.Adapters.Filing
                 SearchSubdirectories = dr.SearchSubdirectories,
                 MaxDirectories = dr.MaxDirectories,
                 MaxNesting = dr.MaxNesting,
-                Exclusions = dr.Exclusions
+                Exclusions = dr.Exclusions,
+                SortOrder = dr.SortOrder
             };
         }
     }

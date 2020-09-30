@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,21 +20,20 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Humans;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
-using System.ComponentModel;
-using BH.oM.Data.Requests;
 
 namespace BH.oM.Adapters.Filing
 {
-    public interface IDirectoryRequest : ISortableRequest
+    public enum SortOrder
     {
-        int MaxDirectories { get; set; }
+        Default,
+        ByName,
+        BySize,
+        ByCreationTime,
+        ByLastModifiedTime
     }
 }

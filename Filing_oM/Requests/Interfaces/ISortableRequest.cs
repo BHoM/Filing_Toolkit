@@ -33,8 +33,8 @@ using BH.oM.Data.Requests;
 
 namespace BH.oM.Adapters.Filing
 {
-    public interface IDirectoryRequest : ISortableRequest
+    public interface ISortableRequest : IRequest
     {
-        int MaxDirectories { get; set; }
+        SortOrder SortOrder { get; set; }
     }
 }

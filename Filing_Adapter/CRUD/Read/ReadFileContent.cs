@@ -94,9 +94,7 @@ namespace BH.Adapter.Filing
             if (string.IsNullOrWhiteSpace(jsonText) || jsonLines.Length == 0)
                 return result;
 
-            bool properJson = false;
             bool isDatasetJson = false;
-
             object converted = null;
 
             // Check whether the pulled Json is a "BHoM-Dataset Json".

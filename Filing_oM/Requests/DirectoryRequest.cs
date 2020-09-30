@@ -58,6 +58,9 @@ namespace BH.oM.Adapters.Filing
             "\nYou can also specify string Full Paths.")]
         public virtual List<IFSInfo> Exclusions { get; set; } = new List<IFSInfo>();
 
+        [Description("Sorting order of the extracted Directories.")]
+        public SortOrder SortOrder { get; set; }
+
         /***************************************************/
         /**** Implicit cast                             ****/
         /***************************************************/

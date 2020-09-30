@@ -68,6 +68,7 @@
     <Compile Include="Config\RemoveConfig.cs" />
     <Compile Include="Config\PushConfig.cs" />
     <Compile Include="Directory.cs" />
+    <Compile Include="enums\SortOrder.cs" />
     <Compile Include="FSDirectory.cs" />
     <Compile Include="enums\Encodings.cs" />
     <Compile Include="File.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Interfaces\IResource.cs" />
     <Compile Include="Interfaces\IFile.cs" />
     <Compile Include="Requests\Interfaces\IFilingRequest.cs" />
+    <Compile Include="Requests\Interfaces\ISortableRequest.cs" />
     <Compile Include="Requests\IRemoveRequest.cs" />
     <Compile Include="Requests\Interfaces\IFileRequest.cs" />
     <Compile Include="Requests\Interfaces\IResourceRequest.cs" />

@@ -34,8 +34,8 @@ namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter
     {
-        private void WalkDirectories(List<oM.Adapters.Filing.IFSContainer> output, FileDirRequest fdr, 
-            ref int retrievedFiles, ref int retrievedDirs, 
+        private void WalkDirectories(List<FSFile> files, List<FSDirectory> dirs, FileDirRequest fdr,
+            ref int filesCount, ref int dirsCount,
             bool inclHidFiles = false, bool inclSysFiles = false)
         {
             // Recursion stop condition.
@@ -68,20 +68,27 @@ namespace BH.Adapter.Filing
                     continue;
 
                 if (fdr.IncludeDirectories)
-                    if (!MaxItemsReached(fdr.MaxDirectories, retrievedDirs))
+                    if (fdr.SortOrder != SortOrder.Default || !MaxItemsReached(fdr.MaxDirectories, dirsCount))
                     {
-                        output.Add(bhomDir);
-                        retrievedDirs += 1;
+                        // The limit in number of item retrieved in WalkDirectories applies only if there is no sortOrder applied.
+                        // If a sortOrder is applied, the maxItems must be applied after the sorting is done (outside of WalkDirectories)
+
+                        // Check exclusions
+                        if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
+                            continue;
+
+                        dirs.Add(bhomDir);
+                        dirsCount += 1;
                     }
 
                 // Recurse if requested, and if the limits are not exceeded.
-                if (fdr.SearchSubdirectories == true && MaxItemsReached(fdr.MaxFiles, retrievedFiles, fdr.MaxDirectories, retrievedDirs))
+                if (fdr.SearchSubdirectories == true && MaxItemsReached(fdr.MaxFiles, filesCount, fdr.MaxDirectories, dirsCount))
                 {
                     FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
                     fdrRecurse.Location = bhomDir.IFullPath();
                     fdrRecurse.MaxNesting -= 1;
 
-                    WalkDirectories(output, fdrRecurse, ref retrievedFiles, ref retrievedDirs, inclHidFiles, inclSysFiles);
+                    WalkDirectories(files, dirs, fdrRecurse, ref filesCount, ref dirsCount, inclHidFiles, inclSysFiles);
                 }
             }
 
@@ -102,8 +109,11 @@ namespace BH.Adapter.Filing
 
                 foreach (var fi in fileInfos)
                 {
-                    if (!MaxItemsReached(fdr.MaxFiles, retrievedFiles))
-                    {
+                    if (fdr.SortOrder != SortOrder.Default || !MaxItemsReached(fdr.MaxFiles, filesCount))
+                    {   
+                        // The limit in number of item retrieved in WalkDirectories applies only if there is no sortOrder applied.
+                        // If a sortOrder is applied, the maxItems must be applied after the sorting is done (outside of WalkDirectories)
+
                         // Check exclusions
                         if (fdr.Exclusions != null && fdr.Exclusions.Contains(fi.ToFiling()))
                             continue;
@@ -112,8 +122,8 @@ namespace BH.Adapter.Filing
 
                         if (omFile != null)
                         {
-                            output.Add(omFile);
-                            retrievedFiles += 1;
+                            files.Add(omFile);
+                            filesCount += 1;
                         }
                     }
                     else
