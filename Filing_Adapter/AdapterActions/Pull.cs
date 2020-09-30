@@ -25,14 +25,25 @@ namespace BH.Adapter.Filing
         {
             PullConfig pullConfig = actionConfig as PullConfig ?? new PullConfig();
 
-            IRequest iFr = request as IRequest;
-            if (iFr == null)
+            // Usual needed check onto badly automated FilterRequest
+            FilterRequest fr = request as FilterRequest;
+            if (fr != null && !fr.Equalities.Any() && string.IsNullOrWhiteSpace(fr.Tag) && fr.Type == null)
+                request = null;
+
+            if (request == null && string.IsNullOrWhiteSpace(m_defaultFilePath))
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"Filing_Adapter only supports request inheriting {nameof(IFilingRequest)}.");
+                BH.Engine.Reflection.Compute.RecordWarning($"Please specify a valid Request, or a Default Filepath in the Filing_Adapter.");
                 return new List<object>();
             }
 
-            return Read(request as dynamic, pullConfig);
+            IRequest ifr = request;
+
+            if (request == null && !string.IsNullOrWhiteSpace(m_defaultFilePath))
+            {
+                ifr = new FileContentRequest() { File = m_defaultFilePath };
+            }
+
+            return Read(ifr as dynamic, pullConfig);
         }
 
         /***************************************************/

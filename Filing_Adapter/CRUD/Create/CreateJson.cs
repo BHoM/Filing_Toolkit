@@ -50,7 +50,6 @@ namespace BH.Adapter.Filing
             string json = "";
 
             if (file.Content != null)
-
             {
                 if (!pushConfig.UseDatasetSerialization)
                 {
