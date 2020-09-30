@@ -25,7 +25,6 @@ namespace BH.Adapter.Filing
         public override List<object> Push(IEnumerable<object> objects, string tag = "", PushType pushType = PushType.AdapterDefault, ActionConfig actionConfig = null)
         {
             PushConfig pushConfig = actionConfig as PushConfig ?? new PushConfig();
-            m_defaultFilePath = pushConfig.DefaultFilePath;
 
             if (pushType == PushType.AdapterDefault)
                 pushType = m_AdapterSettings.DefaultPushType;
@@ -52,13 +51,12 @@ namespace BH.Adapter.Filing
             List<IResource> createdFiles = new List<IResource>();
 
             List<IResource> filesOrDirs = objects.OfType<IResource>().ToList();
-            List<object> remainder = objects.Except(filesOrDirs).ToList();
+            List<object> remainder = objects.Where(v => !filesOrDirs.Contains(v)).ToList();
 
             if (remainder.Any())
             {
                 BH.Engine.Reflection.Compute.RecordNote($"Objects that are not Files or Directories " +
-                    $"\nwill be Pushed using the Filing Adapter default filePath: `{m_defaultFilePath}`." +
-                    $"\nUse the PushConfig to specify a different filePath for them.");
+                    $"\nwill be Pushed using the Filing Adapter default filePath: `{m_defaultFilePath}`.");
                 string defaultDirectory = Path.GetDirectoryName(m_defaultFilePath);
                 string defaultFileName = Path.GetFileName(m_defaultFilePath);
 

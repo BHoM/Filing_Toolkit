@@ -32,7 +32,21 @@ using System.IO.Abstractions;
 namespace BH.Adapter.Filing
 {
     public partial class FilingAdapter : BHoMAdapter
-    {  
+    {
+        [Input("defaultFilepath", "Default filePath, including file extension. " +
+            "\nWhen Pushing, this is used for pushing objects that are not BHoM `File` or `Directory`." +
+            "\nWhen Pulling, if no request is specified, a FileContentRequest is automatically generated with this location." +
+            "\nBy default this is `C:/temp/Filing_Adapter-objects.json`.")]
+        [PreviousVersion("3.3", "BH.Adapter.Filing.FilingAdapter()")]
+        public FilingAdapter(string defaultFilepath = "C:/temp/Filing_Adapter-objects.json")
+        {
+            m_defaultFilePath = defaultFilepath;
+
+            // By default, if they exist already, the files to be created are wiped out and then re-created.
+            this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.UpdateOrCreateOnly;
+        }
+
+        // Keeping the old constructor until we figure out why the Versioning doesn't work with the one above.
         public FilingAdapter()
         {
             // By default, if they exist already, the files to be created are wiped out and then re-created.
