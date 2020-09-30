@@ -74,21 +74,51 @@ namespace BH.Engine.Adapters.Filing
             if (string.IsNullOrWhiteSpace(path))
                 return null;
 
+            FileInfo fi = null;
+            DirectoryInfo di = null;
+
             try
             {
-                FileInfo fi = new FileInfo(path);
-                DirectoryInfo di = new DirectoryInfo(path);
+                // If using a Regex, this will throw an Exception. No other way to check for proper name.
+                di = new DirectoryInfo(path);
+            }
+            catch (ArgumentException e)
+            {
+                if (e.Message.Contains("Illegal characters"))
+                {
+                    // If the illegal characters are in the filename, we're most probably using a Regex there.
+                    // Extract only the directory part and continue.
+                    di = new DirectoryInfo(Path.GetDirectoryName(path));
+                }
+            }
 
-                if (fi.Exists)
-                    return fi.FullName;
+            if (di?.Exists ?? false)
+                return di.FullName;
 
-                if (di.Exists)
-                    return di.FullName;
+            if (di != null && !di.Exists && !string.IsNullOrWhiteSpace(Path.GetFileName(path)))
+            {
+                // If the full path does not exist but there is a FileName, we might be using a Regex in the FileName.
+                // Extract only the directory part.
+                di = new DirectoryInfo(Path.GetDirectoryName(path));
+            }
+
+            try
+            {
+                fi = new FileInfo(path);
             }
             catch
             {
-                BH.Engine.Reflection.Compute.RecordError($"Invalid path provided:\n{path}");
+                if (di == null || !di.Exists)
+                    BH.Engine.Reflection.Compute.RecordError($"Invalid path provided:\n`{path}`");
             }
+
+
+            if (fi?.Exists ?? false)
+                return fi.FullName;
+
+            // If the following is true, we assume we're using a Regex.
+            if (!fi?.Exists ?? false && di != null && di.Exists)
+                return di.FullName;
 
             return null;
         }
@@ -96,7 +126,7 @@ namespace BH.Engine.Adapters.Filing
         //Fallback
         private static string FullPath(object fileOrDir)
         {
-            BH.Engine.Reflection.Compute.RecordError($"Can not compute the FullPath for an object of type {fileOrDir.GetType().Name}.");
+            BH.Engine.Reflection.Compute.RecordError($"Can not compute the FullPath for an object of type `{fileOrDir.GetType().Name}`.");
             return null;
         }
 

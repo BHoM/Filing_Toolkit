@@ -46,18 +46,8 @@ namespace BH.Adapter.Filing
             List<FSFile> files = new List<FSFile>();
             List<FSDirectory> dirs = new List<FSDirectory>();
 
-            // Check if the request points to a single file.
-            if (Query.IsExistingFile(fdr.Location.IFullPath()))
-            {
-                // The FileDirRequest actually points to a single file;
-                // convert to a FileRequest.
-                output.Add(ReadFile(fdr.ToFileRequest(), pullConfig));
-            }
-            else
-            {
-                int retrievedFiles = 0, retrievedDirs = 0;
-                WalkDirectories(files, dirs, fdr, ref retrievedFiles, ref retrievedDirs, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
-            }
+            int retrievedFiles = 0, retrievedDirs = 0;
+            WalkDirectories(files, dirs, fdr, ref retrievedFiles, ref retrievedDirs, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
 
             output.AddRange(dirs);
             output.AddRange(files);
@@ -70,19 +60,22 @@ namespace BH.Adapter.Filing
 
                 files = output.OfType<FSFile>().Take(fdr.MaxFiles).ToList();
                 dirs = output.OfType<FSDirectory>().Take(fdr.MaxDirectories).ToList();
+            }
 
-                output = new List<IFSInfo>();
+            if (fdr.IncludeFileContents)
+                files.ForEach(f => ReadAndAddContent(f));
 
-                if (fdr.SortOrder != SortOrder.ByName)
-                {
-                    output.AddRange(files);
-                    output.AddRange(dirs);
-                }
-                else
-                {
-                    output.AddRange(dirs);
-                    output.AddRange(files);
-                }
+            output = new List<IFSInfo>();
+
+            if (fdr.SortOrder != SortOrder.Default && fdr.SortOrder != SortOrder.ByName)
+            {
+                output.AddRange(files);
+                output.AddRange(dirs);
+            }
+            else
+            {
+                output.AddRange(dirs);
+                output.AddRange(files);
             }
 
             return output;

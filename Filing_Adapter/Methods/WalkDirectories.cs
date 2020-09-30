@@ -29,6 +29,7 @@ using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Adapters.Filing;
 using BH.oM.Adapters.Filing;
+using System.Text.RegularExpressions;
 
 namespace BH.Adapter.Filing
 {
@@ -48,6 +49,11 @@ namespace BH.Adapter.Filing
                 BH.Engine.Reflection.Compute.RecordError($"Missing parameter {nameof(fdr.Location)} from the request.");
                 return;
             }
+
+            string regexStr = Path.GetFileName(fdr.Location);
+            if (regexStr.Contains('*')) 
+                regexStr = regexStr.Replace("*", ".*");
+            Regex regex = new Regex(regexStr);
 
             System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.Location.IFullPath());
 
@@ -75,6 +81,10 @@ namespace BH.Adapter.Filing
 
                         // Check exclusions
                         if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
+                            continue;
+
+                        // Check Regex matches
+                        if (!regex.IsMatch(bhomDir.Name))
                             continue;
 
                         dirs.Add(bhomDir);
@@ -118,7 +128,14 @@ namespace BH.Adapter.Filing
                         if (fdr.Exclusions != null && fdr.Exclusions.Contains(fi.ToFiling()))
                             continue;
 
-                        oM.Adapters.Filing.FSFile omFile = ReadFile(fi.FullName, fdr.IncludeFileContents, inclHidFiles, inclSysFiles);
+                        // Check Regex matches
+                        if (!regex.IsMatch(fi.Name))
+                            continue;
+
+                        // When reading the file, do not retrieve content.
+                        // Content must be retrieved after WalkDirectories has run.
+                        // This is because additional filtering might be done later.
+                        oM.Adapters.Filing.FSFile omFile = ReadFile(fi.FullName, false, inclHidFiles, inclSysFiles);
 
                         if (omFile != null)
                         {

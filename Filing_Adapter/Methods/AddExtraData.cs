@@ -61,7 +61,7 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private static void AddContent(oM.Adapters.Filing.FSFile retrievedFile)
+        private static void ReadAndAddContent(oM.Adapters.Filing.FSFile retrievedFile)
         {
             string fullPath = retrievedFile.IFullPath();
 
