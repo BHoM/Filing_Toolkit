@@ -59,7 +59,7 @@ namespace BH.oM.Adapters.Filing
 
         [Description("These directories will be excluded from the results." +
          "\nYou can also specify string Full Paths.")]
-        public virtual List<IFSInfo> Exclusions { get; set; } = new List<IFSInfo>();
+        public virtual List<object> Exclusions { get; set; } = new List<object>();
 
         /***************************************************/
         /**** Implicit cast                             ****/
