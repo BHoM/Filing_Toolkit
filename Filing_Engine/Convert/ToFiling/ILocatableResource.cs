@@ -42,7 +42,7 @@ namespace BH.Engine.Adapters.Filing
                 IFSContainer fileOrDir = null;
 
                 if (iLocRes is IFile)
-                    fileOrDir = (FSFile)Path.Combine(iLocRes.Location, iLocRes.Name);
+                    fileOrDir = (FSFile)Path.Combine(iLocRes.Location, iLocRes.Name ?? "");
 
                 if (iLocRes is IDirectory)
                     fileOrDir = (FSDirectory)Path.Combine(iLocRes.Location, iLocRes?.Name ?? "");
@@ -57,7 +57,7 @@ namespace BH.Engine.Adapters.Filing
 
             try
             {
-                FSDirectory dir = (FSDirectory)Path.Combine(iLocRes.Location, iLocRes.Name);
+                FSDirectory dir = (FSDirectory)Path.Combine(iLocRes.Location, iLocRes.Name ?? "");
                 return dir;
             }
             catch { }
