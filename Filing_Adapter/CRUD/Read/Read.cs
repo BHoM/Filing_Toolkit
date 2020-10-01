@@ -58,8 +58,8 @@ namespace BH.Adapter.Filing
             {
                 output = Query.SortOrder(output, fdr.SortOrder);
 
-                files = output.OfType<FSFile>().Take(fdr.MaxFiles).ToList();
-                dirs = output.OfType<FSDirectory>().Take(fdr.MaxDirectories).ToList();
+                files = output.OfType<FSFile>().Take(fdr.MaxFiles == -1 ? output.Count : fdr.MaxFiles).ToList();
+                dirs = output.OfType<FSDirectory>().Take(fdr.MaxDirectories == -1 ? output.Count : fdr.MaxDirectories).ToList();
             }
 
             if (fdr.IncludeFileContents)
