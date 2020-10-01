@@ -25,7 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BH.Engine.Serialiser;
 using BH.oM.Adapter;
 using BH.Engine.Adapters.Filing;
 using BH.oM.Adapters.Filing;
@@ -53,7 +52,9 @@ namespace BH.Adapter.Filing
             string regexStr = Path.GetFileName(fdr.Location);
             if (regexStr.Contains('*')) 
                 regexStr = regexStr.Replace("*", ".*");
-            Regex regex = new Regex(regexStr);
+
+            Regex regex = null;
+            Query.TryGetRegex(fdr.Location, out regex);
 
             System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.Location.IFullPath());
 
@@ -86,7 +87,7 @@ namespace BH.Adapter.Filing
                             continue;
 
                         // Check Regex matches
-                        if (!regex.IsMatch(bhomDir.Name))
+                        if (!regex?.IsMatch(bhomDir.Name) ?? false)
                             continue;
 
                         dirs.Add(bhomDir);
@@ -131,7 +132,7 @@ namespace BH.Adapter.Filing
                             continue;
 
                         // Check Regex matches
-                        if (!regex.IsMatch(fi.Name))
+                        if (!regex?.IsMatch(fi.Name) ?? false)
                             continue;
 
                         // When reading the file, do not retrieve content.
