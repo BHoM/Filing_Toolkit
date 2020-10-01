@@ -163,7 +163,7 @@ namespace BH.Adapter.Filing
             FileStream mongoReadStream = System.IO.File.OpenRead(filePath);
             var reader = new BsonBinaryReader(mongoReadStream);
             List<BsonDocument> readBson = BsonSerializer.Deserialize(reader, typeof(object)) as List<BsonDocument>;
-            IEnumerable<object> output = null;
+            IEnumerable<object> output = new List<object>();
 
             try
             {
