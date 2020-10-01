@@ -78,7 +78,7 @@ namespace BH.Engine.Adapters.Filing
                 char charBeforeAsterisk = regexStr.ElementAtOrDefault(i - 1);
 
                 if (!regexOperatorChars.Contains(charBeforeAsterisk))
-                    regexStr = regexStr.Replace("*", ".*");
+                    regexStr = "^" + Regex.Escape(regexStr).Replace("\\*", ".*") + "$";
             }
 
             if (!escapedDots)

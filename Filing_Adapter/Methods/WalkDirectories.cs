@@ -50,11 +50,10 @@ namespace BH.Adapter.Filing
             }
 
             string regexStr = Path.GetFileName(fdr.Location);
-            if (regexStr.Contains('*')) 
-                regexStr = regexStr.Replace("*", ".*");
 
             Regex regex = null;
             Query.TryGetRegex(fdr.Location, out regex);
+            bool pointsToSingleFile = Query.PointsToSingleFile(fdr.Location);
 
             System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.Location.IFullPath());
 
@@ -65,45 +64,46 @@ namespace BH.Adapter.Filing
             else
                 currentDir = new System.IO.DirectoryInfo(Path.GetDirectoryName(currentDir.FullName));
 
-            foreach (System.IO.DirectoryInfo di in dirArray)
-            {
-                oM.Adapters.Filing.FSDirectory bhomDir = ReadDirectory(di.FullName, inclHidFiles, inclSysFiles);
-                if (bhomDir == null)
-                    continue;
-
-                bhomDir.ParentDirectory = di.Parent.ToFiling();
-
-                if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
-                    continue;
-
-                if (fdr.IncludeDirectories)
-                    if (fdr.SortOrder != SortOrder.Default || !MaxItemsReached(fdr.MaxDirectories, dirsCount))
-                    {
-                        // The limit in number of item retrieved in WalkDirectories applies only if there is no sortOrder applied.
-                        // If a sortOrder is applied, the maxItems must be applied after the sorting is done (outside of WalkDirectories)
-
-                        // Check exclusions
-                        if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
-                            continue;
-
-                        // Check Regex matches
-                        if (!regex?.IsMatch(bhomDir.Name) ?? false)
-                            continue;
-
-                        dirs.Add(bhomDir);
-                        dirsCount += 1;
-                    }
-
-                // Recurse if requested, and if the limits are not exceeded.
-                if (fdr.SearchSubdirectories == true && MaxItemsReached(fdr.MaxFiles, filesCount, fdr.MaxDirectories, dirsCount))
+            if (!pointsToSingleFile)
+                foreach (System.IO.DirectoryInfo di in dirArray)
                 {
-                    FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
-                    fdrRecurse.Location = bhomDir.IFullPath();
-                    fdrRecurse.MaxNesting -= 1;
+                    oM.Adapters.Filing.FSDirectory bhomDir = ReadDirectory(di.FullName, inclHidFiles, inclSysFiles);
+                    if (bhomDir == null)
+                        continue;
 
-                    WalkDirectories(files, dirs, fdrRecurse, ref filesCount, ref dirsCount, inclHidFiles, inclSysFiles);
+                    bhomDir.ParentDirectory = di.Parent.ToFiling();
+
+                    if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
+                        continue;
+
+                    if (fdr.IncludeDirectories)
+                        if (fdr.SortOrder != SortOrder.Default || !MaxItemsReached(fdr.MaxDirectories, dirsCount))
+                        {
+                            // The limit in number of item retrieved in WalkDirectories applies only if there is no sortOrder applied.
+                            // If a sortOrder is applied, the maxItems must be applied after the sorting is done (outside of WalkDirectories)
+
+                            // Check exclusions
+                            if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
+                                continue;
+
+                            // Check Regex matches
+                            if (!regex?.IsMatch(bhomDir.Name) ?? false)
+                                continue;
+
+                            dirs.Add(bhomDir);
+                            dirsCount += 1;
+                        }
+
+                    // Recurse if requested, and if the limits are not exceeded.
+                    if (fdr.SearchSubdirectories == true && MaxItemsReached(fdr.MaxFiles, filesCount, fdr.MaxDirectories, dirsCount))
+                    {
+                        FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
+                        fdrRecurse.Location = bhomDir.IFullPath();
+                        fdrRecurse.MaxNesting -= 1;
+
+                        WalkDirectories(files, dirs, fdrRecurse, ref filesCount, ref dirsCount, inclHidFiles, inclSysFiles);
+                    }
                 }
-            }
 
             if (fdr.IncludeFiles)
             {
@@ -123,7 +123,7 @@ namespace BH.Adapter.Filing
                 foreach (var fi in fileInfos)
                 {
                     if (fdr.SortOrder != SortOrder.Default || !MaxItemsReached(fdr.MaxFiles, filesCount))
-                    {   
+                    {
                         // The limit in number of item retrieved in WalkDirectories applies only if there is no sortOrder applied.
                         // If a sortOrder is applied, the maxItems must be applied after the sorting is done (outside of WalkDirectories)
 
@@ -131,8 +131,17 @@ namespace BH.Adapter.Filing
                         if (fdr.Exclusions != null && fdr.Exclusions.Contains(fi.ToFiling()))
                             continue;
 
+                        // If the path points to a single file, continue only if fileName matches the specified name
+                        if (pointsToSingleFile && fi.Name != Path.GetFileName(fdr.Location))
+                            continue;
+
                         // Check Regex matches
                         if (!regex?.IsMatch(fi.Name) ?? false)
+                            continue;
+
+                        // If the path was erroneously recognised as a regex that matches,
+                        // check that at least the retrieved filename contains the location's filename.
+                        if (regex == null && !fi.Name.Contains(Path.GetFileName(fdr.Location)))
                             continue;
 
                         // When reading the file, do not retrieve content.
