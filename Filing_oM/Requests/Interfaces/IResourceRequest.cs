@@ -38,5 +38,7 @@ namespace BH.oM.Adapters.Filing
         string Location { get; set; }
 
         bool SearchSubdirectories { get; set; }
+
+        List<object> Exclusions { get; set; }
     }
 }
