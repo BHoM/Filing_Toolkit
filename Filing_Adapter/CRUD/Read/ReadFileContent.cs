@@ -163,7 +163,18 @@ namespace BH.Adapter.Filing
             FileStream mongoReadStream = System.IO.File.OpenRead(filePath);
             var reader = new BsonBinaryReader(mongoReadStream);
             List<BsonDocument> readBson = BsonSerializer.Deserialize(reader, typeof(object)) as List<BsonDocument>;
-            return readBson.Select(x => BsonSerializer.Deserialize(x, typeof(object)));
+            IEnumerable<object> output = null;
+
+            try
+            {
+                output = readBson.Select(x => BsonSerializer.Deserialize(x, typeof(object)));
+            }
+            catch
+            {
+                BH.Engine.Reflection.Compute.RecordWarning($"Could not read content from Bson file `{filePath}`.");
+            }
+
+            return output;
         }
     }
 }
