@@ -75,10 +75,12 @@ namespace BH.Engine.Adapters.Filing
                 if (regexStr[i] != '*')
                     continue;
 
+                // We must check if the asterisk is preceded or followed by another regex operator.
                 char charBeforeAsterisk = regexStr.ElementAtOrDefault(i - 1);
 
+                // If not, then the user intended to use it as a wildcard alone.
                 if (!regexOperatorChars.Contains(charBeforeAsterisk))
-                    regexStr = "^" + Regex.Escape(regexStr).Replace("\\*", ".*") + "$";
+                    regexStr = "^" + Regex.Escape(regexStr).Replace("\\*", ".*") + "$"; //Converts the asterisks into a Regex. https://stackoverflow.com/a/30300521/3873799
             }
 
             if (!escapedDots)
