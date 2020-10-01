@@ -50,7 +50,8 @@ namespace BH.Engine.Adapters.Filing
                 // If the path is a valid Uri, it may still contain a Query (e.g. "http://www.somesite.com/folder/file.jpg?q=randomquery.string")
                 // that gives a false positive for a Regex
                 Uri uriRemovedQuery = new Uri(regexStr);
-                regexStr = String.Format("{0}{1}{2}{3}", uriRemovedQuery.Scheme, Uri.SchemeDelimiter, uriRemovedQuery.Authority, uriRemovedQuery.AbsolutePath);
+                if (!uriRemovedQuery.IsFile)
+                    regexStr = String.Format("{0}{1}{2}{3}", uriRemovedQuery.Scheme, Uri.SchemeDelimiter, uriRemovedQuery.Authority, uriRemovedQuery.AbsolutePath);
             }
             catch { }
 
@@ -75,7 +76,7 @@ namespace BH.Engine.Adapters.Filing
                 if (regexStr[i] != '*')
                     continue;
 
-                // We must check if the asterisk is preceded or followed by another regex operator.
+                // We must check if the asterisk is preceded by another regex operator.
                 char charBeforeAsterisk = regexStr.ElementAtOrDefault(i - 1);
 
                 // If not, then the user intended to use it as a wildcard alone.
