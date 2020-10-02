@@ -49,8 +49,6 @@ namespace BH.Adapter.Filing
                 return;
             }
 
-            string regexStr = Path.GetFileName(fdr.Location);
-
             Regex regex = null;
             bool pointsToSingleFile = !Query.TryGetRegexFromPath(fdr.Location, out regex);
 
