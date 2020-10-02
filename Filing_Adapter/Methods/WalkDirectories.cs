@@ -52,58 +52,55 @@ namespace BH.Adapter.Filing
             string regexStr = Path.GetFileName(fdr.Location);
 
             Regex regex = null;
-            Query.TryGetRegex(fdr.Location, out regex);
-            bool pointsToSingleFile = Query.PointsToSingleFile(fdr.Location);
+            bool pointsToSingleFile = !Query.TryGetRegexFromPath(fdr.Location, out regex);
 
-            System.IO.DirectoryInfo currentDir = new System.IO.DirectoryInfo(fdr.Location.IFullPath());
-
+            System.IO.DirectoryInfo selectedDir = new System.IO.DirectoryInfo(fdr.Location.IFullPath());
             System.IO.DirectoryInfo[] dirArray = new System.IO.DirectoryInfo[] { };
 
-            if (!Path.HasExtension(currentDir.FullName))
-                dirArray = currentDir.GetDirectories();
-            else
-                currentDir = new System.IO.DirectoryInfo(Path.GetDirectoryName(currentDir.FullName));
+            if (!Path.HasExtension(selectedDir.FullName)) // If the location points to a directory, populate the list of folders there.
+                dirArray = selectedDir.GetDirectories();
+            else // if the location points to a file, the selected directory is its parent.
+                selectedDir = new System.IO.DirectoryInfo(Path.GetDirectoryName(selectedDir.FullName));
 
-            if (!pointsToSingleFile)
-                foreach (System.IO.DirectoryInfo di in dirArray)
-                {
-                    oM.Adapters.Filing.FSDirectory bhomDir = ReadDirectory(di.FullName, inclHidFiles, inclSysFiles);
-                    if (bhomDir == null)
-                        continue;
+            foreach (System.IO.DirectoryInfo di in dirArray)
+            {
+                oM.Adapters.Filing.FSDirectory bhomDir = ReadDirectory(di.FullName, inclHidFiles, inclSysFiles);
+                if (bhomDir == null)
+                    continue;
 
-                    bhomDir.ParentDirectory = di.Parent.ToFiling();
+                bhomDir.ParentDirectory = di.Parent.ToFiling();
 
-                    if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
-                        continue;
+                if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
+                    continue;
 
-                    if (fdr.IncludeDirectories)
-                        if (fdr.SortOrder != SortOrder.Default || !MaxItemsReached(fdr.MaxDirectories, dirsCount))
-                        {
-                            // The limit in number of item retrieved in WalkDirectories applies only if there is no sortOrder applied.
-                            // If a sortOrder is applied, the maxItems must be applied after the sorting is done (outside of WalkDirectories)
-
-                            // Check exclusions
-                            if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
-                                continue;
-
-                            // Check Regex matches
-                            if (!regex?.IsMatch(bhomDir.Name) ?? false)
-                                continue;
-
-                            dirs.Add(bhomDir);
-                            dirsCount += 1;
-                        }
-
-                    // Recurse if requested, and if the limits are not exceeded.
-                    if (fdr.SearchSubdirectories == true && MaxItemsReached(fdr.MaxFiles, filesCount, fdr.MaxDirectories, dirsCount))
+                if (fdr.IncludeDirectories)
+                    if (fdr.SortOrder != SortOrder.Default || !MaxItemsReached(fdr.MaxDirectories, dirsCount))
                     {
-                        FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
-                        fdrRecurse.Location = bhomDir.IFullPath();
-                        fdrRecurse.MaxNesting -= 1;
+                        // The limit in number of item retrieved in WalkDirectories applies only if there is no sortOrder applied.
+                        // If a sortOrder is applied, the maxItems must be applied after the sorting is done (outside of WalkDirectories)
 
-                        WalkDirectories(files, dirs, fdrRecurse, ref filesCount, ref dirsCount, inclHidFiles, inclSysFiles);
+                        // Check exclusions
+                        if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
+                            continue;
+
+                        // Check Regex matches
+                        if (!regex?.IsMatch(bhomDir.Name) ?? false)
+                            continue;
+
+                        dirs.Add(bhomDir);
+                        dirsCount += 1;
                     }
+
+                // Recurse if requested, and if the limits are not exceeded.
+                if (fdr.SearchSubdirectories == true && MaxItemsReached(fdr.MaxFiles, filesCount, fdr.MaxDirectories, dirsCount))
+                {
+                    FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
+                    fdrRecurse.Location = bhomDir.IFullPath();
+                    fdrRecurse.MaxNesting -= 1;
+
+                    WalkDirectories(files, dirs, fdrRecurse, ref filesCount, ref dirsCount, inclHidFiles, inclSysFiles);
                 }
+            }
 
             if (fdr.IncludeFiles)
             {
@@ -111,7 +108,7 @@ namespace BH.Adapter.Filing
 
                 try
                 {
-                    fileInfos = currentDir.GetFiles("*.*");
+                    fileInfos = selectedDir.GetFiles("*.*");
                 }
                 // This is thrown if one of the files requires permissions greater than the application provides.
                 catch (UnauthorizedAccessException e)

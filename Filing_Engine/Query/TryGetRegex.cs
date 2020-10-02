@@ -40,9 +40,9 @@ namespace BH.Engine.Adapters.Filing
         /***************************************************/
 
         [Description("Tells if a filename or path contains a Regex. Also parses for valid BHoM-regex operators, like the single asterisk `*`.")]
-        public static bool TryGetRegex(string path, out Regex regex)
+        public static bool TryGetRegexFromPath(string fullPath, out Regex regex)
         {
-            string regexStr = path;
+            string regexStr = fullPath;
             regex = null;
 
             try
@@ -54,38 +54,29 @@ namespace BH.Engine.Adapters.Filing
                     regexStr = String.Format("{0}{1}{2}{3}", uriRemovedQuery.Scheme, Uri.SchemeDelimiter, uriRemovedQuery.Authority, uriRemovedQuery.AbsolutePath);
             }
             catch { }
-
+            
+            // First, if there is a regex text, it must be in the last part of the Path. We can get it with GetFileName.
             regexStr = Path.GetFileName(regexStr);
 
-            bool escapedDots = true;
-            List<char> regexOperatorChars = new List<char> { '.', '/', '\\', '[', ']', '$', '*', '^', '+', '?', '{', '}', '(', ')', '/' };
-            var regexOperatorInPathCount = regexOperatorChars.Count(c => regexStr.Contains(c));
-            bool pathContainsOnlyOneDot = regexStr.Count(f => f == '.') == 1;
+            // We then need to check if the path was pointing to a single file,
+            // in which case we need to avoid the confusion between the `.` in the extension and a Regex dot operator.
+            int regexOperatorsFound = m_regexOperatorChars.Count(c => regexStr.Contains(c));
+            int dotFound = regexStr.Count(f => f == '.');
 
-            if (regexOperatorInPathCount == 1 && pathContainsOnlyOneDot)
+            if (regexOperatorsFound == 1 && dotFound == 1)
             {
+                // If there is only one dot in the string, it might be representing the extension.
+                // We need to check whether the char before and/or after it is a Regex operator.
                 char charBeforeDot = regexStr.ElementAtOrDefault(regexStr.IndexOf('.') - 1);
                 char charAfterDot = regexStr.ElementAtOrDefault(regexStr.IndexOf('.') + 1);
-                if (!regexOperatorChars.Contains(charBeforeDot) && !regexOperatorChars.Contains(charAfterDot))
-                    escapedDots = false;
+
+                // We can now confirm whether the dot is just representing an extension, 
+                // in which case we are not returning any Regex.
+                if (Path.HasExtension(fullPath) && !m_regexOperatorChars.Contains(charBeforeDot) && !m_regexOperatorChars.Contains(charAfterDot))
+                    return false;
             }
-
-            // Parse for asterisks
-            for (int i = 0; i < regexStr.Count(); i++)
-            {
-                if (regexStr[i] != '*')
-                    continue;
-
-                // We must check if the asterisk is preceded by another regex operator.
-                char charBeforeAsterisk = regexStr.ElementAtOrDefault(i - 1);
-
-                // If not, then the user intended to use it as a wildcard alone.
-                if (!regexOperatorChars.Contains(charBeforeAsterisk))
-                    regexStr = "^" + Regex.Escape(regexStr).Replace("\\*", ".*") + "$"; //Converts the asterisks into a Regex. https://stackoverflow.com/a/30300521/3873799
-            }
-
-            if (!escapedDots)
-                return false;
+     
+            regexStr = WildcardsToRegex(regexStr);
 
             try
             {
@@ -99,6 +90,34 @@ namespace BH.Engine.Adapters.Filing
 
             return true;
         }
+
+        /***************************************************/
+
+        [Description("Replaces wildcards (such as '*') in the input string, in order to form a proper Regex string.")]
+        public static string WildcardsToRegex(this string str)
+        {
+            // Parse for asterisks
+            for (int i = 0; i < str.Count(); i++)
+            {
+                if (str[i] != '*')
+                    continue;
+
+                // We must check if the asterisk is preceded by another regex operator.
+                char charBeforeAsterisk = str.ElementAtOrDefault(i - 1);
+
+                // If not, then the user intended to use it as a wildcard alone.
+                if (!m_regexOperatorChars.Contains(charBeforeAsterisk))
+                    str = "^" + Regex.Escape(str).Replace("\\*", ".*") + "$"; //Converts the asterisks into a Regex. https://stackoverflow.com/a/30300521/3873799
+            }
+
+            return str;
+        }
+
+
+        /***************************************************/
+
+        private static List<char> m_regexOperatorChars = new List<char> { '.', '/', '\\', '[', ']', '$', '*', '^', '+', '?', '{', '}', '(', ')', '/' };
+
 
         /***************************************************/
     }
