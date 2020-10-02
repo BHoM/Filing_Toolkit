@@ -50,7 +50,8 @@ namespace BH.Adapter.Filing
             }
 
             Regex regex = null;
-            bool pointsToSingleFile = !Query.TryGetRegexFromPath(fdr.Location, out regex);
+            bool hasRegex = Query.TryGetRegexFromPath(fdr.Location, out regex);
+            bool pointsToSingleFile = Path.HasExtension(fdr.Location) && !hasRegex;
 
             System.IO.DirectoryInfo selectedDir = new System.IO.DirectoryInfo(fdr.Location.IFullPath());
             System.IO.DirectoryInfo[] dirArray = new System.IO.DirectoryInfo[] { };

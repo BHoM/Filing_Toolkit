@@ -87,7 +87,7 @@ namespace BH.Engine.Adapters.Filing
                 if (e.Message.Contains("Illegal characters"))
                 {
                     // If the illegal characters are in the filename, we're most probably using a Regex there.
-                    // Extract only the directory part and continue.
+                    // Extract only up to the parent directory.
                     path = path.Replace("/", "\\");
                     path = string.Join("\\",path.Split('\\').Take(path.Split('\\').Length - 1));
 

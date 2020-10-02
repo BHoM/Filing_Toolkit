@@ -61,6 +61,11 @@ namespace BH.Engine.Adapters.Filing
             // We then need to check if the path was pointing to a single file,
             // in which case we need to avoid the confusion between the `.` in the extension and a Regex dot operator.
             int regexOperatorsFound = m_regexOperatorChars.Count(c => regexStr.Contains(c));
+
+            // If there are no Regex operator, this points to a single File or Directory. Do not return any regex.
+            if (regexOperatorsFound == 0)
+                return false;
+
             int dotFound = regexStr.Count(f => f == '.');
 
             if (regexOperatorsFound == 1 && dotFound == 1)
@@ -75,7 +80,14 @@ namespace BH.Engine.Adapters.Filing
                 if (Path.HasExtension(fullPath) && !m_regexOperatorChars.Contains(charBeforeDot) && !m_regexOperatorChars.Contains(charAfterDot))
                     return false;
             }
-     
+
+            if(regexStr.EndsWith(".*"))
+            {
+                // We need to assume that the user wanted to say "any extension" rather than "any character".
+                // "Any character at the end of the string" can therefore only be obtained by specifying a single asterisk at the end (with no previous dot).
+                regexStr = "^" + Regex.Escape(regexStr).Replace("\\*", ".*") + "$";
+            }
+
             regexStr = WildcardsToRegex(regexStr);
 
             try
@@ -85,7 +97,7 @@ namespace BH.Engine.Adapters.Filing
             catch (Exception e)
             {
                 // Invalid regex
-                throw e;
+                return false;
             }
 
             return true;
