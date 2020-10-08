@@ -66,6 +66,9 @@ namespace BH.Adapter.Filing
 
             foreach (IResource fileOrDir in filesOrDirs)
             {
+                if (fileOrDir == null)
+                    continue;
+
                 IResource created = Create(fileOrDir as dynamic, pushType, pushConfig);
                 createdFiles.Add(created);
             }
