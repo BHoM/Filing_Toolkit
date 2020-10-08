@@ -53,15 +53,15 @@ namespace BH.Adapter.Filing
             {
                 if (!pushConfig.UseDatasetSerialization)
                 {
-                    allLines.AddRange(file.Content.Where(c => c != null).Select(obj => "\"" + JsonKey(obj) + "\":" + obj.ToJson()));
+                    allLines.AddRange(file.Content.Where(c => c != null).Select(obj => obj.ToJson() + ","));
 
-                    json = string.Join(",", allLines);
+                    // Remove the trailing comma if there is only one element.
+                    if (string.IsNullOrWhiteSpace(allLines.ElementAtOrDefault(1)) && !string.IsNullOrWhiteSpace(allLines.FirstOrDefault()))
+                        allLines[0] = allLines[0].Remove(allLines.FirstOrDefault().Length - 1);
 
-                    json = "{" + json;
-                    json += "}";
-
-                    if (pushConfig.BeautifyJson)
-                        json = BeautifyJson(json);
+                    // Join all between square brackets to make a valid JSON array.
+                    json = String.Join(Environment.NewLine, allLines);
+                    json = "[" + json + "]";
                 }
                 else
                 {
@@ -127,23 +127,9 @@ namespace BH.Adapter.Filing
             return null;
         }
 
+
         /***************************************************/
-
-        private static Dictionary<string, int> m_JsonKeysCount = new Dictionary<string, int>();
-
-        private static string JsonKey(object obj)
-        {
-            IBHoMObject ibhomObj = obj as IBHoMObject;
-            if (ibhomObj != null)
-                return ibhomObj.GetType().FullName.Replace("BH.oM.", "") + "_" + Guid.NewGuid();//ibhomObj.BHoM_Guid;
-
-            IObject iObject = obj as IObject;
-            if (iObject != null)
-                return iObject.GetType().FullName.Replace("BH.oM.", "") + "_" + Guid.NewGuid();
-
-            return iObject.GetType().FullName + "_" + Guid.NewGuid();
-        }
-
+        /**** Private Methods                           ****/
         /***************************************************/
 
         private static string BeautifyJson(string jsonString)
