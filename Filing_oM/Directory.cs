@@ -1,6 +1,3 @@
-using BH.oM.Base;
-using BH.oM.Humans;
-using System;
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
@@ -23,6 +20,9 @@ using System;
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
+using BH.oM.Humans;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
