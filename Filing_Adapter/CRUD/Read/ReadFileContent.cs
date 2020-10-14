@@ -150,7 +150,7 @@ namespace BH.Adapter.Filing
                 converted = cObj.CustomData.Values;
 
                 // A nested list may come from the fact that the Engine Deserialiser misinterprets the JSON array [].
-                var list = (converted as ICollection).OfType<object>().ToList();
+                var list = (converted as ICollection)?.OfType<object>()?.ToList();
                 if (list != null && list.Count == 1)
                     converted = list.FirstOrDefault();
             }
@@ -185,4 +185,3 @@ namespace BH.Adapter.Filing
         }
     }
 }
-
