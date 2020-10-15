@@ -20,7 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.Filing;
+using BH.oM.Adapters.File;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Adapters.Filing
+namespace BH.Engine.Adapters.File
 {
     public static partial class Convert
     {
@@ -40,11 +40,11 @@ namespace BH.Engine.Adapters.Filing
 
         [Description("Converts the provided FileInfo into a BH.oM.Adapters.Filing.File." +
             "\nTo populate its `Content` property you need to pull the file.")]
-        public static oM.Adapters.Filing.FSFile ToFiling(this FileInfo fi)
+        public static oM.Adapters.File.FSFile ToFiling(this FileInfo fi)
         {
             if (fi == null) return null;
 
-            oM.Adapters.Filing.FSFile bf = new oM.Adapters.Filing.FSFile();
+            oM.Adapters.File.FSFile bf = new oM.Adapters.File.FSFile();
 
             bf.ParentDirectory = fi.Directory.ToFiling();
             bf.Name = fi.Name;

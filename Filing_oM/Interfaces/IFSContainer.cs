@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.oM.Adapters.Filing
+namespace BH.oM.Adapters.File
 {
     [Description("Identifies a FileSystem-hosted Resource (a File or Directory or other) that holds some content.")]
     public interface IFSContainer : IFSInfo, IContainableResource, IBHoMObject

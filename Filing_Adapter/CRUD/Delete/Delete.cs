@@ -23,16 +23,16 @@
 using BH.oM.Adapter;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
-using BH.oM.Adapters.Filing;
+using BH.oM.Adapters.File;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BH.Engine.Adapters.Filing;
+using BH.Engine.Adapters.File;
 
-namespace BH.Adapter.Filing
+namespace BH.Adapter.File
 {
-    public partial class FilingAdapter : BHoMAdapter
+    public partial class FileAdapter : BHoMAdapter
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -47,11 +47,11 @@ namespace BH.Adapter.Filing
 
             foreach (string fullPath in rr.ToRemove)
             {
-                BH.oM.Adapters.Filing.FSDirectory dir = null;
+                BH.oM.Adapters.File.FSDirectory dir = null;
                 if (fullPath.IsExistingDir())
                     dir = ReadDirectory(fullPath);
 
-                BH.oM.Adapters.Filing.FSFile file = null;
+                BH.oM.Adapters.File.FSFile file = null;
                 if (fullPath.IsExistingFile())
                     file = ReadFile(fullPath);
 

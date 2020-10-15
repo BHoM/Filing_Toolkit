@@ -29,12 +29,12 @@ using System.IO;
 using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
-using BH.Engine.Adapters.Filing;
-using BH.oM.Adapters.Filing;
+using BH.Engine.Adapters.File;
+using BH.oM.Adapters.File;
 
-namespace BH.Adapter.Filing
+namespace BH.Adapter.File
 {
-    public partial class FilingAdapter : BHoMAdapter
+    public partial class FileAdapter : BHoMAdapter
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -92,7 +92,7 @@ namespace BH.Adapter.Filing
             if (filecreated)
             {
                 System.IO.FileInfo fileinfo = new System.IO.FileInfo(fullPath);
-                oM.Adapters.Filing.FSFile createdFile = fileinfo.ToFiling();
+                oM.Adapters.File.FSFile createdFile = fileinfo.ToFiling();
                 createdFile.Content = file.Content;
 
                 return createdFile;
@@ -104,7 +104,7 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        public static void WriteBsonWithStream(oM.Adapters.Filing.FSFile file, string fullPath, FileMode fileMode)
+        public static void WriteBsonWithStream(oM.Adapters.File.FSFile file, string fullPath, FileMode fileMode)
         {
             FileStream stream = new FileStream(fullPath, FileMode.CreateNew);
             var writer = new BsonBinaryWriter(stream);

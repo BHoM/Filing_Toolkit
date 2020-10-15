@@ -20,11 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Adapters.Filing;
+using BH.Engine.Adapters.File;
 using BH.Engine.Reflection;
 using BH.oM.Adapter;
 using BH.oM.Data.Requests;
-using BH.oM.Adapters.Filing;
+using BH.oM.Adapters.File;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,9 +37,9 @@ using BH.Engine.Base;
 using BH.oM.Reflection;
 using BH.oM.Reflection.Attributes;
 
-namespace BH.Adapter.Filing
+namespace BH.Adapter.File
 {
-    public partial class FilingAdapter
+    public partial class FileAdapter
     {
         /***************************************************/
         /**** Methods                                  *****/
@@ -52,7 +52,7 @@ namespace BH.Adapter.Filing
             if (command == null)
                 return new Output<List<object>, bool>();
 
-            oM.Adapters.Filing.ExecuteConfig executeConfig = actionConfig as oM.Adapters.Filing.ExecuteConfig ?? new ExecuteConfig();
+            oM.Adapters.File.ExecuteConfig executeConfig = actionConfig as oM.Adapters.File.ExecuteConfig ?? new ExecuteConfig();
 
             if (m_Execute_enableWarning && !executeConfig.DisableWarnings)
             {

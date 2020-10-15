@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.oM.Adapters.Filing
+namespace BH.oM.Adapters.File
 {
     public class RemoveConfig : ActionConfig
     {

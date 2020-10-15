@@ -7,8 +7,8 @@
     <ProjectGuid>{9FF48041-B1F9-4C39-9629-9DF1E0B48C97}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.Adapter.Filing</RootNamespace>
-    <AssemblyName>Filing_Adapter</AssemblyName>
+    <RootNamespace>BH.Adapter.File</RootNamespace>
+    <AssemblyName>File_Adapter</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -145,22 +145,23 @@
     <Compile Include="Methods\CreateFSFile.cs" />
     <Compile Include="Methods\CreateFSDirectory.cs" />
     <Compile Include="Methods\WalkDirectories.cs" />
-    <Compile Include="FilingAdapter.cs" />
+    <Compile Include="FileAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Versioning_40.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Filing_Engine\Filing_Engine.csproj">
+    <ProjectReference Include="..\Filing_Engine\File_Engine.csproj">
       <Project>{d0b2a7e0-1d68-42a6-b699-8bb648d50932}</Project>
-      <Name>Filing_Engine</Name>
+      <Name>File_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Filing_oM\Filing_oM.csproj">
+    <ProjectReference Include="..\Filing_oM\File_oM.csproj">
       <Project>{d344dcf0-788d-4e0a-8596-70199a080619}</Project>
-      <Name>Filing_oM</Name>
+      <Name>File_oM</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

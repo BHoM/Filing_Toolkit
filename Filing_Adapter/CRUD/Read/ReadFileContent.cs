@@ -30,17 +30,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BH.oM.Adapters.Filing;
-using BH.Engine.Adapters.Filing;
+using BH.oM.Adapters.File;
+using BH.Engine.Adapters.File;
 
 
-namespace BH.Adapter.Filing
+namespace BH.Adapter.File
 {
     /***************************************************/
     /**** Public Methods                            ****/
     /***************************************************/
 
-    public partial class FilingAdapter : BHoMAdapter
+    public partial class FileAdapter : BHoMAdapter
     {
         public IEnumerable<object> Read(FileContentRequest fcr, PullConfig pullConfig)
         {
@@ -48,7 +48,7 @@ namespace BH.Adapter.Filing
 
             string fileFullPath = fcr.File.IFullPath();
 
-            oM.Adapters.Filing.FSFile readFile = ReadFile(fileFullPath, true, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
+            oM.Adapters.File.FSFile readFile = ReadFile(fileFullPath, true, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
 
             if (readFile == null)
                 return output;
@@ -77,7 +77,7 @@ namespace BH.Adapter.Filing
             else if (extension == ".bson")
                 retrievedObjects.AddRange(RetrieveBsonContent(fileFullPath));
             else
-                BH.Engine.Reflection.Compute.RecordWarning($"Only JSON and BSON file formats are currently supported by the {typeof(FilingAdapter).Name}.");
+                BH.Engine.Reflection.Compute.RecordWarning($"Only JSON and BSON file formats are currently supported by the {typeof(FileAdapter).Name}.");
 
             return retrievedObjects;
         }

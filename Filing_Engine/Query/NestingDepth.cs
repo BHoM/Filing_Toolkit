@@ -20,7 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.Filing;
+using BH.oM.Adapters.File;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Adapters.Filing
+namespace BH.Engine.Adapters.File
 {
     public static partial class Query
     {
@@ -38,7 +38,7 @@ namespace BH.Engine.Adapters.Filing
         /***************************************************/
 
         [Description("Get the nesting depth of the input File or Directory, which is the total number of parent folders.")]
-        public static int NestingDepth(oM.Adapters.Filing.IFSInfo fileOrDir)
+        public static int NestingDepth(oM.Adapters.File.IFSInfo fileOrDir)
         {
             int count = 0;
             while (fileOrDir.ParentDirectory != null)

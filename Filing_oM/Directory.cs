@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.ComponentModel;
 
-namespace BH.oM.Adapters.Filing
+namespace BH.oM.Adapters.File
 {
     [Description("A Directory. It can include the content of the Directory.")]
     public class Directory : BHoMObject, IDirectory, ILocatableResource, IContainableResource

@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.oM.Adapters.Filing
+namespace BH.oM.Adapters.File
 {
     [Description("Identifies a general data Resource, whether a File or a Directory or other, that resides on a File System.")]
     public interface IFSResource : IResource

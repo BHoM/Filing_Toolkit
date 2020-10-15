@@ -27,18 +27,18 @@ using System.IO;
 using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
-using BH.Engine.Adapters.Filing;
-using BH.oM.Adapters.Filing;
+using BH.Engine.Adapters.File;
+using BH.oM.Adapters.File;
 
-namespace BH.Adapter.Filing
+namespace BH.Adapter.File
 {
-    public partial class FilingAdapter
+    public partial class FileAdapter
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static oM.Adapters.Filing.FSFile ReadFile(FileRequest fr, PullConfig pc)
+        public static oM.Adapters.File.FSFile ReadFile(FileRequest fr, PullConfig pc)
         {
             string fullPath = fr.Location.IFullPath();
 
@@ -47,7 +47,7 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        public static oM.Adapters.Filing.FSFile ReadFile(string fullPath, bool inclFileContent = false, bool inclHidFiles = false, bool inclSysFiles = false)
+        public static oM.Adapters.File.FSFile ReadFile(string fullPath, bool inclFileContent = false, bool inclHidFiles = false, bool inclSysFiles = false)
         {
             // Perform the "Read" = get the System.FileInfo, which will be the basis for our oM.Adapters.Filing.File
             FileInfo fi = new FileInfo(fullPath);
@@ -64,7 +64,7 @@ namespace BH.Adapter.Filing
                 return null;
 
             // Convert the FileInfo to our oM.Adapters.Filing.File
-            oM.Adapters.Filing.FSFile file = fi.ToFiling();
+            oM.Adapters.File.FSFile file = fi.ToFiling();
 
             // Add author data if possible
             AddAuthor(file);
@@ -78,7 +78,7 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        public static oM.Adapters.Filing.FSDirectory ReadDirectory(string fullPath, bool inclHidDirs = false, bool inclSysDirs = false, bool includeFolderContent = false)
+        public static oM.Adapters.File.FSDirectory ReadDirectory(string fullPath, bool inclHidDirs = false, bool inclSysDirs = false, bool includeFolderContent = false)
         {
             // Perform the "Read" = get the System.DirectoryInfo, which will be the basis for our oM.Adapters.Filing.Directory
             DirectoryInfo di = new DirectoryInfo(fullPath);
@@ -95,7 +95,7 @@ namespace BH.Adapter.Filing
                 return null;
 
             // Convert the FileInfo to our oM.Adapters.Filing.File
-            oM.Adapters.Filing.FSDirectory dir = di.ToFiling();
+            oM.Adapters.File.FSDirectory dir = di.ToFiling();
 
             // Add author data if possible
             AddAuthor(dir);

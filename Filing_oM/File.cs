@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.ComponentModel;
 
-namespace BH.oM.Adapters.Filing
+namespace BH.oM.Adapters.File
 {
     [Description("A File. It can include the content of the File.")]
     public class File : BHoMObject, IFile, ILocatableResource, IContainableResource

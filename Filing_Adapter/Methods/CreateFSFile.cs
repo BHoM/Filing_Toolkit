@@ -28,13 +28,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using BH.oM.Adapters.Filing;
+using BH.oM.Adapters.File;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 
-namespace BH.Adapter.Filing
+namespace BH.Adapter.File
 {
-    public partial class FilingAdapter
+    public partial class FileAdapter
     {
         /*******************************************/
         /**** Methods                           ****/
@@ -52,7 +52,7 @@ namespace BH.Adapter.Filing
                 return null;
             }
 
-            return new oM.Adapters.Filing.FSFile()
+            return new oM.Adapters.File.FSFile()
             {
                 ParentDirectory = parentDirectory,
                 Name = fullFileName,
