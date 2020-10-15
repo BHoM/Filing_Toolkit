@@ -20,7 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.Filing;
+using BH.oM.Adapters.File;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Adapters.Filing
+namespace BH.Engine.Adapters.File
 {
     public static partial class Query
     {
@@ -42,16 +42,16 @@ namespace BH.Engine.Adapters.Filing
         {
             IEnumerable<IFSInfo> output = resources.ToList(); 
 
-            if (sortOrder == BH.oM.Adapters.Filing.SortOrder.ByName)
+            if (sortOrder == BH.oM.Adapters.File.SortOrder.ByName)
                 output = output.OrderBy(x => x.Name);
 
-            if (sortOrder == BH.oM.Adapters.Filing.SortOrder.BySize)
+            if (sortOrder == BH.oM.Adapters.File.SortOrder.BySize)
                 output = output.OrderBy(x => x.Size).Reverse();
 
-            if (sortOrder == BH.oM.Adapters.Filing.SortOrder.ByCreationTime)
+            if (sortOrder == BH.oM.Adapters.File.SortOrder.ByCreationTime)
                 output = output.OrderBy(x => x.CreationTimeUtc).Reverse();
 
-            if (sortOrder == BH.oM.Adapters.Filing.SortOrder.ByLastModifiedTime)
+            if (sortOrder == BH.oM.Adapters.File.SortOrder.ByLastModifiedTime)
                 output = output.OrderBy(x => x.ModifiedTimeUtc).Reverse();
 
             return output.ToList();

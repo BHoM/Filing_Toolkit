@@ -27,20 +27,42 @@ using BH.oM.Data.Requests;
 using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.IO.Abstractions;
+using System.Linq;
 
-namespace BH.Adapter.Filing
+namespace BH.Adapter.File
 {
-    public partial class FilingAdapter : BHoMAdapter
+    public partial class FileAdapter : BHoMAdapter
     {
         [Input("defaultFilepath", "Default filePath, including file extension. " +
             "\nWhen Pushing, this is used for pushing objects that are not BHoM `File` or `Directory`." +
             "\nWhen Pulling, if no request is specified, a FileContentRequest is automatically generated with this location." +
             "\nBy default this is `C:/temp/Filing_Adapter-objects.json`.")]
-        [PreviousVersion("3.3", "BH.Adapter.Filing.FilingAdapter()")]
-        public FilingAdapter(string defaultLocation = "C:/temp/Filing_Adapter-objects.json")
+        public FileAdapter(string defaultLocation = "C:/temp/Filing_Adapter-objects.json")
         {
             m_defaultFilePath = defaultLocation;
+
+            ProcessExtension(m_defaultFilePath);
+
+            // By default, if they exist already, the files to be created are wiped out and then re-created.
+            this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.UpdateOrCreateOnly;
+        }
+
+        public FileAdapter(string folder = null, string fileName = "")
+        {
+            if (folder == null)
+                folder = @"C:/temp/";
+
+            if (string.IsNullOrEmpty(fileName))
+                fileName = "Filing_Adapter-objects.json";
+
+            if (folder.Count() > 2 && folder.ElementAt(1) != ':')
+                folder = Path.Combine(@"C:\ProgramData\BHoM\DataSets", folder);
+
+            m_defaultFilePath = Path.Combine(folder, fileName);
+
+            ProcessExtension(m_defaultFilePath);
 
             // By default, if they exist already, the files to be created are wiped out and then re-created.
             this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.UpdateOrCreateOnly;
@@ -51,5 +73,30 @@ namespace BH.Adapter.Filing
         private bool m_Remove_enableDeleteAlert = true;
         private bool m_Execute_enableWarning = true;
         private string m_defaultFilePath = null;
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private bool ProcessExtension(string filePath)
+        {
+            string ext = Path.GetExtension(filePath);
+
+            if (!Path.HasExtension(m_defaultFilePath))
+            {
+                Engine.Reflection.Compute.RecordNote($"No extension specified in the FileName input. Default is .json.");
+                ext = ".json";
+                filePath += ext;
+            }
+
+            if (ext != ".json" && ext != ".bson")
+            {
+                Engine.Reflection.Compute.RecordError($"File_Adapter currently supports only .json and .bson extension types.\nSpecified file extension: {ext}");
+                return false;
+            }
+
+            return true;
+        }
     }
 }

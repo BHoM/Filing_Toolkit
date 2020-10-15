@@ -27,18 +27,18 @@ using System.IO;
 using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
-using BH.Engine.Adapters.Filing;
-using BH.oM.Adapters.Filing;
+using BH.Engine.Adapters.File;
+using BH.oM.Adapters.File;
 
-namespace BH.Adapter.Filing
+namespace BH.Adapter.File
 {
-    public partial class FilingAdapter
+    public partial class FileAdapter
     {
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void AddAuthor(oM.Adapters.Filing.IFSContainer retrievedFile)
+        private static void AddAuthor(oM.Adapters.File.IFSContainer retrievedFile)
         {
             string fullPath = retrievedFile.IFullPath();
 
@@ -61,7 +61,7 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private static void ReadAndAddContent(oM.Adapters.Filing.FSFile retrievedFile)
+        private static void ReadAndAddContent(oM.Adapters.File.FSFile retrievedFile)
         {
             string fullPath = retrievedFile.IFullPath();
 
@@ -71,7 +71,7 @@ namespace BH.Adapter.Filing
 
         /***************************************************/
 
-        private static void AddContent(oM.Adapters.Filing.FSDirectory retrievedDir)
+        private static void AddContent(oM.Adapters.File.FSDirectory retrievedDir)
         {
             string fullPath = retrievedDir.IFullPath();
 

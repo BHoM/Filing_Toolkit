@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.oM.Adapters.Filing
+namespace BH.oM.Adapters.File
 {
     [Description("Identifies a FileSystem Resource with basic information attached." +
         "\nRehash of the .NET's base class 'FileSystemInfo' in BHoM flavour.")]

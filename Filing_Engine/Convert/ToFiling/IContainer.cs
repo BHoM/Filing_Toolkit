@@ -20,7 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.Filing;
+using BH.oM.Adapters.File;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -30,13 +30,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Adapters.Filing
+namespace BH.Engine.Adapters.File
 {
     public static partial class Convert
     {
-        public static oM.Adapters.Filing.IFSContainer ToFiling(this oM.Adapters.Filing.IContainer iContainer)
+        public static oM.Adapters.File.IFSContainer ToFiling(this oM.Adapters.File.IContainer iContainer)
         {
-            oM.Adapters.Filing.IFSContainer fscont = (iContainer as ILocatableResource).ToFiling();
+            oM.Adapters.File.IFSContainer fscont = (iContainer as ILocatableResource).ToFiling();
 
             fscont.Content = iContainer.Content;
 

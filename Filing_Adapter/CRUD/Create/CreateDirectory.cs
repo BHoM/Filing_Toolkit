@@ -28,13 +28,13 @@ using System.IO;
 using System.Linq;
 using BH.Engine.Serialiser;
 using BH.oM.Adapter;
-using BH.Engine.Adapters.Filing;
-using BH.oM.Adapters.Filing;
+using BH.Engine.Adapters.File;
+using BH.oM.Adapters.File;
 using BH.Engine.Base;
 
-namespace BH.Adapter.Filing
+namespace BH.Adapter.File
 {
-    public partial class FilingAdapter : BHoMAdapter
+    public partial class FileAdapter : BHoMAdapter
     {
         /***************************************************/
         /**** Public Methods                            ****/
@@ -42,7 +42,7 @@ namespace BH.Adapter.Filing
 
         public static IFSContainer CreateDirectory(FSDirectory dir, PushType pushType, PushConfig pushConfig)
         {
-            List<BH.oM.Adapters.Filing.IFSContainer> createdDirs = new List<oM.Adapters.Filing.IFSContainer>();
+            List<BH.oM.Adapters.File.IFSContainer> createdDirs = new List<oM.Adapters.File.IFSContainer>();
 
             bool clearfile = pushType == PushType.DeleteThenCreate ? true : false;
 
@@ -99,7 +99,7 @@ namespace BH.Adapter.Filing
                 }
                 else
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning($"The specified Pushtype of {pushType.ToString()} is not supported for {nameof(BH.oM.Adapters.Filing.FSDirectory)} objects.");
+                    BH.Engine.Reflection.Compute.RecordWarning($"The specified Pushtype of {pushType.ToString()} is not supported for {nameof(BH.oM.Adapters.File.FSDirectory)} objects.");
                     directoryCreated = false;
                 }
             }
@@ -111,7 +111,7 @@ namespace BH.Adapter.Filing
             if (directoryCreated || existed)
             {
                 System.IO.DirectoryInfo dirInfo = new System.IO.DirectoryInfo(dirFullPath);
-                oM.Adapters.Filing.FSDirectory createdDir = dirInfo.ToFiling();
+                oM.Adapters.File.FSDirectory createdDir = dirInfo.ToFiling();
 
                 return createdDir;
             }

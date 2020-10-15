@@ -29,10 +29,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using BH.oM.Adapters.Filing;
+using BH.oM.Adapters.File;
 using System.ComponentModel;
 
-namespace BH.Engine.Adapters.Filing
+namespace BH.Engine.Adapters.File
 {
     public static partial class Create
     {

@@ -20,7 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.Filing;
+using BH.oM.Adapters.File;
 using BH.oM.Reflection.Attributes;
 using System;
 using System.Collections.Generic;
@@ -30,12 +30,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Adapters.Filing
+namespace BH.Engine.Adapters.File
 {
     public static partial class Convert
     {
         [Description("Attempts conversion of a generic Resource to a File-system Resource.")]
-        public static oM.Adapters.Filing.IFSContainer ToFiling(this ILocatableResource iLocRes)
+        public static oM.Adapters.File.IFSContainer ToFiling(this ILocatableResource iLocRes)
         {
             try
             {

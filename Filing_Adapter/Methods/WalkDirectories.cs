@@ -26,13 +26,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BH.oM.Adapter;
-using BH.Engine.Adapters.Filing;
-using BH.oM.Adapters.Filing;
+using BH.Engine.Adapters.File;
+using BH.oM.Adapters.File;
 using System.Text.RegularExpressions;
 
-namespace BH.Adapter.Filing
+namespace BH.Adapter.File
 {
-    public partial class FilingAdapter
+    public partial class FileAdapter
     {
         private void WalkDirectories(List<FSFile> files, List<FSDirectory> dirs, FileDirRequest fdr,
             ref int filesCount, ref int dirsCount,
@@ -63,7 +63,7 @@ namespace BH.Adapter.Filing
 
             foreach (System.IO.DirectoryInfo di in dirArray)
             {
-                oM.Adapters.Filing.FSDirectory bhomDir = ReadDirectory(di.FullName, inclHidFiles, inclSysFiles);
+                oM.Adapters.File.FSDirectory bhomDir = ReadDirectory(di.FullName, inclHidFiles, inclSysFiles);
                 if (bhomDir == null)
                     continue;
 
@@ -143,7 +143,7 @@ namespace BH.Adapter.Filing
                         // When reading the file, do not retrieve content.
                         // Content must be retrieved after WalkDirectories has run.
                         // This is because additional filtering might be done later.
-                        oM.Adapters.Filing.FSFile omFile = ReadFile(fi.FullName, false, inclHidFiles, inclSysFiles);
+                        oM.Adapters.File.FSFile omFile = ReadFile(fi.FullName, false, inclHidFiles, inclSysFiles);
 
                         if (omFile != null)
                         {

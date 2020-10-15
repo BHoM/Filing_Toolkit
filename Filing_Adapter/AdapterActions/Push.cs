@@ -20,11 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Adapters.Filing;
+using BH.Engine.Adapters.File;
 using BH.Engine.Reflection;
 using BH.oM.Adapter;
 using BH.oM.Data.Requests;
-using BH.oM.Adapters.Filing;
+using BH.oM.Adapters.File;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,9 +36,9 @@ using System.Threading.Tasks;
 using BH.Engine.Base;
 using BH.oM.Base;
 
-namespace BH.Adapter.Filing
+namespace BH.Adapter.File
 {
-    public partial class FilingAdapter
+    public partial class FileAdapter
     {
         /***************************************************/
         /**** Methods                                  *****/

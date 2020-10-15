@@ -31,7 +31,7 @@ using System.IO;
 using System.ComponentModel;
 using BH.oM.Data.Requests;
 
-namespace BH.oM.Adapters.Filing
+namespace BH.oM.Adapters.File
 {
     [Description("Used to read contents of one or more files.")]
     public class FileContentRequest : IFilingRequest

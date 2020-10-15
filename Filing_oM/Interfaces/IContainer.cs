@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.oM.Adapters.Filing
+namespace BH.oM.Adapters.File
 {
     [Description("Identifies a Resource (a File or Directory or other) that is locatable and holds some content.")]
     public interface IContainer : ILocatableResource, IContainableResource, IBHoMObject

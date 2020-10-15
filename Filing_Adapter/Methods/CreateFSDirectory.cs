@@ -28,11 +28,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using BH.oM.Adapters.Filing;
+using BH.oM.Adapters.File;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.Adapters.Filing
+namespace BH.Engine.Adapters.File
 {
     public static partial class Create
     {
@@ -44,7 +44,7 @@ namespace BH.Engine.Adapters.Filing
         [Input("directoryName", "Name of the directory.")]
         [Input("content", "The content of the file.")]
         [Description("Creates a oM.Adapters.Filing.File object.")]
-        public static oM.Adapters.Filing.FSDirectory FSDirectory(string dirFullPath)
+        public static oM.Adapters.File.FSDirectory FSDirectory(string dirFullPath)
         {
             if (Path.HasExtension(dirFullPath))
             {
@@ -60,7 +60,7 @@ namespace BH.Engine.Adapters.Filing
         [Input("directoryName", "Name of the directory.")]
         [Input("content", "The content of the file.")]
         [Description("Creates a oM.Adapters.Filing.File object.")]
-        public static oM.Adapters.Filing.FSDirectory FSDirectory(oM.Adapters.Filing.FSDirectory parentDirectory, string directoryName)
+        public static oM.Adapters.File.FSDirectory FSDirectory(oM.Adapters.File.FSDirectory parentDirectory, string directoryName)
         {
             if (Path.HasExtension(directoryName))
             {
@@ -68,7 +68,7 @@ namespace BH.Engine.Adapters.Filing
                 return null;
             }
 
-            return new oM.Adapters.Filing.FSDirectory()
+            return new oM.Adapters.File.FSDirectory()
             {
                 ParentDirectory = parentDirectory,
                 Name = directoryName,

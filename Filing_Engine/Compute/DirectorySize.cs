@@ -28,12 +28,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Engine.Adapters.Filing
+namespace BH.Engine.Adapters.File
 {
     public static partial class Compute
     {
         [Description("Returns the size of the directory. The calculation might take some time.")]
-        public static long DirectorySize(BH.oM.Adapters.Filing.FSDirectory directory)
+        public static long DirectorySize(BH.oM.Adapters.File.FSDirectory directory)
         {
             return DirectorySize(directory.FromFiling());
         }
