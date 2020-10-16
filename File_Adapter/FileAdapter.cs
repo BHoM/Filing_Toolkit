@@ -39,6 +39,7 @@ namespace BH.Adapter.File
             "\nWhen Pushing, this is used for pushing objects that are not BHoM `File` or `Directory`." +
             "\nWhen Pulling, if no request is specified, a FileContentRequest is automatically generated with this location." +
             "\nBy default this is `C:/temp/Filing_Adapter-objects.json`.")]
+        [PreviousVersion("4.0", "BH.Adapter.Filing.FilingAdapter(System.String)")]
         public FileAdapter(string defaultLocation = "C:/temp/Filing_Adapter-objects.json")
         {
             m_defaultFilePath = defaultLocation;
@@ -49,6 +50,7 @@ namespace BH.Adapter.File
             this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.UpdateOrCreateOnly;
         }
 
+        [PreviousVersion("4.0", "BH.Adapter.FileAdapter.FileAdapter(System.String, System.String)")]
         public FileAdapter(string folder = null, string fileName = "")
         {
             if (folder == null)

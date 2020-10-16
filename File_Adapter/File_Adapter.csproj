@@ -154,18 +154,17 @@
     <None Include="Versioning_40.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Filing_Engine\File_Engine.csproj">
+    <ProjectReference Include="..\File_Engine\File_Engine.csproj">
       <Project>{d0b2a7e0-1d68-42a6-b699-8bb648d50932}</Project>
       <Name>File_Engine</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Filing_oM\File_oM.csproj">
+    <ProjectReference Include="..\File_oM\File_oM.csproj">
       <Project>{d344dcf0-788d-4e0a-8596-70199a080619}</Project>
       <Name>File_oM</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
