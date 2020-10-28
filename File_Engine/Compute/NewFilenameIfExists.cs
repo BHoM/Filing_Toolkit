@@ -20,33 +20,51 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-
-using BH.oM.Adapter;
-using BH.oM.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.oM.Adapters.File
+namespace BH.Engine.Adapters.File
 {
-    public class PushConfig : ActionConfig
+    public static partial class Compute
     {
-        [Description("When serialising to JSON, use the Dataset serialization style." +
-            "\nThis serializes the individual objects, and then concatenates the strings separating with a newline." +
-            "\nThe obtained format is not valid JSON. You will need to deserialize each individual line." +
-            "\nThis is the current standard for Datasets.")]
-        public bool UseDatasetSerialization { get; set; } = false;
+        [Description("If the targetPath points to a file that exists, return the same filepath with appended `- Copy (i)`, " +
+            "where `i` is the first index pointing to a non existing file.")]
+        public static string NewFilenameIfExists(string targetPath)
+        {
+            int i = 0;
+            do
+            {
+                string copyFileName = Path.GetFileNameWithoutExtension(targetPath);
 
-        [Description("If true, beautify Json files for web display. Works only if UseDatasetSerialization is set to false.")]
-        public bool BeautifyJson { get; set; } = true;
+                string copyStr = $" - Copy";
 
-        [Description("Keeps the warnings about Deletion off.")]
-        public bool DisableWarnings { get; set; } = false;
+                if (copyFileName.Substring(copyFileName.Length - copyStr.Length - 4).Contains($" - Copy ("))
+                {
+                    copyFileName = copyFileName.Remove(copyFileName.Length - copyStr.Length - 4) + $" - Copy ({i})";
+                }
 
-        [Description("If true, the Push only affects the content of the File.")]
-        public bool PushContentOnly { get; set; } = false;
+                if (copyFileName.EndsWith(copyStr))
+                    copyFileName = copyFileName.Replace(copyStr, $" - Copy ({i})");
+
+                if (copyFileName.EndsWith(" - Copy (0)"))
+                    copyFileName.Replace(" - Copy (0)", copyStr);
+
+                if (!copyFileName.Substring(copyFileName.Length - copyStr.Length - 4).Contains($" - Copy"))
+                {
+                    copyFileName += $" - Copy";
+                }
+
+                targetPath = Path.Combine(Path.GetDirectoryName(targetPath), copyFileName + Path.GetExtension(targetPath));
+                i++;
+            }
+            while (System.IO.File.Exists(targetPath));
+
+            return targetPath;
+        }
     }
 }

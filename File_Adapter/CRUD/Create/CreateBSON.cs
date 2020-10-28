@@ -56,9 +56,9 @@ namespace BH.Adapter.File
 
                     WriteBsonWithStream(file, fullPath, FileMode.CreateNew);
                 }
-                else if ((pushType == PushType.UpdateOnly && fileExisted) || pushType == PushType.UpdateOrCreateOnly)
+                else if (fileExisted && pushType == PushType.UpdateOnly)
                 {
-                    if (fileExisted && pushConfig.AppendContent)
+                    if (pushConfig.PushContentOnly)
                     {
                         // Append the text to existing file.
                         WriteBsonWithStream(file, fullPath, FileMode.Append);
@@ -68,6 +68,10 @@ namespace BH.Adapter.File
                         // Override existing file.
                         WriteBsonWithStream(file, fullPath, FileMode.Create);
                     }
+                }
+                else if (fileExisted && pushType == PushType.UpdateOrCreateOnly)
+                {
+                    WriteBsonWithStream(file, fullPath, FileMode.CreateNew);
                 }
                 else if (pushType == PushType.CreateOnly)
                 {

@@ -75,38 +75,61 @@ namespace BH.Adapter.File
             bool filecreated = true;
             try
             {
-                if (pushType == PushType.DeleteThenCreate)
+                // Clarify if we are considering the Push in terms of content or of Files.
+                if (!pushConfig.PushContentOnly) // We are talking about Files.
                 {
-                    if (fileExisted)
-                        System.IO.File.Delete(fullPath);
-
-                    System.IO.File.WriteAllText(fullPath, json);
-                }
-                else if ((pushType == PushType.UpdateOnly && fileExisted) || pushType == PushType.UpdateOrCreateOnly)
-                {
-                    if (fileExisted && pushConfig.AppendContent)
+                    if (pushType == PushType.DeleteThenCreate)
                     {
-                        // Append the text to existing file.
-                        System.IO.File.AppendAllText(fullPath, json);
+                        if (fileExisted)
+                            System.IO.File.Delete(fullPath);
+
+                        System.IO.File.WriteAllText(fullPath, json);
                     }
-                    else
+                    else if (pushType == PushType.UpdateOnly)
                     {
                         // Overwrite existing file.
+                        if (fileExisted)
+                            System.IO.File.WriteAllText(fullPath, json);
+                        else
+                            BH.Engine.Reflection.Compute.RecordNote($"File {fullPath} was not updated as no file existed at that location.");
+                    }
+                    else if (pushType == PushType.UpdateOrCreateOnly)
+                    {
+                        // Overwrite existing file. If it doesn't exist, create it.
                         System.IO.File.WriteAllText(fullPath, json);
                     }
-                }
-                else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting)
-                {
-                    // Create only if file didn't exist. Do not touch existing ones.
-                    if (!fileExisted)
-                        System.IO.File.WriteAllText(fullPath, json);
+                    else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting)
+                    {
+                        if (!fileExisted)
+                            System.IO.File.WriteAllText(fullPath, json); // Create only if file didn't exist. Do not touch existing ones.
+                        else
+                            BH.Engine.Reflection.Compute.RecordNote($"File {fullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
+                    }
                     else
-                        BH.Engine.Reflection.Compute.RecordNote($"File {fullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
+                    {
+                        BH.Engine.Reflection.Compute.RecordWarning($"The specified Pushtype of {pushType.ToString()} is not supported for .json files.");
+                        filecreated = false;
+                    }
                 }
-                else
+                else // We are talking about File content.
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning($"The specified Pushtype of {pushType.ToString()} is not supported for .json files.");
-                    filecreated = false;
+                    if (pushType == PushType.DeleteThenCreate)
+                    {
+                        // Replace all content.
+                        System.IO.File.WriteAllText(fullPath, json);
+                    }
+                    else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting || pushType == PushType.UpdateOnly || pushType == PushType.UpdateOrCreateOnly)
+                    {
+                        if (!fileExisted)
+                            System.IO.File.WriteAllText(fullPath, json); 
+                        else
+                            System.IO.File.AppendAllText(fullPath, json);
+                    }
+                    else
+                    {
+                        BH.Engine.Reflection.Compute.RecordWarning($"The specified Pushtype of {pushType.ToString()} is not supported for .json files.");
+                        filecreated = false;
+                    }
                 }
             }
             catch (Exception e)
