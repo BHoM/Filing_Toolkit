@@ -83,7 +83,14 @@ namespace BH.Adapter.File
                 string defaultFileName = Path.GetFileName(m_defaultFilePath);
 
                 FSFile file = CreateFSFile(defaultDirectory, defaultFileName, remainder);
-                filesOrDirs.Add(file);
+
+                PushConfig newPushConfig = pushConfig.DeepClone();
+                newPushConfig.PushContentOnly = true;
+
+                IResource created = Create(file, pushType, newPushConfig);
+
+                if (created != null)
+                    filesOrDirs.Add(created);
             }
 
             foreach (IResource fileOrDir in filesOrDirs)

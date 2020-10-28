@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\CreateFolders.cs" />
+    <Compile Include="Compute\NewFilenameIfExists.cs" />
     <Compile Include="Compute\DirectorySize.cs" />
     <Compile Include="Convert\FromFiling\FSDirectory.cs" />
     <Compile Include="Convert\FromFiling\FSFile.cs" />
