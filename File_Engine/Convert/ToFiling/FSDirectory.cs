@@ -52,12 +52,6 @@ namespace BH.Engine.Adapters.File
             bd.IsReadOnly = di.Attributes.HasFlag(FileAttributes.ReadOnly);
             bd.Attributes = di.Attributes;
             bd.CreationTimeUtc = di.CreationTimeUtc;
-            bd.CustomData["CreationTime"] = di.CreationTime;
-            bd.CustomData["CreationTimeUtc"] = di.CreationTimeUtc;
-            bd.CustomData["LastAccessTime"] = di.LastAccessTime;
-            bd.CustomData["LastAccessTimeUtc"] = di.LastAccessTimeUtc;
-            bd.CustomData["LastWriteTime"] = di.LastWriteTime;
-            bd.CustomData["LastWriteTimeUtc"] = di.LastWriteTimeUtc;
             bd.ModifiedTimeUtc = di.LastWriteTimeUtc;
 
             return bd;

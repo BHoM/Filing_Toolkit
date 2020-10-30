@@ -53,12 +53,6 @@ namespace BH.Engine.Adapters.File
             bf.Size = (int)(fi.Length & 0xFFFFFFFF);
             bf.Attributes = fi.Attributes;
             bf.CreationTimeUtc = fi.CreationTimeUtc;
-            bf.CustomData["CreationTime"] = fi.CreationTime;
-            bf.CustomData["CreationTimeUtc"] = fi.CreationTimeUtc;
-            bf.CustomData["LastAccessTime"] = fi.LastAccessTime;
-            bf.CustomData["LastAccessTimeUtc"] = fi.LastAccessTimeUtc;
-            bf.CustomData["LastWriteTime"] = fi.LastWriteTime;
-            bf.CustomData["LastWriteTimeUtc"] = fi.LastWriteTimeUtc;
             bf.ModifiedTimeUtc = fi.LastWriteTimeUtc;
 
             return bf;
