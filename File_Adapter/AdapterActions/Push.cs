@@ -75,19 +75,31 @@ namespace BH.Adapter.File
             List<IResource> filesOrDirs = objects.OfType<IResource>().ToList();
             List<object> remainder = objects.Where(v => !filesOrDirs.Contains(v)).ToList();
 
+            if (m_defaultFilePath == null && remainder.Any())
+            {
+                BH.Engine.Reflection.Compute.RecordError($"To Push objects that are not of type `{nameof(BH.oM.Adapters.File.File)}` or `{nameof(BH.oM.Adapters.File.Directory)}`," +
+                    $"\nyou need to specify a target Location by creating the {nameof(FileAdapter)} through the constructor with inputs.");
+                return null;
+            }
+
+            if (m_defaultFilePath != null)
+            {
+                pushConfig.PushContentOnly = true;
+
+                if (filesOrDirs.Any())
+                    BH.Engine.Reflection.Compute.RecordWarning($"Objects of type `{nameof(BH.oM.Adapters.File.File)}` or `{nameof(BH.oM.Adapters.File.Directory)}`," +
+                   $"\nwill be appended to the target file specified in the adapter constructor.\n" +
+                   $"If you want to target multiple files, you need create the {nameof(FileAdapter)} through the constructor without inputs.");
+            }
+             
             if (remainder.Any())
             {
-                BH.Engine.Reflection.Compute.RecordNote($"Objects that are not Files or Directories " +
-                    $"\nwill be Pushed using the Filing Adapter default filePath: `{m_defaultFilePath}`.");
                 string defaultDirectory = Path.GetDirectoryName(m_defaultFilePath);
                 string defaultFileName = Path.GetFileName(m_defaultFilePath);
 
                 FSFile file = CreateFSFile(defaultDirectory, defaultFileName, remainder);
 
-                PushConfig newPushConfig = pushConfig.DeepClone();
-                newPushConfig.PushContentOnly = true;
-
-                IResource created = Create(file, pushType, newPushConfig);
+                IResource created = Create(file, pushType, pushConfig);
 
                 if (created != null)
                     filesOrDirs.Add(created);

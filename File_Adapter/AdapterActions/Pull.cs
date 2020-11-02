@@ -43,29 +43,26 @@ namespace BH.Adapter.File
         /**** Methods                                  *****/
         /***************************************************/
 
-        public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
+        public override IEnumerable<object> SetupThenPull(object request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
         {
-            PullConfig pullConfig = actionConfig as PullConfig ?? new PullConfig();
-
-            // Usual needed check onto badly automated FilterRequest
-            FilterRequest fr = request as FilterRequest;
-            if (fr != null && !fr.Equalities.Any() && string.IsNullOrWhiteSpace(fr.Tag) && fr.Type == null)
-                request = null;
-
             if (request == null && string.IsNullOrWhiteSpace(m_defaultFilePath))
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"Please specify a valid Request, or a Default Filepath in the Filing_Adapter.");
+                BH.Engine.Reflection.Compute.RecordWarning($"Please specify a valid Request, or create the {nameof(FileAdapter)} with the constructor that takes inputs to specify a target Location.");
                 return new List<object>();
             }
 
-            IRequest ifr = request;
-
+            // If there is no input request, but a target filepath was specified through the Adapter constructor, use that.
             if (request == null && !string.IsNullOrWhiteSpace(m_defaultFilePath))
-            {
-                ifr = new FileContentRequest() { File = m_defaultFilePath };
-            }
+                request = new FileContentRequest() { File = m_defaultFilePath };
 
-            return Read(ifr as dynamic, pullConfig);
+            PullConfig pullConfig = actionConfig as PullConfig ?? new PullConfig();
+
+            return base.SetupThenPull(request, pullType, pullConfig);
+        }
+
+        public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
+        {
+            return Read(request as dynamic, actionConfig);
         }
 
         /***************************************************/
