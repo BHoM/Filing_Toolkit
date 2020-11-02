@@ -31,6 +31,8 @@ using BH.oM.Adapter;
 using BH.Engine.Adapters.File;
 using BH.oM.Adapters.File;
 using System.Text.Json;
+using BH.Engine.Diffing;
+using BH.oM.Diffing;
 
 namespace BH.Adapter.File
 {
@@ -120,10 +122,39 @@ namespace BH.Adapter.File
                     }
                     else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting || pushType == PushType.UpdateOnly || pushType == PushType.UpdateOrCreateOnly)
                     {
+                        // Should be refactored to cover distinct use cases for CreateNonExisting, UpdateOnly, UpdateOrCreateOnly
                         if (!fileExisted)
-                            System.IO.File.WriteAllText(fullPath, json); 
+                            System.IO.File.WriteAllText(fullPath, json);
                         else
                             System.IO.File.AppendAllText(fullPath, json);
+                    }
+                    else if (pushType == PushType.CreateNonExisting) 
+                    {
+                        // Currently captured by CreateOnly.
+
+                        // The following ideally should be the default behaviour of the IDiffing method.
+
+                        //IEnumerable<object> allReadContent = ReadContent(fullPath);
+                        //IEnumerable<IBHoMObject> bHoMObjects_read = allReadContent.OfType<IBHoMObject>();
+                        //IEnumerable<object> genericObjs_read = allReadContent.Except(bHoMObjects_read);
+
+                        //IEnumerable<IBHoMObject> readBhomObjects_hashAssigned = BH.Engine.Diffing.Modify.SetHashFragment(bHoMObjects_read);
+
+                        //IEnumerable<IBHoMObject> bHoMObjects_create = file.Content.OfType<IBHoMObject>();
+                        //IEnumerable<object> genericObjs_create = file.Content.Except(bHoMObjects_create);
+
+                        //Diff diffGeneric = BH.Engine.Diffing.Compute.DiffGenericObjects(genericObjs_read, genericObjs_create, null, true);
+
+                        // Then combine the two diffs in one. 
+                        // For old objects (= already in file) do not create. 
+                        // Create only those that are "new".
+                    }
+                    else if (pushType == PushType.UpdateOnly || pushType == PushType.UpdateOrCreateOnly) 
+                    {
+                        // Currently captured by CreateOnly. See above.
+
+                        // For old objects (= already in file) Update Them. 
+                        // For those who are "new": create them only if `UpdateOrCreateOnly` is used.
                     }
                     else
                     {

@@ -35,40 +35,48 @@ namespace BH.Adapter.File
 {
     public partial class FileAdapter : BHoMAdapter
     {
+        /***************************************************/
+        /**** Constructors                              ****/
+        /***************************************************/
+
+        [Description("Initialises the File_Adapter without a target location. Allows to target multiple files. Target file locations will have to be specified in the Adapter Action.")]
+        public FileAdapter()
+        {
+            // By default, if they exist already, the files to be created are wiped out and then re-created.
+            this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.UpdateOrCreateOnly;
+        }
+
+        [Description("Initialises the File_Adapter with a target location.")]
         [Input("defaultFilepath", "Default filePath, including file extension. " +
             "\nWhen Pushing, this is used for pushing objects that are not BHoM `File` or `Directory`." +
             "\nWhen Pulling, if no request is specified, a FileContentRequest is automatically generated with this location." +
-            "\nBy default this is `C:/temp/Filing_Adapter-objects.json`.")]
+            "\nBy default this is `C:\\temp\\Filing_Adapter-objects.json`.")]
         [PreviousVersion("4.0", "BH.Adapter.Filing.FilingAdapter(System.String)")]
-        public FileAdapter(string defaultLocation = "C:/temp/Filing_Adapter-objects.json")
+        public FileAdapter(string targetLocation = @"C:\temp\Filing_Adapter-objects.json")
         {
-            m_defaultFilePath = defaultLocation;
-
-            ProcessExtension(m_defaultFilePath);
-
-            // By default, if they exist already, the files to be created are wiped out and then re-created.
-            this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.UpdateOrCreateOnly;
+            Init(targetLocation);
         }
 
         [PreviousVersion("4.0", "BH.Adapter.FileAdapter.FileAdapter(System.String, System.String)")]
-        public FileAdapter(string folder = null, string fileName = "")
+        public FileAdapter(string targetFolder = null, string targetFile = "")
         {
-            if (folder == null)
-                folder = @"C:/temp/";
+            if (targetFolder == null)
+                targetFolder = @"C:\temp\";
 
-            if (string.IsNullOrEmpty(fileName))
-                fileName = "Filing_Adapter-objects.json";
+            if (string.IsNullOrEmpty(targetFile))
+                targetFile = "Filing_Adapter-objects.json";
 
-            if (folder.Count() > 2 && folder.ElementAt(1) != ':')
-                folder = Path.Combine(@"C:\ProgramData\BHoM\DataSets", folder);
+            if (targetFolder.Count() > 2 && targetFolder.ElementAt(1) != ':')
+                targetFolder = Path.Combine(@"C:\ProgramData\BHoM\DataSets", targetFolder);
 
-            m_defaultFilePath = Path.Combine(folder, fileName);
+            string location = Path.Combine(targetFolder, targetFile);
 
-            ProcessExtension(m_defaultFilePath);
-
-            // By default, if they exist already, the files to be created are wiped out and then re-created.
-            this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.UpdateOrCreateOnly;
+            Init(location);
         }
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
 
         private bool m_Push_enableDeleteWarning = true;
         private bool m_Remove_enableDeleteWarning = true;
@@ -81,6 +89,24 @@ namespace BH.Adapter.File
         /**** Private Methods                           ****/
         /***************************************************/
 
+        // Initialisation method for when the File Adapter is instantiated with a location.
+        private void Init(string location)
+        {
+            m_defaultFilePath = location;
+
+            if (!ProcessExtension(m_defaultFilePath))
+                return;
+
+            BH.Engine.Reflection.Compute.RecordNote($"The adapter will always target the input location `{location}`." +
+                $"\nTo target multiple Files, use the {this.GetType().Name} constructor with no input.");
+
+            // By default, the objects are appendend to the file if it exists already.
+            this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.CreateOnly;
+        }
+
+        /***************************************************/
+
+        // Checks on the file extension.
         private bool ProcessExtension(string filePath)
         {
             string ext = Path.GetExtension(filePath);
@@ -100,5 +126,7 @@ namespace BH.Adapter.File
 
             return true;
         }
+
+        /***************************************************/
     }
 }
