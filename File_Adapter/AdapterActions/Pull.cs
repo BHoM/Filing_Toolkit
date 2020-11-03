@@ -43,26 +43,36 @@ namespace BH.Adapter.File
         /**** Methods                                  *****/
         /***************************************************/
 
-        public override IEnumerable<object> SetupThenPull(object request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
+        public override bool SetupPullRequest(object request, out IRequest pullRequest)
         {
-            if (request == null && string.IsNullOrWhiteSpace(m_defaultFilePath))
-            {
-                BH.Engine.Reflection.Compute.RecordWarning($"Please specify a valid Request, or create the {nameof(FileAdapter)} with the constructor that takes inputs to specify a target Location.");
-                return new List<object>();
-            }
+            pullRequest = request as IRequest;
 
             // If there is no input request, but a target filepath was specified through the Adapter constructor, use that.
             if (request == null && !string.IsNullOrWhiteSpace(m_defaultFilePath))
-                request = new FileContentRequest() { File = m_defaultFilePath };
+            {
+                BH.Engine.Reflection.Compute.RecordNote($"Request not specified. Defaults to a new {nameof(FileContentRequest)} targeting the Adapter targetLocation: `{m_defaultFilePath}`.");
+                pullRequest = new FileContentRequest() { File = m_defaultFilePath };
+                return true;
+            }
 
-            PullConfig pullConfig = actionConfig as PullConfig ?? new PullConfig();
+            if (request == null && string.IsNullOrWhiteSpace(m_defaultFilePath))
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Please specify a valid Request, or create the {nameof(FileAdapter)} with the constructor that takes inputs to specify a target Location.");
+                return false;
+            }
 
-            return base.SetupThenPull(request, pullType, pullConfig);
+            if ((request as IRequest) != null && !string.IsNullOrWhiteSpace(m_defaultFilePath))
+            {
+                BH.Engine.Reflection.Compute.RecordWarning($"Both request and targetLocation have been specified. Requests take precedence. Pulling as specified by the input `{request.GetType().Name}`.");
+                return true;
+            }
+
+            return base.SetupPullRequest(request, out pullRequest);
         }
 
         public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
         {
-            return Read(request as dynamic, actionConfig);
+            return Read(request as dynamic, actionConfig as PullConfig ?? new PullConfig());
         }
 
         /***************************************************/

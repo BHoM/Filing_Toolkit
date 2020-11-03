@@ -74,6 +74,9 @@ namespace BH.Adapter.File
                 }
             }
 
+            if (pushConfig.BeautifyJson)
+                json = BeautifyJson(json);
+
             bool filecreated = true;
             try
             {
@@ -117,6 +120,8 @@ namespace BH.Adapter.File
                 {
                     if (pushType == PushType.DeleteThenCreate)
                     {
+                        BH.Engine.Reflection.Compute.RecordNote($"Replacing entire content of file `{fullPath}`.");
+
                         // Replace all content.
                         System.IO.File.WriteAllText(fullPath, json);
                     }
@@ -126,7 +131,10 @@ namespace BH.Adapter.File
                         if (!fileExisted)
                             System.IO.File.WriteAllText(fullPath, json);
                         else
+                        {
+                            BH.Engine.Reflection.Compute.RecordNote($"Appending content to file `{fullPath}`.");
                             System.IO.File.AppendAllText(fullPath, json);
+                        }
                     }
                     else if (pushType == PushType.CreateNonExisting) 
                     {
