@@ -120,9 +120,9 @@ namespace BH.Adapter.File
                 filePath += ext;
             }
 
-            if (ext != ".json" && ext != ".bson")
+            if (ext != ".json")
             {
-                Engine.Reflection.Compute.RecordError($"File_Adapter currently supports only .json and .bson extension types.\nSpecified file extension is `{ext}`.");
+                Engine.Reflection.Compute.RecordError($"File_Adapter currently supports only .json extension type.\nSpecified file extension is `{ext}`.");
                 return false;
             }
 
