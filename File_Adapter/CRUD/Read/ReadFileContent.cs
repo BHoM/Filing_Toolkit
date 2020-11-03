@@ -149,7 +149,24 @@ namespace BH.Adapter.File
             FileStream mongoReadStream = System.IO.File.OpenRead(filePath);
             var reader = new BsonBinaryReader(mongoReadStream);
             List<BsonDocument> readBson = BsonSerializer.Deserialize(reader, typeof(object)) as List<BsonDocument>;
+
             IEnumerable<object> output = new List<object>();
+
+            using (var binaryReader = new BsonBinaryReader(mongoReadStream))
+            {
+                var result = new List<BsonDocument>();
+
+                while (!binaryReader.IsAtEndOfFile())
+                {
+                    binaryReader.ReadStartDocument();
+                    var name = binaryReader.ReadName();
+                    var value = binaryReader.ReadString();
+                    binaryReader.ReadEndDocument();
+
+                    var resultDocument = new BsonDocument(name, value);
+                    result.Add(resultDocument);
+                }
+            }
 
             try
             {
