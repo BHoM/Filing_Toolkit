@@ -44,21 +44,42 @@ namespace BH.Adapter.File
         /**** Methods                                  *****/
         /***************************************************/
 
-        public override List<object> Push(IEnumerable<object> objects, string tag = "", PushType pushType = PushType.AdapterDefault, ActionConfig actionConfig = null)
+        public override bool SetupPushType(PushType pushType, out PushType pt)
         {
-            PushConfig pushConfig = actionConfig as PushConfig ?? new PushConfig();
+            pt = pushType;
 
             if (pushType == PushType.AdapterDefault)
-                pushType = m_AdapterSettings.DefaultPushType;
+                pt = m_AdapterSettings.DefaultPushType;
 
             if (pushType == PushType.FullPush)
             {
-                BH.Engine.Reflection.Compute.RecordWarning($"The specified {nameof(PushType)} {nameof(PushType.FullPush)} is not supported.");
-                return new List<object>();
+                BH.Engine.Reflection.Compute.RecordError($"The specified {nameof(PushType)} {nameof(PushType.FullPush)} is not supported.");
+                return false;
             }
-                
-            if (pushType == PushType.DeleteThenCreate)
-                if (m_Push_enableDeleteWarning && !pushConfig.DisableWarnings)
+
+            return true;
+        }
+
+        public override bool SetupPushConfig(ActionConfig actionConfig, out ActionConfig pushConfig)
+        {
+            PushConfig pushCfg = actionConfig as PushConfig ?? new PushConfig();
+            pushConfig = pushCfg;
+
+            if (pushCfg.BeautifyJson && pushCfg.UseDatasetSerialization)
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Input `{nameof(PushConfig.BeautifyJson)}` and `{nameof(PushConfig.UseDatasetSerialization)}` cannot be both set to True.");
+                return false;
+            }
+
+            return true;
+        }
+
+        public override List<object> Push(IEnumerable<object> objects, string tag = "", PushType pushType = PushType.AdapterDefault, ActionConfig actionConfig = null)
+        {
+            PushConfig pushConfig = actionConfig as PushConfig;
+
+            if (string.IsNullOrWhiteSpace(m_defaultFilePath)) // = if we are about to push multiple files/directories
+                if (pushType == PushType.DeleteThenCreate && m_Push_enableDeleteWarning && !pushConfig.DisableWarnings ) 
                 {
                     BH.Engine.Reflection.Compute.RecordWarning($"You have selected the {nameof(PushType)} {nameof(PushType.DeleteThenCreate)}." +
                         $"\nThis has the potential of deleting files and folders with their contents." +
@@ -73,13 +94,24 @@ namespace BH.Adapter.File
             List<IResource> createdFiles = new List<IResource>();
 
             List<IResource> filesOrDirs = objects.OfType<IResource>().ToList();
-            List<object> remainder = objects.Where(v => !filesOrDirs.Contains(v)).ToList();
+            List<object> remainder = objects.Where(o => !(o is IResource)).ToList();
 
-            if (m_defaultFilePath == null && remainder.Any())
+            if (remainder.Any())
             {
-                BH.Engine.Reflection.Compute.RecordError($"To Push objects that are not of type `{nameof(BH.oM.Adapters.File.File)}` or `{nameof(BH.oM.Adapters.File.Directory)}`," +
-                    $"\nyou need to specify a target Location by creating the {nameof(FileAdapter)} through the constructor with inputs.");
-                return null;
+                if (filesOrDirs.Any())
+                {
+                    BH.Engine.Reflection.Compute.RecordError($"Input objects are both of type `{nameof(BH.oM.Adapters.File.File)}`/`{nameof(BH.oM.Adapters.File.Directory)}` and generic objects." +
+                      $"\nIn order to push them:" +
+                      $"\n\t- for the `{nameof(BH.oM.Adapters.File.File)}`/`{nameof(BH.oM.Adapters.File.Directory)}` objects, use a Push using a {nameof(FileAdapter)} with no targetLocation input;"+
+                      $"\n\t- for the generic objects, use a Push using a {nameof(FileAdapter)} that specifies a targetLocation.");
+                    return null;
+                }
+                else if (string.IsNullOrWhiteSpace(m_defaultFilePath))
+                {
+                    BH.Engine.Reflection.Compute.RecordError($"To Push objects that are not of type `{nameof(BH.oM.Adapters.File.File)}` or `{nameof(BH.oM.Adapters.File.Directory)}`," +
+                        $"\nyou need to specify a target Location by creating the {nameof(FileAdapter)} through the constructor with inputs.");
+                    return null;
+                }
             }
 
             if (m_defaultFilePath != null)
@@ -87,11 +119,11 @@ namespace BH.Adapter.File
                 pushConfig.PushContentOnly = true;
 
                 if (filesOrDirs.Any())
-                    BH.Engine.Reflection.Compute.RecordWarning($"Objects of type `{nameof(BH.oM.Adapters.File.File)}` or `{nameof(BH.oM.Adapters.File.Directory)}`," +
-                   $"\nwill be appended to the target file specified in the adapter constructor.\n" +
-                   $"If you want to target multiple files, you need create the {nameof(FileAdapter)} through the constructor without inputs.");
+                    BH.Engine.Reflection.Compute.RecordWarning($"A `targetLocation` has been specified in the File_Adapter constructor." +
+                        $"\nObjects of type `{nameof(BH.oM.Adapters.File.File)}` or `{nameof(BH.oM.Adapters.File.Directory)}` will be appended to the file at `targetLocation`." +
+                        $"\nIf you want to target multiple files, you need create the {nameof(FileAdapter)} through the constructor without inputs.");
             }
-             
+
             if (remainder.Any())
             {
                 string defaultDirectory = Path.GetDirectoryName(m_defaultFilePath);
