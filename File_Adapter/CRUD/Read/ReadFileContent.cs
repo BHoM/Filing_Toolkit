@@ -74,10 +74,8 @@ namespace BH.Adapter.File
 
             if (extension == ".json")
                 retrievedObjects.AddRange(RetrieveJsonContent(fileFullPath));
-            else if (extension == ".bson")
-                retrievedObjects.AddRange(RetrieveBsonContent(fileFullPath));
             else
-                BH.Engine.Reflection.Compute.RecordNote($"Cannot read content of {fileFullPath}. Only JSON and BSON formats are currently supported by the {typeof(FileAdapter).Name}.");
+                BH.Engine.Reflection.Compute.RecordNote($"Cannot read content of {fileFullPath}. Only JSON format is currently supported by the {typeof(FileAdapter).Name}.");
 
             return retrievedObjects;
         }
@@ -140,44 +138,6 @@ namespace BH.Adapter.File
                 result.Add(converted);
 
             return result;
-        }
-
-        /***************************************************/
-
-        public static IEnumerable<object> RetrieveBsonContent(string filePath)
-        {
-            FileStream mongoReadStream = System.IO.File.OpenRead(filePath);
-            var reader = new BsonBinaryReader(mongoReadStream);
-            List<BsonDocument> readBson = BsonSerializer.Deserialize(reader, typeof(object)) as List<BsonDocument>;
-
-            IEnumerable<object> output = new List<object>();
-
-            using (var binaryReader = new BsonBinaryReader(mongoReadStream))
-            {
-                var result = new List<BsonDocument>();
-
-                while (!binaryReader.IsAtEndOfFile())
-                {
-                    binaryReader.ReadStartDocument();
-                    var name = binaryReader.ReadName();
-                    var value = binaryReader.ReadString();
-                    binaryReader.ReadEndDocument();
-
-                    var resultDocument = new BsonDocument(name, value);
-                    result.Add(resultDocument);
-                }
-            }
-
-            try
-            {
-                output = readBson.Select(x => BsonSerializer.Deserialize(x, typeof(object)));
-            }
-            catch
-            {
-                BH.Engine.Reflection.Compute.RecordWarning($"Could not read content from file `{filePath}`.");
-            }
-
-            return output;
         }
 
         /***************************************************/

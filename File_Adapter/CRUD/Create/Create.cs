@@ -21,7 +21,6 @@
  */
 
 using BH.oM.Base;
-using MongoDB.Bson.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -61,9 +60,6 @@ namespace BH.Adapter.File
 
             if (extension == ".json")
                 return CreateJson((FSFile)fileOrDir, pushType, pushConfig) as IFSContainer;
-
-            if (extension == ".bson")
-                return CreateBson((FSFile)fileOrDir, pushType, pushConfig) as IFSContainer;
 
             if (fileOrDir is IDirectory)
                 return CreateDirectory((FSDirectory)fileOrDir, pushType, pushConfig) as IFSContainer;
