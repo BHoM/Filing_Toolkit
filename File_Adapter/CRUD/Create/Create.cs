@@ -63,7 +63,7 @@ namespace BH.Adapter.File
                 return CreateJson((FSFile)fileOrDir, pushType, pushConfig) as IFSContainer;
 
             if (extension == ".bson")
-                return CreateJson((FSFile)fileOrDir, pushType, pushConfig) as IFSContainer;
+                return CreateBson((FSFile)fileOrDir, pushType, pushConfig) as IFSContainer;
 
             if (fileOrDir is IDirectory)
                 return CreateDirectory((FSDirectory)fileOrDir, pushType, pushConfig) as IFSContainer;

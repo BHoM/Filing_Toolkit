@@ -58,12 +58,12 @@ namespace BH.Adapter.File
         }
 
         [PreviousVersion("4.0", "BH.Adapter.FileAdapter.FileAdapter(System.String, System.String)")]
-        public FileAdapter(string targetFolder, string targetFile)
+        public FileAdapter(string folder, string fileName)
         {
-            if (targetFolder?.Count() > 2 && targetFolder?.ElementAt(1) != ':')
-                targetFolder = Path.Combine(@"C:\ProgramData\BHoM\DataSets", targetFolder);
+            if (folder?.Count() > 2 && folder?.ElementAt(1) != ':')
+                folder = Path.Combine(@"C:\ProgramData\BHoM\DataSets", folder);
 
-            string location = Path.Combine(targetFolder, targetFile);
+            string location = Path.Combine(folder, fileName);
 
             Init(location);
         }

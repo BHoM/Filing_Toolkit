@@ -110,11 +110,26 @@ namespace BH.Adapter.File
 
         public static void WriteBsonWithStream(oM.Adapters.File.FSFile file, string fullPath, FileMode fileMode)
         {
-            FileStream stream = new FileStream(fullPath, FileMode.CreateNew);
-            var writer = new BsonBinaryWriter(stream);
-            BsonSerializer.Serialize(writer, typeof(object), file);
-            stream.Flush();
-            stream.Close();
+            using (FileStream stream = new FileStream(fullPath, FileMode.CreateNew))
+                try
+                {
+                    using (var writer = new BsonBinaryWriter(stream))
+                        try
+                        {
+                            BsonSerializer.Serialize(writer, typeof(object), file);
+                        }
+                        catch
+                        {
+                            writer.Close();
+                            writer.Flush();
+                        }
+                }
+                catch
+                {
+
+                    stream.Flush();
+                    stream.Close();
+                }
         }
 
         /***************************************************/
