@@ -116,8 +116,6 @@ namespace BH.Adapter.File
 
             if (m_defaultFilePath != null)
             {
-                pushConfig.PushContentOnly = true;
-
                 if (filesOrDirs.Any())
                     BH.Engine.Reflection.Compute.RecordWarning($"A `targetLocation` has been specified in the File_Adapter constructor." +
                         $"\nObjects of type `{nameof(BH.oM.Adapters.File.File)}` or `{nameof(BH.oM.Adapters.File.Directory)}` will be appended to the file at `targetLocation`." +

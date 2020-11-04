@@ -38,7 +38,7 @@ namespace BH.Adapter.File
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IFSContainer Create(ILocatableResource resource, PushType pushType, PushConfig pushConfig)
+        public IFSContainer Create(ILocatableResource resource, PushType pushType, PushConfig pushConfig)
         {
             if (resource == null)
                 return null; 
@@ -49,7 +49,7 @@ namespace BH.Adapter.File
 
         /***************************************************/
 
-        public static IFSContainer Create(IFSContainer fileOrDir, PushType pushType, PushConfig pushConfig)
+        public IFSContainer Create(IFSContainer fileOrDir, PushType pushType, PushConfig pushConfig)
         {
             pushConfig = pushConfig ?? new PushConfig();
 

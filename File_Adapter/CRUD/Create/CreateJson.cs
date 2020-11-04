@@ -42,7 +42,7 @@ namespace BH.Adapter.File
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static FSFile CreateJson(FSFile file, PushType pushType, PushConfig pushConfig)
+        public FSFile CreateJson(FSFile file, PushType pushType, PushConfig pushConfig)
         {
             string fullPath = file.IFullPath();
             bool fileExisted = System.IO.File.Exists(fullPath);
@@ -81,7 +81,7 @@ namespace BH.Adapter.File
             try
             {
                 // Clarify if we are considering the Push in terms of content or of Files.
-                if (!pushConfig.PushContentOnly) // We are talking about Files.
+                if (m_defaultFilePath != null) // We are talking about Files.
                 {
                     if (pushType == PushType.DeleteThenCreate)
                     {

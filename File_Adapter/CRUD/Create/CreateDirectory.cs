@@ -40,12 +40,11 @@ namespace BH.Adapter.File
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IFSContainer CreateDirectory(FSDirectory dir, PushType pushType, PushConfig pushConfig)
+        public IFSContainer CreateDirectory(FSDirectory dir, PushType pushType, PushConfig pushConfig)
         {
             List<BH.oM.Adapters.File.IFSContainer> createdDirs = new List<oM.Adapters.File.IFSContainer>();
 
             bool clearfile = pushType == PushType.DeleteThenCreate ? true : false;
-
 
             string dirFullPath = dir.IFullPath();
             bool existed = System.IO.Directory.Exists(dirFullPath);

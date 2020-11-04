@@ -45,8 +45,5 @@ namespace BH.oM.Adapters.File
 
         [Description("Keeps the warnings about Deletion off.")]
         public bool DisableWarnings { get; set; } = false;
-
-        [Description("If true, the Push only affects the content of the File.")]
-        public bool PushContentOnly { get; set; } = false;
     }
 }
