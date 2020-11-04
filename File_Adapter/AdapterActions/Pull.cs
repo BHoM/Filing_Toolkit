@@ -48,10 +48,16 @@ namespace BH.Adapter.File
             pullRequest = request as IRequest;
 
             // If there is no input request, but a target filepath was specified through the Adapter constructor, use that.
-            if (request == null && !string.IsNullOrWhiteSpace(m_defaultFilePath))
+            if (!string.IsNullOrWhiteSpace(m_defaultFilePath) && (request == null || request is Type))
             {
+                if (request is Type)
+                    pullRequest = new FileContentRequest() { File = m_defaultFilePath, Types = new List<Type>() { request as Type } };
+                else if (request is IEnumerable<Type>)
+                    pullRequest = new FileContentRequest() { File = m_defaultFilePath, Types = (request as IEnumerable<Type>).ToList() };
+                else
+                    pullRequest = new FileContentRequest() { File = m_defaultFilePath };
+
                 BH.Engine.Reflection.Compute.RecordNote($"Request not specified. Defaults to a new {nameof(FileContentRequest)} targeting the Adapter targetLocation: `{m_defaultFilePath}`.");
-                pullRequest = new FileContentRequest() { File = m_defaultFilePath };
                 return true;
             }
 
