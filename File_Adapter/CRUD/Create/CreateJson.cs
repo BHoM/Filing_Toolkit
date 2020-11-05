@@ -81,32 +81,33 @@ namespace BH.Adapter.File
             try
             {
                 // Clarify if we are considering the Push in terms of content or of Files.
-                if (m_defaultFilePath != null) // We are talking about Files.
+                if (string.IsNullOrWhiteSpace(m_defaultFilePath)) // We are talking about Files/Directories.
                 {
                     if (pushType == PushType.DeleteThenCreate)
                     {
                         if (fileExisted)
                             System.IO.File.Delete(fullPath);
 
-                        System.IO.File.WriteAllText(fullPath, json);
+                        WriteJsonFile(fullPath, json, true);
                     }
                     else if (pushType == PushType.UpdateOnly)
                     {
                         // Overwrite existing file.
                         if (fileExisted)
-                            System.IO.File.WriteAllText(fullPath, json);
+                            WriteJsonFile(fullPath, json, true);
                         else
                             BH.Engine.Reflection.Compute.RecordNote($"File {fullPath} was not updated as no file existed at that location.");
                     }
                     else if (pushType == PushType.UpdateOrCreateOnly)
                     {
                         // Overwrite existing file. If it doesn't exist, create it.
-                        System.IO.File.WriteAllText(fullPath, json);
+                        WriteJsonFile(fullPath, json, true);
                     }
                     else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting)
                     {
+                        // Create only if file didn't exist. Do not touch existing ones.
                         if (!fileExisted)
-                            System.IO.File.WriteAllText(fullPath, json); // Create only if file didn't exist. Do not touch existing ones.
+                            WriteJsonFile(fullPath, json, true); 
                         else
                             BH.Engine.Reflection.Compute.RecordNote($"File {fullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
                     }
@@ -123,17 +124,17 @@ namespace BH.Adapter.File
                         BH.Engine.Reflection.Compute.RecordNote($"Replacing entire content of file `{fullPath}`.");
 
                         // Replace all content.
-                        System.IO.File.WriteAllText(fullPath, json);
+                        WriteJsonFile(fullPath, json, true);
                     }
                     else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting || pushType == PushType.UpdateOnly || pushType == PushType.UpdateOrCreateOnly)
                     {
                         // Should be refactored to cover distinct use cases for CreateNonExisting, UpdateOnly, UpdateOrCreateOnly
                         if (!fileExisted)
-                            System.IO.File.WriteAllText(fullPath, json);
+                            WriteJsonFile(fullPath, json, true);
                         else
                         {
                             BH.Engine.Reflection.Compute.RecordNote($"Appending content to file `{fullPath}`.");
-                            System.IO.File.AppendAllText(fullPath, json);
+                            WriteJsonFile(fullPath, json, false);
                         }
                     }
                     else if (pushType == PushType.CreateNonExisting) 
@@ -189,6 +190,21 @@ namespace BH.Adapter.File
             return null;
         }
 
+        /***************************************************/
+
+        public static void WriteJsonFile(string fullPath, string json, bool replaceContent, bool createParentDirectories = true)
+        {
+            if (createParentDirectories)
+            {
+                System.IO.FileInfo file = new System.IO.FileInfo(fullPath);
+                file.Directory.Create(); // If the directory already exists, this method does nothing.
+            }
+
+            if (replaceContent)
+                System.IO.File.WriteAllText(fullPath, json); // Replace all content.
+            else
+                System.IO.File.AppendAllText(fullPath, json);
+        }
 
         /***************************************************/
         /**** Private Methods                           ****/

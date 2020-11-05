@@ -47,5 +47,10 @@ namespace BH.oM.Adapters.File
 
         [Description("The content of the Directory.")]
         public virtual List<object> Content { get; set; } = new List<object>();
+
+        public override string ToString()
+        {
+            return Path.Combine(this.Location ?? "", this.Name ?? "");
+        }
     }
 }

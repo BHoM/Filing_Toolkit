@@ -93,7 +93,7 @@ namespace BH.Adapter.File
 
             List<IResource> createdFiles = new List<IResource>();
 
-            List<IResource> filesOrDirs = objects.OfType<IResource>().ToList();
+            List<IResource> filesOrDirs = objects.OfType<IResource>().Select(fd => fd.GetShallowClone() as IResource).ToList();
             List<object> remainder = objects.Where(o => !(o is IResource)).ToList();
 
             if (remainder.Any())
@@ -139,6 +139,24 @@ namespace BH.Adapter.File
             {
                 if (fileOrDir == null)
                     continue;
+
+                if (fileOrDir is IFile)
+                {
+                    string extension = Path.GetExtension(fileOrDir.IFullPath());
+
+                    if (string.IsNullOrWhiteSpace(extension))
+                    {
+                        BH.Engine.Reflection.Compute.RecordWarning($"File {fileOrDir.IFullPath()} has no extension specified. Defaults to JSON.");
+                        extension = ".json";
+                        fileOrDir.Name += extension;
+                    }
+
+                    if (extension != ".json")
+                    {
+                        BH.Engine.Reflection.Compute.RecordWarning($"Cannot create File {fileOrDir.IFullPath()}. Currently only JSON extension is supported.");
+                        continue;
+                    }
+                }
 
                 IResource created = Create(fileOrDir as dynamic, pushType, pushConfig);
                 createdFiles.Add(created);
