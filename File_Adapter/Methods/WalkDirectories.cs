@@ -137,7 +137,7 @@ namespace BH.Adapter.File
 
                         // If the path was erroneously recognised as a regex that matches,
                         // check that at least the retrieved filename contains the location's filename.
-                        if (regex == null && !fi.Name.Contains(Path.GetFileName(fdr.Location)))
+                        if (regex != null && !fi.Name.Contains(Path.GetFileName(fdr.Location)))
                             continue;
 
                         // When reading the file, do not retrieve content.
