@@ -41,10 +41,10 @@ namespace BH.Adapter.File
         public IFSContainer Create(ILocatableResource resource, PushType pushType, PushConfig pushConfig)
         {
             if (resource == null)
-                return null; 
+                return null;
 
             IFSContainer fileOrDir = resource.ToFiling();
-            return Create(fileOrDir,  pushType,  pushConfig);
+            return Create(fileOrDir, pushType, pushConfig);
         }
 
         /***************************************************/
@@ -56,9 +56,7 @@ namespace BH.Adapter.File
             if (fileOrDir == null)
                 return null;
 
-            string extension = Path.GetExtension(fileOrDir.IFullPath());
-
-            if (extension == ".json")
+            if (fileOrDir is IFile)
                 return CreateJson((FSFile)fileOrDir, pushType, pushConfig) as IFSContainer;
 
             if (fileOrDir is IDirectory)
