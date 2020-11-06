@@ -122,19 +122,6 @@ namespace BH.Adapter.File
                         $"\nIf you want to target multiple files, you need create the {nameof(FileAdapter)} through the constructor without inputs.");
             }
 
-            if (remainder.Any())
-            {
-                string defaultDirectory = Path.GetDirectoryName(m_defaultFilePath);
-                string defaultFileName = Path.GetFileName(m_defaultFilePath);
-
-                FSFile file = CreateFSFile(defaultDirectory, defaultFileName, remainder);
-
-                IResource created = Create(file, pushType, pushConfig);
-
-                if (created != null)
-                    filesOrDirs.Add(created);
-            }
-
             foreach (IResource fileOrDir in filesOrDirs)
             {
                 if (fileOrDir == null)
@@ -160,6 +147,19 @@ namespace BH.Adapter.File
 
                 IResource created = Create(fileOrDir as dynamic, pushType, pushConfig);
                 createdFiles.Add(created);
+            }
+
+            if (remainder.Any())
+            {
+                string defaultDirectory = Path.GetDirectoryName(m_defaultFilePath);
+                string defaultFileName = Path.GetFileName(m_defaultFilePath);
+
+                FSFile file = CreateFSFile(defaultDirectory, defaultFileName, remainder);
+
+                IResource created = Create(file, pushType, pushConfig);
+
+                if (created != null)
+                    filesOrDirs.Add(created);
             }
 
             return createdFiles.OfType<object>().ToList();
