@@ -119,6 +119,7 @@ namespace BH.Adapter.File
                     isDatasetJson = true;
             }
 
+
             if (!isDatasetJson)
                 if (!FromJson(jsonText, out converted))
                 {
@@ -129,7 +130,18 @@ namespace BH.Adapter.File
             if (isDatasetJson || converted == null)
             {
                 // Try to read the file as a "BHoM-Dataset json"
-                converted = jsonLines.Select(x => Engine.Serialiser.Convert.FromJson(x)).Where(x => x != null);
+                //converted = jsonLines.Select(x => Engine.Serialiser.Convert.FromJson(x)).Where(x => x != null);
+                List<object> deserialised = new List<object>();
+                for (int i = 0; i < jsonLines.Count(); i++)
+                {
+                    object readObj = null;
+                    if (FromJson(jsonLines[i], out readObj))
+                        deserialised.Add(readObj);
+                    else
+                        Engine.Reflection.Compute.RecordWarning($"Could not deserialise line {i} of the Dataset file {fileFullPath}.");
+                }
+
+                converted = deserialised;
             }
 
             if (typeof(IEnumerable).IsAssignableFrom(converted.GetType()))
@@ -166,6 +178,7 @@ namespace BH.Adapter.File
             if (json.StartsWith("["))
             {
                 BsonArray array = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(json);
+
                 try
                 {
                     result = array.Select(b => b.IsBsonDocument ? BH.Engine.Serialiser.Convert.FromBson(b.AsBsonDocument) : BH.Engine.Serialiser.Convert.FromJson(b.ToString())).ToList();

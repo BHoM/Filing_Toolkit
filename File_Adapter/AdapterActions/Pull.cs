@@ -51,13 +51,21 @@ namespace BH.Adapter.File
             if (!string.IsNullOrWhiteSpace(m_defaultFilePath) && (request == null || request is Type))
             {
                 if (request is Type)
+                {
                     pullRequest = new FileContentRequest() { File = m_defaultFilePath, Types = new List<Type>() { request as Type } };
+                    BH.Engine.Reflection.Compute.RecordNote($"Type interpreted as new {nameof(FileContentRequest)} targeting the Adapter targetLocation: `{m_defaultFilePath}` and filtering per type `{(request as Type).Name}`.");
+                }
                 else if (request is IEnumerable<Type>)
+                {
                     pullRequest = new FileContentRequest() { File = m_defaultFilePath, Types = (request as IEnumerable<Type>).ToList() };
+                    BH.Engine.Reflection.Compute.RecordNote($"Type interpreted as new {nameof(FileContentRequest)} targeting the Adapter targetLocation: `{m_defaultFilePath}` and filtering per types: {String.Join(", ",(request as IEnumerable<Type>).Select(t => t.Name))}.");
+                }
                 else
+                {
                     pullRequest = new FileContentRequest() { File = m_defaultFilePath };
+                    BH.Engine.Reflection.Compute.RecordNote($"Pulling file contents from the Adapter targetLocation: `{m_defaultFilePath}`.");
+                }
 
-                BH.Engine.Reflection.Compute.RecordNote($"Request not specified. Defaults to a new {nameof(FileContentRequest)} targeting the Adapter targetLocation: `{m_defaultFilePath}`.");
                 return true;
             }
 

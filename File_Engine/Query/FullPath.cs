@@ -66,7 +66,15 @@ namespace BH.Engine.Adapters.File
             if (fdr?.Location == null)
                 return null;
 
-            return Path.Combine(fdr.Location, string.IsNullOrWhiteSpace(fdr.Name) ? "" : fdr.Name);
+            string location = Path.Combine(fdr.Location, string.IsNullOrWhiteSpace(fdr.Name) ? "" : fdr.Name);
+
+            if (location.Contains("/") && location.Contains("\\"))
+            {
+                // If the location has inconsistent separators, assume the format of local windows FileSystem.
+                location = location.Replace("/", "\\");
+            }
+
+            return location;
         }
 
         private static string FullPath(this string path)
