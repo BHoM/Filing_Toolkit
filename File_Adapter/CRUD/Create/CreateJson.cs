@@ -106,7 +106,7 @@ namespace BH.Adapter.File
                     {
                         // Create only if file didn't exist. Do not touch existing ones.
                         if (!fileExisted)
-                            WriteJsonFile(fullPath, json, true); 
+                            WriteJsonFile(fullPath, json, true);
                         else
                             BH.Engine.Reflection.Compute.RecordNote($"File {fullPath} was not created as it existed already (Pushtype {pushType.ToString()} was specified).");
                     }
@@ -128,15 +128,12 @@ namespace BH.Adapter.File
                     else if (pushType == PushType.CreateOnly || pushType == PushType.CreateNonExisting || pushType == PushType.UpdateOnly || pushType == PushType.UpdateOrCreateOnly)
                     {
                         // Should be refactored to cover distinct use cases for CreateNonExisting, UpdateOnly, UpdateOrCreateOnly
-                        if (!fileExisted)
-                            WriteJsonFile(fullPath, json, true);
-                        else
-                        {
+                        if (fileExisted)
                             BH.Engine.Reflection.Compute.RecordNote($"Appending content to file `{fullPath}`.");
-                            WriteJsonFile(fullPath, json, false);
-                        }
+
+                        WriteJsonFile(fullPath, json, false);
                     }
-                    else if (pushType == PushType.CreateNonExisting) 
+                    else if (pushType == PushType.CreateNonExisting)
                     {
                         // Currently captured by CreateOnly.
 
@@ -157,7 +154,7 @@ namespace BH.Adapter.File
                         // For old objects (= already in file) do not create. 
                         // Create only those that are "new".
                     }
-                    else if (pushType == PushType.UpdateOnly || pushType == PushType.UpdateOrCreateOnly) 
+                    else if (pushType == PushType.UpdateOnly || pushType == PushType.UpdateOrCreateOnly)
                     {
                         // Currently captured by CreateOnly. See above.
 
@@ -199,10 +196,55 @@ namespace BH.Adapter.File
                 file.Directory.Create(); // If the directory already exists, this method does nothing.
             }
 
-            if (replaceContent)
-                System.IO.File.WriteAllText(fullPath, json); // Replace all content.
+            // if replaceContent is true, or file doesn't exist, or file exists but is empty, then replace all content.
+            if (replaceContent || !System.IO.File.Exists(fullPath) || !System.IO.File.ReadAllText(fullPath).Any())
+                System.IO.File.WriteAllText(fullPath, json);
             else
-                System.IO.File.AppendAllText(fullPath, json);
+            {
+                // We are appending to an existing, non-empty JSON file.
+                // This operation is valid only if the existing json file is a JSON array, and if the text to be appended is a JSON array too.
+
+                // Process the text to be appended
+                string inputJson = json;
+                if (inputJson.First() == '[' && inputJson.Last() == ']')
+                {
+                    // The input text is a JSON array. Remove square brackets.
+                    inputJson = inputJson.Remove(inputJson.Count() - 1).Remove(0, 1);
+
+                    // Read the Json file
+                    string existingJson = System.IO.File.ReadAllText(fullPath);
+                    if (existingJson.First() != '[' || existingJson.Last() != ']')
+                    {
+                        BH.Engine.Reflection.Compute.RecordError("Invalid operation: attempted to append content to an existing JSON that was not a valid JSON array.");
+                        return;
+                    }
+
+                    // Replace last ']' with a comma
+                    string toBeCreated = existingJson.Remove(existingJson.Count() - 1) + ",";
+
+                    // Append content and close square brackets.
+                    toBeCreated += "\n" + inputJson + "]";
+
+                    System.IO.File.WriteAllText(fullPath, toBeCreated);
+                }
+
+           
+                string[] asd = json.Split(new[] { "\r\n" }, StringSplitOptions.None);
+                if (asd.Count() > 0 && json.First() == '{' && json.Last() == '}')
+                {
+                    // The input text is a "bhom dataset" json. 
+
+                    // Read the Json file
+                    string existingJson = System.IO.File.ReadAllText(fullPath);
+                    if (existingJson.First() != '{' || existingJson.Last() != '}')
+                    {
+                        BH.Engine.Reflection.Compute.RecordError("Invalid operation: attempted to append 'BHoM-Dataset' text to an existing .json file that was not a 'BHoM-Dataset' file.");
+                        return;
+                    }
+
+                    System.IO.File.AppendAllText(fullPath, Environment.NewLine + json);
+                }
+            }
         }
 
         /***************************************************/
