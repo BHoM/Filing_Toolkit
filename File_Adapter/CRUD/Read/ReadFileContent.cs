@@ -130,7 +130,6 @@ namespace BH.Adapter.File
             if (isDatasetJson || converted == null)
             {
                 // Try to read the file as a "BHoM-Dataset json"
-                //converted = jsonLines.Select(x => Engine.Serialiser.Convert.FromJson(x)).Where(x => x != null);
                 List<object> deserialised = new List<object>();
                 for (int i = 0; i < jsonLines.Count(); i++)
                 {
