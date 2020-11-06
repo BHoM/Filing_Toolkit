@@ -146,7 +146,7 @@ namespace BH.Adapter.File
 
                     if (string.IsNullOrWhiteSpace(extension))
                     {
-                        BH.Engine.Reflection.Compute.RecordWarning($"File {fileOrDir.IFullPath()} has no extension specified. Defaults to JSON.");
+                        BH.Engine.Reflection.Compute.RecordNote($"File {fileOrDir.IFullPath()} has no extension specified. Defaults to JSON.");
                         extension = ".json";
                         fileOrDir.Name += extension;
                     }
