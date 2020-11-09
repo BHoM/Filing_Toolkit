@@ -51,28 +51,8 @@ namespace BH.Adapter.File
             List<FSDirectory> dirs = new List<FSDirectory>();
 
             WildcardPattern wildcardPattern = null;
-            if (WildcardPattern.ContainsWildcardCharacters(fdrCopy.Location))
-            {
-                if (WildcardPattern.ContainsWildcardCharacters(fdr.Location))
-                {
-                    string allButLastSegment = fdr.Location.Remove(fdr.Location.Count() - Path.GetFileName(fdr.Location).Count());
-                    if (WildcardPattern.ContainsWildcardCharacters(allButLastSegment))
-                    {
-                        BH.Engine.Reflection.Compute.RecordError("Wildcards are only allowed in the last segment of the path.");
-                        return null;
-                    }
-                    else
-                        wildcardPattern = new WildcardPattern(Path.GetFileName(fdr.Location));
-                }
-
-                if (fdrCopy.IncludeDirectories)
-                {
-                    BH.Engine.Reflection.Compute.RecordWarning($"The usage of Wildcards is limited to file retrievals: " +
-                        $"\ncannot have `{nameof(FileDirRequest)}.{nameof(fdrCopy.IncludeDirectories)}` set to true while a Wildcard is specified in the path." +
-                        $"\nDefaulting `{nameof(fdrCopy.IncludeDirectories)}` to false and continuing.");
-                    fdrCopy.IncludeDirectories = false;
-                }
-            }
+            if (!Modify.ProcessFileDirRequest(fdrCopy, out wildcardPattern))
+                return null;
 
             int retrievedFiles = 0, retrievedDirs = 0;
             WalkDirectories(files, dirs, fdrCopy, ref retrievedFiles, ref retrievedDirs, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles, wildcardPattern);
