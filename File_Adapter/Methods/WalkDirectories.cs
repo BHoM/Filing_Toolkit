@@ -29,6 +29,7 @@ using BH.oM.Adapter;
 using BH.Engine.Adapters.File;
 using BH.oM.Adapters.File;
 using System.Text.RegularExpressions;
+using System.Management.Automation;
 
 namespace BH.Adapter.File
 {
@@ -36,7 +37,7 @@ namespace BH.Adapter.File
     {
         private void WalkDirectories(List<FSFile> files, List<FSDirectory> dirs, FileDirRequest fdr,
             ref int filesCount, ref int dirsCount,
-            bool inclHidFiles = false, bool inclSysFiles = false)
+            bool inclHidFiles = false, bool inclSysFiles = false, WildcardPattern wildcardPattern = null)
         {
             // Recursion stop condition.
             if (fdr.MaxNesting == 0)
@@ -48,10 +49,6 @@ namespace BH.Adapter.File
                 BH.Engine.Reflection.Compute.RecordError($"Missing parameter {nameof(fdr.Location)} from the request.");
                 return;
             }
-
-            Regex regex = null;
-            bool hasRegex = Query.TryGetRegexFromPath(fdr.Location, out regex);
-            bool pointsToSingleFile = Path.HasExtension(fdr.Location) && !hasRegex;
 
             System.IO.DirectoryInfo selectedDir = new System.IO.DirectoryInfo(fdr.Location.IFullPath());
             System.IO.DirectoryInfo[] dirArray = new System.IO.DirectoryInfo[] { };
@@ -72,7 +69,8 @@ namespace BH.Adapter.File
                 if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
                     continue;
 
-                if (fdr.IncludeDirectories)
+                if (fdr.IncludeDirectories && wildcardPattern == null)
+                {
                     if (fdr.SortOrder != SortOrder.Default || !MaxItemsReached(fdr.MaxDirectories, dirsCount))
                     {
                         // The limit in number of item retrieved in WalkDirectories applies only if there is no sortOrder applied.
@@ -82,22 +80,24 @@ namespace BH.Adapter.File
                         if (fdr.Exclusions != null && fdr.Exclusions.Contains(bhomDir))
                             continue;
 
-                        // Check Regex matches
-                        if (!regex?.IsMatch(bhomDir.Name) ?? false)
-                            continue;
+                        // Check Wildcard matches - DISABLED: only allow wildcards in filename. Too complicated otherwise.
+                        //if (!wildcardPattern?.IsMatch(bhomDir.Name) ?? false) 
+                        //    continue;
 
                         dirs.Add(bhomDir);
                         dirsCount += 1;
                     }
+                }
+ 
 
                 // Recurse if requested, and if the limits are not exceeded.
-                if (fdr.SearchSubdirectories == true && MaxItemsReached(fdr.MaxFiles, filesCount, fdr.MaxDirectories, dirsCount))
+                if (fdr.SearchSubdirectories == true && !MaxItemsReached(fdr.MaxFiles, filesCount, fdr.MaxDirectories, dirsCount))
                 {
                     FileDirRequest fdrRecurse = BH.Engine.Base.Query.ShallowClone(fdr);
                     fdrRecurse.Location = bhomDir.IFullPath();
                     fdrRecurse.MaxNesting -= 1;
 
-                    WalkDirectories(files, dirs, fdrRecurse, ref filesCount, ref dirsCount, inclHidFiles, inclSysFiles);
+                    WalkDirectories(files, dirs, fdrRecurse, ref filesCount, ref dirsCount, inclHidFiles, inclSysFiles, wildcardPattern);
                 }
             }
 
@@ -127,17 +127,8 @@ namespace BH.Adapter.File
                         if (fdr.Exclusions != null && fdr.Exclusions.Contains(fi.ToFiling()))
                             continue;
 
-                        // If the path points to a single file, continue only if fileName matches the specified name
-                        if (pointsToSingleFile && fi.Name != Path.GetFileName(fdr.Location))
-                            continue;
-
-                        // Check Regex matches
-                        if (!regex?.IsMatch(fi.Name) ?? false)
-                            continue;
-
-                        // If the path was erroneously recognised as a regex that matches,
-                        // check that at least the retrieved filename contains the location's filename.
-                        if (regex != null && !fi.Name.Contains(Path.GetFileName(fdr.Location)))
+                        // Check Wildcard matches
+                        if (!wildcardPattern?.IsMatch(fi.Name) ?? false)
                             continue;
 
                         // When reading the file, do not retrieve content.
@@ -166,7 +157,7 @@ namespace BH.Adapter.File
 
         private bool MaxItemsReached(int maxFiles, int retrievedFilesCount, int maxDirs, int retrivedDirsCount)
         {
-            return !MaxItemsReached(maxFiles, retrievedFilesCount) && !MaxItemsReached(maxDirs, retrivedDirsCount);
+            return MaxItemsReached(maxFiles, retrievedFilesCount) || MaxItemsReached(maxDirs, retrivedDirsCount);
         }
     }
 }

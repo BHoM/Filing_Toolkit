@@ -39,7 +39,8 @@ namespace BH.Engine.Adapters.File
         /*** Methods                                     ***/
         /***************************************************/
 
-        [Description("Get the full path.")]
+        [Description("Get the full path. " +
+            "If the input is a string path containing wildcard symbols, return only the upper portion of the path that doesn't have any.")]
         public static string IFullPath(this object obj)
         {
             return obj != null ? FullPath(obj as dynamic) ?? "" : "";
@@ -82,33 +83,26 @@ namespace BH.Engine.Adapters.File
             if (string.IsNullOrWhiteSpace(path))
                 return null;
 
+            path = path.Replace("/", "\\");
+
             FileInfo fi = null;
             DirectoryInfo di = null;
 
-            try
+            if (System.Management.Automation.WildcardPattern.ContainsWildcardCharacters(path))
             {
-                // If using a Regex, this will throw an Exception. No other way to check for proper name.
-                di = new DirectoryInfo(path);
+                // If path contains wildcard chars, return only up to the parent folder that doesn't have any.
+                string allButLastSegment = path.Remove(path.Count() - Path.GetFileName(path).Count());
+                return FullPath(allButLastSegment);
             }
-            catch (ArgumentException e)
-            {
-                if (e.Message.Contains("Illegal characters"))
-                {
-                    // If the illegal characters are in the filename, we're most probably using a Regex there.
-                    // Extract only up to the parent directory.
-                    path = path.Replace("/", "\\");
-                    path = string.Join("\\",path.Split('\\').Take(path.Split('\\').Length - 1));
 
-                    di = new DirectoryInfo(path);
-                }
-            }
+            di = new DirectoryInfo(path);
 
             if (di?.Exists ?? false)
                 return di.FullName;
 
             if (di != null && !di.Exists && !string.IsNullOrWhiteSpace(Path.GetFileName(path)))
             {
-                // If the full path does not exist but there is a FileName, we might be using a Regex in the FileName.
+                // If the full path does not exist but there is a FileName, we might be using a Wildcard in the FileName.
                 // Extract only the directory part.
                 di = new DirectoryInfo(Path.GetDirectoryName(path));
             }
@@ -127,7 +121,7 @@ namespace BH.Engine.Adapters.File
             if (fi?.Exists ?? false)
                 return fi.FullName;
 
-            // If the following is true, we assume we're using a Regex.
+            // If the following is true, we assume we're using a Wildcard.
             if (!fi?.Exists ?? false && di != null && di.Exists)
                 return di.FullName;
 
@@ -142,7 +136,5 @@ namespace BH.Engine.Adapters.File
         }
 
         /***************************************************/
-
-
     }
 }
