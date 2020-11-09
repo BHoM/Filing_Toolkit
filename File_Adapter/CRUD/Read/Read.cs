@@ -29,6 +29,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Management.Automation;
 
 namespace BH.Adapter.File
 {
@@ -40,34 +41,61 @@ namespace BH.Adapter.File
 
         public IEnumerable<object> Read(FileDirRequest fdr, PullConfig pullConfig)
         {
+            // Copy for immutability in UI
+            FileDirRequest fdrCopy = BH.Engine.Base.Query.ShallowClone(fdr);
+
             // Recursively walk the directories to retrieve File and Directory Info.
             List<IFSInfo> output = new List<IFSInfo>();
 
             List<FSFile> files = new List<FSFile>();
             List<FSDirectory> dirs = new List<FSDirectory>();
 
+            WildcardPattern wildcardPattern = null;
+            if (WildcardPattern.ContainsWildcardCharacters(fdrCopy.Location))
+            {
+                if (WildcardPattern.ContainsWildcardCharacters(fdr.Location))
+                {
+                    string allButLastSegment = fdr.Location.Remove(fdr.Location.Count() - Path.GetFileName(fdr.Location).Count());
+                    if (WildcardPattern.ContainsWildcardCharacters(allButLastSegment))
+                    {
+                        BH.Engine.Reflection.Compute.RecordError("Wildcards are only allowed in the last segment of the path.");
+                        return null;
+                    }
+                    else
+                        wildcardPattern = new WildcardPattern(Path.GetFileName(fdr.Location));
+                }
+
+                if (fdrCopy.IncludeDirectories)
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning($"The usage of Wildcards is limited to file retrievals: " +
+                        $"\ncannot have `{nameof(FileDirRequest)}.{nameof(fdrCopy.IncludeDirectories)}` set to true while a Wildcard is specified in the path." +
+                        $"\nDefaulting `{nameof(fdrCopy.IncludeDirectories)}` to false and continuing.");
+                    fdrCopy.IncludeDirectories = false;
+                }
+            }
+
             int retrievedFiles = 0, retrievedDirs = 0;
-            WalkDirectories(files, dirs, fdr, ref retrievedFiles, ref retrievedDirs, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles);
+            WalkDirectories(files, dirs, fdrCopy, ref retrievedFiles, ref retrievedDirs, pullConfig.IncludeHiddenFiles, pullConfig.IncludeSystemFiles, wildcardPattern);
 
             output.AddRange(dirs);
             output.AddRange(files);
 
             // If a sort order is applied, sort separately files and dirs,
             // then return the maxItems of each of those.
-            if (fdr.SortOrder != SortOrder.Default)
+            if (fdrCopy.SortOrder != SortOrder.Default)
             {
-                output = Query.SortOrder(output, fdr.SortOrder);
+                output = Query.SortOrder(output, fdrCopy.SortOrder);
 
-                files = output.OfType<FSFile>().Take(fdr.MaxFiles == -1 ? output.Count : fdr.MaxFiles).ToList();
-                dirs = output.OfType<FSDirectory>().Take(fdr.MaxDirectories == -1 ? output.Count : fdr.MaxDirectories).ToList();
+                files = output.OfType<FSFile>().Take(fdrCopy.MaxFiles == -1 ? output.Count : fdrCopy.MaxFiles).ToList();
+                dirs = output.OfType<FSDirectory>().Take(fdrCopy.MaxDirectories == -1 ? output.Count : fdrCopy.MaxDirectories).ToList();
             }
 
-            if (fdr.IncludeFileContents)
+            if (fdrCopy.IncludeFileContents)
                 files.ForEach(f => ReadAndAddContent(f));
 
             output = new List<IFSInfo>();
 
-            if (fdr.SortOrder != SortOrder.Default && fdr.SortOrder != SortOrder.ByName)
+            if (fdrCopy.SortOrder != SortOrder.Default && fdrCopy.SortOrder != SortOrder.ByName)
             {
                 output.AddRange(files);
                 output.AddRange(dirs);
