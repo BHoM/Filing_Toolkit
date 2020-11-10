@@ -159,7 +159,7 @@ namespace BH.Adapter.File
                 IResource created = Create(file, pushType, pushConfig);
 
                 if (created != null)
-                    filesOrDirs.Add(created);
+                    createdFiles.Add(created);
             }
 
             return createdFiles.OfType<object>().ToList();
