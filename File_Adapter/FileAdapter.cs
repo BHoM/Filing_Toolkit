@@ -115,7 +115,7 @@ namespace BH.Adapter.File
 
             if (!Path.HasExtension(m_defaultFilePath))
             {
-                Engine.Reflection.Compute.RecordWarning($"No extension specified in the FileName input. Defaulting to .json.");
+                Engine.Reflection.Compute.RecordNote($"No extension specified in the FileName input. Defaulting to .json.");
                 ext = ".json";
                 filePath += ext;
             }
