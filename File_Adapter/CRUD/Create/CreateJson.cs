@@ -51,7 +51,8 @@ namespace BH.Adapter.File
             List<string> allLines = new List<string>();
             string json = "";
 
-            if (file.Content != null)
+            // Process file content, only if there is any.
+            if (file.Content != null && file.Content.Count != 0)
             {
                 if (!pushConfig.UseDatasetSerialization)
                 {
@@ -71,10 +72,10 @@ namespace BH.Adapter.File
                     allLines.AddRange(file.Content.Where(c => c != null).Select(obj => obj.ToJson()));
                     json = String.Join(Environment.NewLine, allLines);
                 }
-            }
 
-            if (pushConfig.BeautifyJson)
-                json = BeautifyJson(json);
+                if (pushConfig.BeautifyJson)
+                    json = BeautifyJson(json);
+            }
 
             bool filecreated = true;
             try
@@ -253,6 +254,9 @@ namespace BH.Adapter.File
 
         private static string BeautifyJson(string jsonString)
         {
+            if (string.IsNullOrWhiteSpace(jsonString))
+                return jsonString;
+
             JsonDocument doc = JsonDocument.Parse(
                 jsonString,
                 new JsonDocumentOptions
