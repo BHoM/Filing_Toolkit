@@ -53,9 +53,14 @@ namespace BH.Adapter.File
             System.IO.DirectoryInfo selectedDir = new System.IO.DirectoryInfo(fdr.Location.IFullPath());
             System.IO.DirectoryInfo[] dirArray = new System.IO.DirectoryInfo[] { };
 
-            if (!Path.HasExtension(selectedDir.FullName)) // If the location points to a directory, populate the list of folders there.
+            // Check if the location points to a single file.
+            // To point to a single file, the location must not be a wildcard (therefore wildcardPattern must be null)
+            // and it must have an extension.
+            bool isSingleFile = Path.HasExtension(selectedDir.FullName) && wildcardPattern == null;
+
+            if (!isSingleFile) // If the location points to a directory, populate the list of folders there.
                 dirArray = selectedDir.GetDirectories();
-            else // if the location points to a file, the selected directory is its parent.
+            else // if the location points to a single file, the selected directory is its parent.
                 selectedDir = new System.IO.DirectoryInfo(Path.GetDirectoryName(selectedDir.FullName));
 
             foreach (System.IO.DirectoryInfo di in dirArray)
@@ -88,7 +93,7 @@ namespace BH.Adapter.File
                         dirsCount += 1;
                     }
                 }
- 
+
 
                 // Recurse if requested, and if the limits are not exceeded.
                 if (fdr.SearchSubdirectories == true && !MaxItemsReached(fdr.MaxFiles, filesCount, fdr.MaxDirectories, dirsCount))
@@ -103,11 +108,14 @@ namespace BH.Adapter.File
 
             if (fdr.IncludeFiles)
             {
-                System.IO.FileInfo[] fileInfos = new System.IO.FileInfo[] { };
+                System.IO.FileInfo[] fileInfos = new System.IO.FileInfo[1];
 
                 try
                 {
-                    fileInfos = selectedDir.GetFiles("*.*");
+                    if (isSingleFile)
+                        fileInfos[0] = new FileInfo(fdr.Location.IFullPath());
+                    else
+                        fileInfos = selectedDir.GetFiles("*.*");
                 }
                 // This is thrown if one of the files requires permissions greater than the application provides.
                 catch (UnauthorizedAccessException e)
