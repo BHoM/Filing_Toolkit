@@ -12,10 +12,10 @@ pool:
   vmImage: 'vs2017-win2016'
 
 variables:
-  solution: '**/Filing_Toolkit.sln'
+  solution: '**/File_Toolkit.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  projectName: 'Filing_Toolkit'
+  projectName: 'File_Toolkit'
 
 steps:
 - checkout: self
