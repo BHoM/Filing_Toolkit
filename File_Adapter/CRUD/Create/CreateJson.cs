@@ -197,7 +197,18 @@ namespace BH.Adapter.File
                 file.Directory.Create(); // If the directory already exists, this method does nothing.
             }
 
-            // if replaceContent is true, or file doesn't exist, or file exists but is empty, then replace all content.
+            // Treat the "empty input text" case.
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                if (replaceContent)
+                    System.IO.File.WriteAllText(fullPath, json); // still write the file
+                else
+                    System.IO.File.AppendAllText(fullPath, json); // still append empty text (modifying the file)
+
+                return;
+            }
+
+            // If replaceContent is true, or file doesn't exist, or file exists but is empty, then replace all content.
             if (replaceContent || !System.IO.File.Exists(fullPath) || !System.IO.File.ReadAllText(fullPath).Any())
                 System.IO.File.WriteAllText(fullPath, json);
             else
@@ -227,11 +238,16 @@ namespace BH.Adapter.File
                     toBeCreated += "\n" + inputJson + "]";
 
                     System.IO.File.WriteAllText(fullPath, toBeCreated);
+
+                    return;
                 }
 
-           
-                string[] asd = json.Split(new[] { "\r\n" }, StringSplitOptions.None);
-                if (asd.Count() > 0 && json.First() == '{' && json.Last() == '}')
+
+                string[] asd = new string[] { "" };
+                if (!string.IsNullOrWhiteSpace(json) && json.Contains("\r\n"))
+                    asd = json.Split(new[] { "\r\n" }, StringSplitOptions.None);
+
+                if (asd.Count() > 0 && json.FirstOrDefault() == '{' && json.LastOrDefault() == '}')
                 {
                     // The input text is a "bhom dataset" json. 
 
