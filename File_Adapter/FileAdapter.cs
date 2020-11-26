@@ -25,11 +25,13 @@ using BH.Engine.Reflection;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using BH.oM.Reflection.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Threading;
 
 namespace BH.Adapter.File
 {
@@ -86,6 +88,8 @@ namespace BH.Adapter.File
         // Initialisation method for when the File Adapter is instantiated with a location.
         private bool Init(string location)
         {
+            location = location.Replace("/", "\\");
+
             if (string.IsNullOrWhiteSpace(location))
             {
                 BH.Engine.Reflection.Compute.RecordError("Please specifiy a valid target location.");
@@ -102,6 +106,10 @@ namespace BH.Adapter.File
 
             // By default, the objects are appendend to the file if it exists already.
             this.m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.CreateOnly;
+
+            m_resourceWatcherThread?.Interrupt();
+            m_resourceWatcherThread = new Thread(WatchResource);
+            m_resourceWatcherThread.Start();
 
             return true;
         }
@@ -130,5 +138,58 @@ namespace BH.Adapter.File
         }
 
         /***************************************************/
+
+        // Watches the file specified in the m_defaultFilePath.
+        private void WatchResource()
+        {
+            string directory = m_defaultFilePath.Remove(m_defaultFilePath.Count() - Path.GetFileName(m_defaultFilePath).Count());
+            string fileName = Path.GetFileName(m_defaultFilePath);
+
+            // Create a new FileSystemWatcher and set its properties.
+            using (FileSystemWatcher watcher = new FileSystemWatcher())
+            {
+                watcher.Path = directory;
+
+                // Watch for changes in LastAccess and LastWrite times, and
+                // the renaming of files or directories.
+                watcher.NotifyFilter = NotifyFilters.LastAccess
+                                     | NotifyFilters.LastWrite
+                                     | NotifyFilters.FileName
+                                     | NotifyFilters.DirectoryName;
+
+                // Only watch this file.
+                watcher.Filter = fileName;//"*.json";
+
+                // Add event handlers.
+                watcher.Changed += OnChanged;
+                watcher.Created += OnChanged;
+                watcher.Deleted += OnChanged;
+                watcher.Renamed += OnRenamed;
+
+                // Begin watching.
+                watcher.EnableRaisingEvents = true;
+
+                while (true) { } // Keep alive.
+            }
+        }
+
+        /***************************************************/
+
+        Thread m_resourceWatcherThread;
+
+        // Define the event handlers.
+        private void OnChanged(object source, FileSystemEventArgs e)
+        {
+            // Specify what is done when a file is changed, created, or deleted.
+            BH.Engine.Reflection.Compute.RecordWarning($"File: {e.FullPath} {e.ChangeType}");
+        }
+
+        private void OnRenamed(object source, RenamedEventArgs e)
+        {
+            // Specify what is done when a file is renamed.
+            //m_resourceWatcherThread.Interrupt();
+            BH.Engine.Reflection.Compute.RecordWarning($"File: {e.OldFullPath} renamed to {e.FullPath}");
+            //throw new Exception("Renamed");
+        }
     }
 }

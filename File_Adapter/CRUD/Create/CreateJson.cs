@@ -74,7 +74,13 @@ namespace BH.Adapter.File
                 }
 
                 if (pushConfig.BeautifyJson)
-                    json = BeautifyJson(json);
+                {
+                    try
+                    {
+                        json = BeautifyJson(json);
+                    }
+                    catch (Exception e) { BH.Engine.Reflection.Compute.RecordWarning($"Could not apply BeautifyJson to {fullPath}. Error: {e.Message}"); }
+                }
             }
 
             bool filecreated = true;
@@ -273,28 +279,28 @@ namespace BH.Adapter.File
             if (string.IsNullOrWhiteSpace(jsonString))
                 return jsonString;
 
-            JsonDocument doc = JsonDocument.Parse(
-                jsonString,
-                new JsonDocumentOptions
-                {
-                    AllowTrailingCommas = true
-                }
-            );
-            MemoryStream memoryStream = new MemoryStream();
-            using (
-                var utf8JsonWriter = new Utf8JsonWriter(
-                    memoryStream,
-                    new JsonWriterOptions
+                JsonDocument doc = JsonDocument.Parse(
+                    jsonString,
+                    new JsonDocumentOptions
                     {
-                        Indented = true
+                        AllowTrailingCommas = true
                     }
+                );
+                MemoryStream memoryStream = new MemoryStream();
+                using (
+                    var utf8JsonWriter = new Utf8JsonWriter(
+                        memoryStream,
+                        new JsonWriterOptions
+                        {
+                            Indented = true
+                        }
+                    )
                 )
-            )
-            {
-                doc.WriteTo(utf8JsonWriter);
-            }
-            return new System.Text.UTF8Encoding()
-                .GetString(memoryStream.ToArray());
+                {
+                    doc.WriteTo(utf8JsonWriter);
+                }
+                return new System.Text.UTF8Encoding()
+                    .GetString(memoryStream.ToArray());
         }
     }
 }
