@@ -51,27 +51,16 @@ namespace BH.Adapter.File
             List<string> allLines = new List<string>();
             string json = "";
 
-            // Process file content, only if there is any.
-            if (file.Content != null && file.Content.Count != 0)
+            if (file.Content != null && file.Content.Any())
             {
-                if (!pushConfig.UseDatasetSerialization)
-                {
-                    allLines.AddRange(file.Content.Where(c => c != null).Select(obj => obj.ToJson() + ","));
+                allLines.AddRange(file.Content.Where(c => c != null).Select(obj => obj.ToJson() + ","));
 
-                    // Remove the trailing comma if there is only one element.
-                    allLines[allLines.Count - 1] = allLines[allLines.Count - 1].Remove(allLines[allLines.Count - 1].Length - 1);
+                // Remove the trailing comma if there is only one element.
+                allLines[allLines.Count - 1] = allLines[allLines.Count - 1].Remove(allLines[allLines.Count - 1].Length - 1);
 
-                    // Join all between square brackets to make a valid JSON array.
-                    json = String.Join(Environment.NewLine, allLines);
-                    json = "[" + json + "]";
-                }
-                else
-                {
-                    // Use the non-JSON compliant "Dataset" serialization style.
-                    // This is a newline-separated concatenation of individual JSON-serialized objects.
-                    allLines.AddRange(file.Content.Where(c => c != null).Select(obj => obj.ToJson()));
-                    json = String.Join(Environment.NewLine, allLines);
-                }
+                // Join all between square brackets to make a valid JSON array.
+                json = String.Join(Environment.NewLine, allLines);
+                json = "[" + json + "]";
 
                 if (pushConfig.BeautifyJson)
                     json = BeautifyJson(json);
@@ -80,9 +69,10 @@ namespace BH.Adapter.File
             bool filecreated = true;
             try
             {
-                // Clarify if we are considering the Push in terms of content or of Files.
-                if (string.IsNullOrWhiteSpace(m_defaultFilePath)) // We are talking about Files/Directories.
+                if (string.IsNullOrWhiteSpace(m_defaultFilePath))
                 {
+                    // We are considering the single File objects: we write to the file path provided in the File object.
+
                     if (pushType == PushType.DeleteThenCreate)
                     {
                         if (fileExisted)
@@ -117,8 +107,10 @@ namespace BH.Adapter.File
                         filecreated = false;
                     }
                 }
-                else // We are talking about File content.
+                else 
                 {
+                    // The file object does not contain any path, so we write an unique File under the default file path.
+
                     if (pushType == PushType.DeleteThenCreate)
                     {
                         BH.Engine.Reflection.Compute.RecordNote($"Replacing entire content of file `{fullPath}`.");

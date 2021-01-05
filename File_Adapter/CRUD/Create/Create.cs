@@ -57,7 +57,23 @@ namespace BH.Adapter.File
                 return null;
 
             if (fileOrDir is IFile)
+            {
+                // Check if any dataset is specified in the file content.
+                List<BH.oM.Data.Library.Dataset> datasets = fileOrDir.Content.OfType<BH.oM.Data.Library.Dataset>().ToList();
+
+                if (datasets != null && datasets.Any())
+                {
+                    if (fileOrDir.Content.Except(datasets).Any() || datasets.Count > 1)
+                    {
+                        BH.Engine.Reflection.Compute.RecordError($"A file that contains an object of type {nameof(BH.oM.Data.Library.Dataset)} cannot contain any other object or Dataset.");
+                        return null;
+                    }
+                    else
+                        return CreateDataset(datasets.FirstOrDefault(), fileOrDir.IFullPath(), pushType, pushConfig) as IFSContainer;
+                }
+
                 return CreateJson((FSFile)fileOrDir, pushType, pushConfig) as IFSContainer;
+            }
 
             if (fileOrDir is IDirectory)
                 return CreateDirectory((FSDirectory)fileOrDir, pushType, pushConfig) as IFSContainer;
