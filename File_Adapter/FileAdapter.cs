@@ -51,13 +51,11 @@ namespace BH.Adapter.File
             "\nWhen Pushing, this is used for pushing objects that are not BHoM `File` or `Directory`." +
             "\nWhen Pulling, if no request is specified, a FileContentRequest is automatically generated with this location." +
             "\nBy default this is `C:\\temp\\Filing_Adapter-objects.json`.")]
-        [PreviousVersion("4.0", "BH.Adapter.Filing.FilingAdapter(System.String)")]
         public FileAdapter(string targetLocation)
         {
             Init(targetLocation);
         }
 
-        [PreviousVersion("4.0", "BH.Adapter.FileAdapter.FileAdapter(System.String, System.String)")]
         public FileAdapter(string folder, string fileName)
         {
             if (folder?.Count() > 2 && folder?.ElementAt(1) != ':')
