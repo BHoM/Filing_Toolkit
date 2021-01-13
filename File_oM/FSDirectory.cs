@@ -43,7 +43,7 @@ namespace BH.oM.Adapters.File
         public virtual FSDirectory ParentDirectory { get; set; }
 
         [Description("Name of the directory.")]
-        public new string Name { get; set; }
+        public override string Name { get; set; }
 
         [Description("Gets a value indicating whether a file exists.")]
         public virtual bool? Exists { get; set; } = null;
