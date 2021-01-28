@@ -33,6 +33,7 @@ using BH.oM.Adapters.File;
 using System.Text.Json;
 using BH.Engine.Diffing;
 using BH.oM.Diffing;
+using BH.oM.Data.Library;
 
 namespace BH.Adapter.File
 {
@@ -54,6 +55,9 @@ namespace BH.Adapter.File
             // Process file content, only if there is any.
             if (file.Content != null && file.Content.Count != 0)
             {
+                if (file.Content.All(o => o is Dataset))
+                    pushConfig.UseDatasetSerialization = true;
+
                 if (!pushConfig.UseDatasetSerialization)
                 {
                     allLines.AddRange(file.Content.Where(c => c != null).Select(obj => obj.ToJson() + ","));
@@ -74,7 +78,16 @@ namespace BH.Adapter.File
                 }
 
                 if (pushConfig.BeautifyJson)
-                    json = BeautifyJson(json);
+                {
+                    try
+                    {
+                        json = BeautifyJson(json);
+                    }
+                    catch (Exception e)
+                    {
+                        BH.Engine.Reflection.Compute.RecordWarning($"Beautify json failed. File will be created with non-beautified json. Error:\n{e.Message}");
+                    }
+                }
             }
 
             bool filecreated = true;
