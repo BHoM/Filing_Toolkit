@@ -35,6 +35,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.Engine.Base;
 using BH.oM.Base;
+using BH.oM.Data.Library;
 
 namespace BH.Adapter.File
 {
@@ -76,7 +77,7 @@ namespace BH.Adapter.File
 
         public override List<object> Push(IEnumerable<object> objects, string tag = "", PushType pushType = PushType.AdapterDefault, ActionConfig actionConfig = null)
         {
-            PushConfig pushConfig = actionConfig as PushConfig;
+            PushConfig pushConfig = actionConfig as PushConfig == null ? new PushConfig() : actionConfig as PushConfig;
 
             if (string.IsNullOrWhiteSpace(m_defaultFilePath)) // = if we are about to push multiple files/directories
                 if (pushType == PushType.DeleteThenCreate && m_Push_enableDeleteWarning && !pushConfig.DisableWarnings ) 
@@ -155,6 +156,13 @@ namespace BH.Adapter.File
                 string defaultFileName = Path.GetFileName(m_defaultFilePath);
 
                 FSFile file = CreateFSFile(defaultDirectory, defaultFileName, remainder);
+
+                if (remainder.All(o => o is Dataset))
+                {
+                    // Automatically set UseDatasetSerialization to true.
+                    pushConfig.UseDatasetSerialization = true;
+                    pushConfig.BeautifyJson = false;
+                }
 
                 IResource created = Create(file, pushType, pushConfig);
 
