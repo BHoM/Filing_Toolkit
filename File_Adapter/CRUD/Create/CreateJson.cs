@@ -62,8 +62,9 @@ namespace BH.Adapter.File
                 {
                     allLines.AddRange(file.Content.Where(c => c != null).Select(obj => obj.ToJson() + ","));
 
-                    // Remove the trailing comma if there is only one element.
-                    allLines[allLines.Count - 1] = allLines[allLines.Count - 1].Remove(allLines[allLines.Count - 1].Length - 1);
+                    // Remove the trailing comma 
+                    if (allLines.Count > 0)
+                        allLines[allLines.Count - 1] = allLines[allLines.Count - 1].Remove(allLines[allLines.Count - 1].Length - 1);
 
                     // Join all between square brackets to make a valid JSON array.
                     json = String.Join(Environment.NewLine, allLines);
