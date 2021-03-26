@@ -70,8 +70,6 @@ namespace BH.Adapter.File
                         allLines.Add(obj.ToJson() + ",");
                     }
 
-                    //allLines.AddRange(file.Content.Where(c => c != null && ((c as double?) != null && (c as double?) != 0)).Select(obj => obj.ToJson() + ","));
-
                     // Remove the trailing comma 
                     if (allLines.Count > 0)
                         allLines[allLines.Count - 1] = allLines[allLines.Count - 1].Remove(allLines[allLines.Count - 1].Length - 1);
