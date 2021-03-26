@@ -60,7 +60,17 @@ namespace BH.Adapter.File
 
                 if (!pushConfig.UseDatasetSerialization)
                 {
-                    allLines.AddRange(file.Content.Where(c => c != null).Select(obj => obj.ToJson() + ","));
+                    var content = file.Content;
+
+                    foreach (var obj in content)
+                    {
+                        if (obj == null || obj.GetType().IsValueType)
+                            continue;
+
+                        allLines.Add(obj.ToJson() + ",");
+                    }
+
+                    //allLines.AddRange(file.Content.Where(c => c != null && ((c as double?) != null && (c as double?) != 0)).Select(obj => obj.ToJson() + ","));
 
                     // Remove the trailing comma 
                     if (allLines.Count > 0)
