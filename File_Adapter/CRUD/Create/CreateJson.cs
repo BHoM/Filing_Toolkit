@@ -60,10 +60,19 @@ namespace BH.Adapter.File
 
                 if (!pushConfig.UseDatasetSerialization)
                 {
-                    allLines.AddRange(file.Content.Where(c => c != null).Select(obj => obj.ToJson() + ","));
+                    var content = file.Content;
 
-                    // Remove the trailing comma if there is only one element.
-                    allLines[allLines.Count - 1] = allLines[allLines.Count - 1].Remove(allLines[allLines.Count - 1].Length - 1);
+                    foreach (var obj in content)
+                    {
+                        if (obj == null || obj.GetType().IsValueType)
+                            continue;
+
+                        allLines.Add(obj.ToJson() + ",");
+                    }
+
+                    // Remove the trailing comma 
+                    if (allLines.Count > 0)
+                        allLines[allLines.Count - 1] = allLines[allLines.Count - 1].Remove(allLines[allLines.Count - 1].Length - 1);
 
                     // Join all between square brackets to make a valid JSON array.
                     json = String.Join(Environment.NewLine, allLines);
